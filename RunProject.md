@@ -16,7 +16,7 @@
     pip install -r requirements.txt
 
     # Si no funciona probar con este comando 
-    py -m pip install -r requirements.txt
+    py -m pip install -r requirement.txt
 
     # Correr el servicio, en terminal ejecutar
     flask run
