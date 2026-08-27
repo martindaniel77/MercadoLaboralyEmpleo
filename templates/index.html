@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}Inicio | Mercado Laboral y Empleo{% endblock %}
+
+{% block content %}
+
+<!-- ===== Encabezado ===== -->
+<section class="page-header">
+    <div class="container">
+        <span class="section-eyebrow page-header__eyebrow">Bitácora técnica &middot; Proyecto de Minería de Datos &middot; Etapa 1</span>
+        <h1>Mercado laboral y transformación del empleo</h1>
+        <p>
+            Documento base de la Etapa 1: formulación y contextualización del problema de investigación,
+            necesidades de información, fuentes y características iniciales del conjunto de datos.
+        </p>
+        <div class="page-header__rule"></div>
+    </div>
+</section>
+
+<!-- ===== Contexto general ===== -->
+<section class="section">
+    <div class="container">
+        <span class="section-eyebrow">01 / Contexto</span>
+        <h2 class="section-title">¿De qué trata el proyecto?</h2>
+        <p>
+            El mundo del trabajo atraviesa una transformación acelerada. La tecnología, la
+            globalización, los cambios demográficos y las nuevas formas de contratación están
+            redefiniendo la manera en que las personas se vinculan al mercado laboral. Este proyecto
+            estudia ese fenómeno mediante técnicas de minería de datos, construyendo primero una base
+            sólida de comprensión: qué se quiere descubrir, qué datos se necesitan y de dónde provienen.
+        </p>
+        <p>
+            El objetivo general de la Etapa 1 es formular y contextualizar el problema de investigación
+            sobre el mercado laboral y la transformación del empleo, identificando las preguntas que
+            orientarán el proceso de minería de datos, las necesidades de información, las fuentes
+            disponibles y las características iniciales del conjunto de datos.
+        </p>
+        <p>
+            El análisis contempla tres niveles: <strong>global</strong>, <strong>nacional
+            (Colombia)</strong> y <strong>regional</strong>, utilizando fuentes primarias, secundarias
+            y terciarias. Las preguntas planteadas deberán poder responderse con evidencia disponible
+            en los datos y orientarán el análisis de variables, periodos, poblaciones, relaciones y
+            patrones en las etapas siguientes.
+        </p>
+    </div>
+</section>
+
+<!-- ===== Niveles de análisis ===== -->
+<section class="section section--alt">
+    <div class="container">
+        <span class="section-eyebrow">02 / Niveles de análisis</span>
+        <h2 class="section-title">Global, nacional y regional</h2>
+        <p class="section-subtitle">
+            El fenómeno se estudia en tres escalas complementarias para lograr una visión integral
+            del comportamiento del empleo y su transformación.
+        </p>
+
+        <div class="grid grid--3">
+            <div class="card card--dark">
+                <div class="card__icon">G</div>
+                <h3 class="card__title">Global</h3>
+                <p class="card__text">
+                    Tendencias internacionales del empleo: automatización, digitalización y cambios
+                    en la demanda de habilidades en el panorama mundial.
+                </p>
+            </div>
+            <div class="card card--dark">
+                <div class="card__icon">N</div>
+                <h3 class="card__title">Nacional &mdash; Colombia</h3>
+                <p class="card__text">
+                    Evolución de la ocupación, informalidad, desempleo y sectores económicos a nivel
+                    país, a partir de las fuentes estadísticas oficiales.
+                </p>
+            </div>
+            <div class="card card--dark">
+                <div class="card__icon">R</div>
+                <h3 class="card__title">Regional</h3>
+                <p class="card__text">
+                    Comparación entre regiones del país para detectar disparidades territoriales y
+                    particularidades locales del mercado de trabajo.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== Índice de la Etapa 1 ===== -->
+<section class="section">
+    <div class="container">
+        <span class="section-eyebrow">03 / Contenido de la entrega</span>
+        <h2 class="section-title">Índice de la Etapa 1</h2>
+        <p class="section-subtitle">
+            Cada apartado del menú documenta una parte del trabajo realizado y puede consultarse
+            directamente desde la barra de navegación.
+        </p>
+
+        <div class="toc">
+            <a href="{{ url_for('problema') }}" class="toc__item">
+                <span class="toc__n">1</span>
+                <span class="toc__t">Problema y contexto</span>
+                <span class="toc__a">Leer &rarr;</span>
+            </a>
+            <a href="{{ url_for('preguntas') }}" class="toc__item">
+                <span class="toc__n">2</span>
+                <span class="toc__t">Pregunta principal y preguntas secundarias</span>
+                <span class="toc__a">Leer &rarr;</span>
+            </a>
+            <a href="{{ url_for('necesidades') }}" class="toc__item">
+                <span class="toc__n">3</span>
+                <span class="toc__t">Necesidades de información</span>
+                <span class="toc__a">Leer &rarr;</span>
+            </a>
+            <a href="{{ url_for('fuentes') }}" class="toc__item">
+                <span class="toc__n">4</span>
+                <span class="toc__t">Fuentes de datos</span>
+                <span class="toc__a">Leer &rarr;</span>
+            </a>
+            <a href="{{ url_for('dataset') }}" class="toc__item">
+                <span class="toc__n">5</span>
+                <span class="toc__t">Dataset</span>
+                <span class="toc__a">Leer &rarr;</span>
+            </a>
+            <a href="{{ url_for('diccionario') }}" class="toc__item">
+                <span class="toc__n">6</span>
+                <span class="toc__t">Diccionario de datos</span>
+                <span class="toc__a">Leer &rarr;</span>
+            </a>
+            <a href="{{ url_for('calidad') }}" class="toc__item">
+                <span class="toc__n">7</span>
+                <span class="toc__t">Calidad inicial de los datos</span>
+                <span class="toc__a">Leer &rarr;</span>
+            </a>
+            <a href="{{ url_for('limitaciones') }}" class="toc__item">
+                <span class="toc__n">8</span>
+                <span class="toc__t">Limitaciones y consideraciones</span>
+                <span class="toc__a">Leer &rarr;</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
