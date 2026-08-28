@@ -1,26 +1,227 @@
 {% extends "base.html" %}
 
-{% block title %}Fuentes de datos | Etapa 1{% endblock %}
+{% block title %}Fuentes de Datos | Etapa 1{% endblock %}
 
 {% block content %}
 <section class="page-header">
     <div class="container">
-        <h1>Fuentes de datos</h1>
-        <p>Recolección y selección de fuentes primarias, secundarias y terciarias para cada nivel de análisis.</p>
+        <span class="section-eyebrow page-header__eyebrow">Etapa 1 &middot; Selección y Justificación</span>
+        <h1>Fuentes de Datos de Investigación</h1>
+        <p>
+            Documentación técnica exhaustiva de las 6 fuentes de información (2 Primarias, 2 Secundarias, 2 Terciarias)
+            articuladas en las escalas Global, Nacional (Colombia) y Regional.
+        </p>
         <div class="page-header__rule"></div>
     </div>
 </section>
 
 <section class="section">
     <div class="container">
-        <div class="panel">
-            <div class="notice">
-                <span class="notice__badge">Etapa 1</span>
-                <p>Este espacio documentará las fuentes de información (primarias, secundarias y
-                terciarias) con su institución responsable, URL, cobertura, periodo, formato,
-                adquisición, variables y justificación de pertinencia, confiabilidad, actualidad y cobertura.</p>
+
+        <!-- Resumen de Fuentes -->
+        <div class="stat-grid">
+            <div class="stat-card stat-card--accent">
+                <div class="stat-card__val">2</div>
+                <div class="stat-card__lbl">Fuentes Primarias</div>
+                <div class="stat-card__sub">Fedesarrollo & OIT Global</div>
+            </div>
+            <div class="stat-card stat-card--accent">
+                <div class="stat-card__val">2</div>
+                <div class="stat-card__lbl">Fuentes Secundarias</div>
+                <div class="stat-card__sub">DANE GEIH & ENTIC Hogares</div>
+            </div>
+            <div class="stat-card stat-card--accent">
+                <div class="stat-card__val">2</div>
+                <div class="stat-card__lbl">Fuentes Terciarias</div>
+                <div class="stat-card__sub">Oxford OLI & Fairwork Hub</div>
+            </div>
+            <div class="stat-card stat-card--dark">
+                <div class="stat-card__val">6 / 6</div>
+                <div class="stat-card__lbl">Cobertura Total</div>
+                <div class="stat-card__sub">Global + Nacional + Regional</div>
             </div>
         </div>
+
+        <!-- ==================== SECCIÓN 1: FUENTES PRIMARIAS ==================== -->
+        <div class="content-box">
+            <div class="content-box__header">
+                <span class="badge badge--success">Tipo: Fuentes Primarias</span>
+                <span class="text-muted" style="font-size: 0.82rem;">Recolección directa mediante encuestas estructuradas</span>
+            </div>
+
+            <!-- Fuente Primaria 1 -->
+            <div class="panel mb-2" style="border-left: 4px solid #15803d;">
+                <div class="content-box__header">
+                    <h3 class="content-box__title"><span class="text-accent">F-PRIM-01:</span> Encuesta de Caracterización a Repartidores y Conductores en Colombia</h3>
+                    <span class="badge badge--primary">Nacional & Regional</span>
+                </div>
+                <div class="grid grid--2 mt-1">
+                    <div>
+                        <p><strong>1. Institución responsable:</strong> Fedesarrollo & Observatorio Laboral Universidad del Rosario.</p>
+                        <p><strong>2. URL oficial:</strong> <a href="https://www.fedesarrollo.org.co" target="_blank" rel="noopener">fedesarrollo.org.co/investigaciones-plataformas</a></p>
+                        <p><strong>3. Tipo de fuente:</strong> Primaria (Encuestas de campo estructuradas).</p>
+                        <p><strong>4. Cobertura geográfica:</strong> Colombia (Bogotá D.C., Medellín, Cali).</p>
+                        <p><strong>5. Periodo disponible:</strong> 2021 – 2024.</p>
+                        <p><strong>6. Formato de datos:</strong> Microdatos tabulados (CSV / Excel).</p>
+                        <p><strong>7. Método de adquisición:</strong> Descarga de repositorios de investigación académica e informes sectoriales.</p>
+                    </div>
+                    <div>
+                        <p><strong>8. Registros aproximados:</strong> ~2,800 encuestas a trabajadores de plataformas.</p>
+                        <p><strong>9. Variables disponibles:</strong> Horas semanales, ingreso bruto, gasolina, mantenimiento, comisiones de app, propinas, salud, pensión, ARL, calificación en app.</p>
+                        <p><strong>10. Fecha de consulta:</strong> 28 de agosto de 2026.</p>
+                        <p><strong>11. Restricciones de uso:</strong> Uso académico con debida citación bibliográfica, datos anonimizados sin información personal identificable (PII).</p>
+                        <p><strong>12. Justificación:</strong> <em>Pertinencia:</em> Captura los costos operativos reales y propinas que no miden las encuestas oficiales de hogares. <em>Confiabilidad:</em> Respaldada por el principal centro de pensamiento económico de Colombia.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fuente Primaria 2 -->
+            <div class="panel" style="border-left: 4px solid #15803d;">
+                <div class="content-box__header">
+                    <h3 class="content-box__title"><span class="text-accent">F-PRIM-02:</span> Encuesta Global a Trabajadores de Plataformas Digitales (ILO Survey)</h3>
+                    <span class="badge badge--primary">Global</span>
+                </div>
+                <div class="grid grid--2 mt-1">
+                    <div>
+                        <p><strong>1. Institución responsable:</strong> Organización Internacional del Trabajo (OIT / ILO).</p>
+                        <p><strong>2. URL oficial:</strong> <a href="https://www.ilo.org/global/research/global-reports/weso/2021/WCMS_771749/lang--es/index.htm" target="_blank" rel="noopener">ilo.org/weso-digital-labour-platforms</a></p>
+                        <p><strong>3. Tipo de fuente:</strong> Primaria (Encuesta global representativa a trabajadores).</p>
+                        <p><strong>4. Cobertura geográfica:</strong> Global (100+ países, con foco en América Latina, EE.UU., Europa y Asia).</p>
+                        <p><strong>5. Periodo disponible:</strong> 2021 – 2025.</p>
+                        <p><strong>6. Formato de datos:</strong> Microdatos anonimizados en CSV / SPSS / Stata.</p>
+                        <p><strong>7. Método de adquisición:</strong> Descarga directa desde el portal de datos abiertos de investigación de la OIT.</p>
+                    </div>
+                    <div>
+                        <p><strong>8. Registros aproximados:</strong> 12,000+ encuestas internacionales.</p>
+                        <p><strong>9. Variables disponibles:</strong> Tipo de plataforma (física/online), tarifa horaria en USD, discriminación algorítmica, horas semanales, nivel educativo, dependencia de ingresos, cotización a seguridad social.</p>
+                        <p><strong>10. Fecha de consulta:</strong> 28 de agosto de 2026.</p>
+                        <p><strong>11. Restricciones de uso:</strong> Licencia abierta de investigación OIT (Creative Commons IGO).</p>
+                        <p><strong>12. Justificación:</strong> <em>Pertinencia:</em> Provee el estándar global de comparación para validar si los patrones en Colombia son atípicos o estructurales a nivel mundial. <em>Confiabilidad:</em> Máxima autoridad global en estadísticas laborales.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SECCIÓN 2: FUENTES SECUNDARIAS ==================== -->
+        <div class="content-box">
+            <div class="content-box__header">
+                <span class="badge badge--info">Tipo: Fuentes Secundarias</span>
+                <span class="text-muted" style="font-size: 0.82rem;">Datos estadísticos oficiales recolectados por entidades públicas</span>
+            </div>
+
+            <!-- Fuente Secundaria 1 -->
+            <div class="panel mb-2" style="border-left: 4px solid #0369a1;">
+                <div class="content-box__header">
+                    <h3 class="content-box__title"><span class="text-accent">F-SEC-01:</span> Gran Encuesta Integrada de Hogares (GEIH) - DANE (Catálogo 900 / 819)</h3>
+                    <span class="badge badge--primary">Nacional & Regional</span>
+                </div>
+                <div class="grid grid--2 mt-1">
+                    <div>
+                        <p><strong>1. Institución responsable:</strong> Departamento Administrativo Nacional de Estadística (DANE) de Colombia.</p>
+                        <p><strong>2. URL oficial:</strong> <a href="https://microdatos.dane.gov.co/index.php/catalog/900" target="_blank" rel="noopener">microdatos.dane.gov.co/catalog/900</a></p>
+                        <p><strong>3. Tipo de fuente:</strong> Secundaria (Operación estadística oficial y continua).</p>
+                        <p><strong>4. Cobertura geográfica:</strong> Colombia (Nacional, urbano/rural, 23 capitales de departamento y áreas metropolitanas).</p>
+                        <p><strong>5. Periodo disponible:</strong> 2021 – 2026 (Mensual y Anual).</p>
+                        <p><strong>6. Formato de datos:</strong> Microdatos en CSV / DTA / SAV.</p>
+                        <p><strong>7. Método de adquisición:</strong> Descarga pública desde el Archivo Nacional de Datos (ANDA) del DANE.</p>
+                    </div>
+                    <div>
+                        <p><strong>8. Registros aproximados:</strong> >200,000 registros mensuales en población general; filtro de ~15,000 en ocupaciones proxy de plataformas (CIUO-08 9621, 8322, 2512).</p>
+                        <p><strong>9. Variables disponibles:</strong> Ocupación CIUO-08, posición ocupacional (cuenta propia), ingresos laborales, horas semanales, afiliación a salud (régimen), pensión, departamento, municipio, nivel educativo, edad, género.</p>
+                        <p><strong>10. Fecha de consulta:</strong> 28 de agosto de 2026.</p>
+                        <p><strong>11. Restricciones de uso:</strong> Reserva estadística (Ley 79 de 1993 y Res. 173 de 2008). Microdatos anonimizados de libre acceso académico.</p>
+                        <p><strong>12. Justificación:</strong> <em>Pertinencia:</em> Fuente canónica de empleo e informalidad en Colombia. Permite contrastar con representatividad estadística departamental.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fuente Secundaria 2 -->
+            <div class="panel" style="border-left: 4px solid #0369a1;">
+                <div class="content-box__header">
+                    <h3 class="content-box__title"><span class="text-accent">F-SEC-02:</span> Encuesta de Tecnologías de la Información y las Comunicaciones (ENTIC Hogares)</h3>
+                    <span class="badge badge--primary">Nacional</span>
+                </div>
+                <div class="grid grid--2 mt-1">
+                    <div>
+                        <p><strong>1. Institución responsable:</strong> DANE & MinTIC Colombia.</p>
+                        <p><strong>2. URL oficial:</strong> <a href="https://microdatos.dane.gov.co/index.php/catalog/819" target="_blank" rel="noopener">microdatos.dane.gov.co/catalog/entic-hogares</a></p>
+                        <p><strong>3. Tipo de fuente:</strong> Secundaria (Encuesta de penetración tecnológica).</p>
+                        <p><strong>4. Cobertura geográfica:</strong> Colombia (Total nacional, cabeceras y centros poblados).</p>
+                        <p><strong>5. Periodo disponible:</strong> 2021 – 2025.</p>
+                        <p><strong>6. Formato de datos:</strong> Microdatos anonimizados en CSV / XLSX.</p>
+                        <p><strong>7. Método de adquisición:</strong> Descarga directa desde el portal ANDA del DANE.</p>
+                    </div>
+                    <div>
+                        <p><strong>8. Registros aproximados:</strong> ~45,000 hogares y personas encuestadas.</p>
+                        <p><strong>9. Variables disponibles:</strong> Uso de internet para trabajar, venta de servicios a través de plataformas digitales, tenencia de smartphone, comercio electrónico, teletrabajo.</p>
+                        <p><strong>10. Fecha de consulta:</strong> 28 de agosto de 2026.</p>
+                        <p><strong>11. Restricciones de uso:</strong> Reserva estadística DANE. Fines de análisis e investigación.</p>
+                        <p><strong>12. Justificación:</strong> <em>Pertinencia:</em> Mide la adopción digital y el uso explícito de internet para generar ingresos laborales en Colombia.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SECCIÓN 3: FUENTES TERCIARIAS ==================== -->
+        <div class="content-box">
+            <div class="content-box__header">
+                <span class="badge badge--purple">Tipo: Fuentes Terciarias</span>
+                <span class="text-muted" style="font-size: 0.82rem;">Repositorios e índices integrados que sintetizan datos de múltiples terceros</span>
+            </div>
+
+            <!-- Fuente Terciaria 1 -->
+            <div class="panel mb-2" style="border-left: 4px solid #7e22ce;">
+                <div class="content-box__header">
+                    <h3 class="content-box__title"><span class="text-accent">F-TER-01:</span> Online Labour Index (OLI / OLI 2.0) - Oxford Internet Institute</h3>
+                    <span class="badge badge--primary">Global</span>
+                </div>
+                <div class="grid grid--2 mt-1">
+                    <div>
+                        <p><strong>1. Institución responsable:</strong> University of Oxford (Oxford Internet Institute), Reino Unido.</p>
+                        <p><strong>2. URL oficial:</strong> <a href="https://onlinelabourindex.org" target="_blank" rel="noopener">onlinelabourindex.org</a></p>
+                        <p><strong>3. Tipo de fuente:</strong> Terciaria (Índice y agregador automatizado de plataformas freelance vía APIs y web scraping).</p>
+                        <p><strong>4. Cobertura geográfica:</strong> Global (Monitoreo de plataformas en 120+ países).</p>
+                        <p><strong>5. Periodo disponible:</strong> 2021 – 2026 (Series temporales continuas).</p>
+                        <p><strong>6. Formato de datos:</strong> API REST / CSV exportables.</p>
+                        <p><strong>7. Método de adquisición:</strong> Consumo de API abierta y descarga de datasets consolidados de investigación.</p>
+                    </div>
+                    <div>
+                        <p><strong>8. Registros aproximados:</strong> Millones de publicaciones de trabajo agregadas en series históricas.</p>
+                        <p><strong>9. Variables disponibles:</strong> Volumen de proyectos por ocupación (Software, Contenido, Datos), país de origen del trabajador, país del cliente, tarifa promedio por hora en USD, demanda temporal de habilidades.</p>
+                        <p><strong>10. Fecha de consulta:</strong> 28 de agosto de 2026.</p>
+                        <p><strong>11. Restricciones de uso:</strong> Licencia Creative Commons Attribution 4.0 International (CC BY 4.0).</p>
+                        <p><strong>12. Justificación:</strong> <em>Pertinencia:</em> Referencia global indiscutible para el mercado de trabajo remoto/freelance en la nube. <em>Actualidad:</em> Datos actualizados en tiempo real.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fuente Terciaria 2 -->
+            <div class="panel" style="border-left: 4px solid #7e22ce;">
+                <div class="content-box__header">
+                    <h3 class="content-box__title"><span class="text-accent">F-TER-02:</span> Fairwork Project Data Hub - Principios de Trabajo Decente en Plataformas</h3>
+                    <span class="badge badge--primary">Especializada (Colombia & Global)</span>
+                </div>
+                <div class="grid grid--2 mt-1">
+                    <div>
+                        <p><strong>1. Institución responsable:</strong> Fairwork Foundation (Univ. de Oxford, Univ. Icesi, Univ. del Rosario).</p>
+                        <p><strong>2. URL oficial:</strong> <a href="https://fair.work" target="_blank" rel="noopener">fair.work/es/ratings/colombia</a></p>
+                        <p><strong>3. Tipo de fuente:</strong> Terciaria (Sintetizador y repositorio de auditorías empíricas, encuestas y contratos de plataformas).</p>
+                        <p><strong>4. Cobertura geográfica:</strong> Colombia y 38 países.</p>
+                        <p><strong>5. Periodo disponible:</strong> 2021 – 2025.</p>
+                        <p><strong>6. Formato de datos:</strong> Reportes estructurados y matrices tabuladas (CSV / JSON).</p>
+                        <p><strong>7. Método de adquisición:</strong> Descarga de datasets del repositorio de investigación de Fairwork.</p>
+                    </div>
+                    <div>
+                        <p><strong>8. Registros aproximados:</strong> Calificaciones y benchmarks de 150+ plataformas globales y 12 plataformas operando en Colombia.</p>
+                        <p><strong>9. Variables disponibles:</strong> Puntuación de pago justo (ingreso mínimo tras costos), condiciones justas (mitigación de riesgos físicos), contratos justos, gestión justa (claridad algorítmica) y representación colectiva.</p>
+                        <p><strong>10. Fecha de consulta:</strong> 28 de agosto de 2026.</p>
+                        <p><strong>11. Restricciones de uso:</strong> Licencia CC BY-NC-ND 4.0 para propósitos académicos y de difusión pública.</p>
+                        <p><strong>12. Justificación:</strong> <em>Pertinencia:</em> Permite auditar el cumplimiento normativo y ético de plataformas concretas (Rappi, Uber, Cabify, InDrive, Mercado Libre) frente a estándares internacionales.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </section>
 {% endblock %}

@@ -1,26 +1,198 @@
 {% extends "base.html" %}
 
-{% block title %}Necesidades de información | Etapa 1{% endblock %}
+{% block title %}Necesidades de Información | Etapa 1{% endblock %}
 
 {% block content %}
 <section class="page-header">
     <div class="container">
-        <h1>Necesidades de información</h1>
-        <p>Entidades, variables, periodos, cobertura geográfica y unidad de análisis requeridas para responder las preguntas planteadas.</p>
+        <span class="section-eyebrow page-header__eyebrow">Etapa 1 &middot; Requerimientos de Datos</span>
+        <h1>Necesidades de Información</h1>
+        <p>
+            Definición de las entidades, catálogo de variables justificadas, población de estudio,
+            periodo, cobertura geográfica y variables para el contraste multiescala.
+        </p>
         <div class="page-header__rule"></div>
     </div>
 </section>
 
 <section class="section">
     <div class="container">
-        <div class="panel">
-            <div class="notice">
-                <span class="notice__badge">Etapa 1</span>
-                <p>Este espacio documentará las necesidades de información: entidades involucradas,
-                variables relevantes, periodo de análisis, cobertura geográfica, población o unidad de
-                análisis, granularidad y variables comparables entre los niveles global, nacional y regional.</p>
+
+        <!-- 1. Entidades Involucradas -->
+        <div class="content-box">
+            <span class="section-eyebrow">01 / Modelo Conceptual</span>
+            <h2 class="section-title">Entidades Involucradas en el Problema</h2>
+            <p>
+                Para capturar la complejidad de la Gig Economy, el diseño de datos modela la interacción entre 5 entidades fundamentales:
+            </p>
+
+            <div class="grid grid--3 mt-2">
+                <div class="card">
+                    <div class="card__icon">👤</div>
+                    <h3 class="card__title">1. Trabajador / Colaborador</h3>
+                    <p class="card__text">
+                        Persona natural que suministra su fuerza laboral, tiempo y herramientas a través de aplicaciones (edad, género, escolaridad, antigüedad).
+                    </p>
+                </div>
+                <div class="card">
+                    <div class="card__icon">📱</div>
+                    <h3 class="card__title">2. Plataforma Digital</h3>
+                    <p class="card__text">
+                        Empresa u operador tecnológico que actúa como intermediario algorítmico, fija comisiones y asigna clientes (Rappi, Uber, Upwork).
+                    </p>
+                </div>
+                <div class="card">
+                    <div class="card__icon">📍</div>
+                    <h3 class="card__title">3. Espacio Territorial</h3>
+                    <p class="card__text">
+                        Ámbito geográfico (país, departamento, área urbana) que condiciona la densidad de pedidos, distancias, costos de vida y marco normativo.
+                    </p>
+                </div>
+                <div class="card">
+                    <div class="card__icon">🏥</div>
+                    <h3 class="card__title">4. Sistema de Protección Social</h3>
+                    <p class="card__text">
+                        Marco institucional que define la cobertura frente a contingencias de salud, riesgos laborales (ARL) y pensión de vejez.
+                    </p>
+                </div>
+                <div class="card">
+                    <div class="card__icon">💼</div>
+                    <h3 class="card__title">5. Tarea / Servicio</h3>
+                    <p class="card__text">
+                        Naturaleza de la labor ejecutada: entrega, transporte de pasajeros, desarrollo de código, diseño gráfico o microtareas de datos.
+                    </p>
+                </div>
+                <div class="card">
+                    <div class="card__icon">📊</div>
+                    <h3 class="card__title">6. Transacción Económica</h3>
+                    <p class="card__text">
+                        Flujos monetarios: ingreso bruto, costos operativos asumidos por el trabajador (gasolina, datos, comisiones) e ingreso neto real.
+                    </p>
+                </div>
             </div>
         </div>
+
+        <!-- 2. Unidad de Análisis y Granularidad -->
+        <div class="grid grid--2 mb-2">
+            <div class="content-box" style="margin-bottom: 0;">
+                <span class="section-eyebrow">02 / Unidad de Análisis</span>
+                <h3 class="content-box__title">Población y Unidad de Estudio</h3>
+                <p>
+                    <strong>Población objetivo:</strong> Toda persona de 18 años o más que genere ingresos mediante el desarrollo de tareas,
+                    servicios o carreras intermediadas por aplicaciones móviles o plataformas web.
+                </p>
+                <p>
+                    <strong>Unidad de análisis / Registro:</strong> El <em>trabajador individual de plataforma (Gig Worker)</em> en un periodo
+                    de tiempo determinado, capturando su perfil sociodemográfico, operativo, económico y de seguridad social.
+                </p>
+            </div>
+
+            <div class="content-box" style="margin-bottom: 0;">
+                <span class="section-eyebrow">03 / Alcance Temporal y Espacial</span>
+                <h3 class="content-box__title">Periodo y Granularidad Requerida</h3>
+                <p>
+                    <strong>Periodo de análisis:</strong> <strong>2021 a 2026</strong>. Cubre la fase de expansión post-pandemia, la consolidación
+                    del trabajo híbrido/remoto y el debate contemporáneo de regulación laboral en Colombia y el mundo.
+                </p>
+                <p>
+                    <strong>Nivel de granularidad:</strong> Microdatos desagregados a nivel de individuo, evitando datos agregados macroeconómicos
+                    para permitir algoritmos de minería basados en instancias individuales.
+                </p>
+            </div>
+        </div>
+
+        <!-- 3. Variables de Comparación Multiescala -->
+        <div class="content-box content-box--highlight">
+            <span class="section-eyebrow">04 / Comparación Multiescala</span>
+            <h2 class="section-title">Variables que Permiten Integrar y Comparar las Escalas Global, Nacional y Regional</h2>
+            <p>
+                Para responder a la exigencia de comparar el fenómeno en los tres niveles territoriales sin distorsiones cambiarias ni de agregación:
+            </p>
+            
+            <div class="table-wrapper mt-1">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Variable Pivote</th>
+                            <th>Tipo</th>
+                            <th>Mecanismo de Armonización</th>
+                            <th>Rol en el Análisis Multiescala</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>nivel_territorial</code></td>
+                            <td><span class="badge badge--primary">Categórica</span></td>
+                            <td>Clasificación explícita: <code>Global</code>, <code>Nacional</code>, <code>Regional</code>.</td>
+                            <td>Permite segmentar y filtrar instantáneamente la muestra por jerarquía espacial.</td>
+                        </tr>
+                        <tr>
+                            <td><code>codigo_iso_pais</code></td>
+                            <td><span class="badge badge--info">Geográfica</span></td>
+                            <td>Estándar ISO 3166-1 Alfa-3 (COL, BRA, MEX, ARG, CHL, ESP, USA, IND).</td>
+                            <td>Llave geoespacial para mapeo internacional y vinculación con índices globales como OLI y OIT.</td>
+                        </tr>
+                        <tr>
+                            <td><code>departamento_region</code></td>
+                            <td><span class="badge badge--info">Geográfica</span></td>
+                            <td>División administrativa (Bogotá D.C., Antioquia, Valle, Atlántico, Santander, etc.).</td>
+                            <td>Permite evaluar brechas territoriales regionales dentro de Colombia y contrastarlas con estados internacionales.</td>
+                        </tr>
+                        <tr>
+                            <td><code>ingreso_neto_hora_usd</code></td>
+                            <td><span class="badge badge--success">Numérica</span></td>
+                            <td>Conversión a USD por hora usando tasa representativa de paridad y deducción de costos.</td>
+                            <td>Estandariza la remuneración real independientemente de la moneda local (COP, BRL, MXN, EUR, USD).</td>
+                        </tr>
+                        <tr>
+                            <td><code>horas_semanales</code></td>
+                            <td><span class="badge badge--success">Numérica</span></td>
+                            <td>Horas continuas dedicadas a plataformas por semana (escala común 0-84 h).</td>
+                            <td>Mide la intensidad laboral de forma universal comparable en cualquier país y región.</td>
+                        </tr>
+                        <tr>
+                            <td><code>fuente_origen_id</code></td>
+                            <td><span class="badge badge--purple">Trazabilidad</span></td>
+                            <td>Identificador unívoco de la fuente (F-PRIM-01 a F-TER-02).</td>
+                            <td>Garantiza la procedencia del dato y permite evaluar posibles sesgos según el canal de captura.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 4. Catálogo de Variables y Justificación -->
+        <div class="content-box">
+            <span class="section-eyebrow">05 / Justificación Analítica</span>
+            <h2 class="section-title">Inventario de Variables Relevantes y Justificación Individual</h2>
+            <p>
+                Cada una de las 27 variables del dataset responde a una necesidad estricta para la aplicación de minería de datos:
+            </p>
+
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Variable</th>
+                            <th>Dimensión</th>
+                            <th>Tipo de Dato</th>
+                            <th>Justificación para Minería de Datos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for var in variables %}
+                        <tr>
+                            <td><strong>{{ var.columna }}</strong></td>
+                            <td><span class="badge badge--accent">{{ var.categoria_tipo }}</span></td>
+                            <td><small>{{ var.tipo_tecnico }}</small></td>
+                            <td style="font-size: 0.84rem;">{{ var.descripcion }} Justificación: {{ var.restricciones }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </div>
 </section>
 {% endblock %}

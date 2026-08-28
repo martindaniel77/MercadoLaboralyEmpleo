@@ -1,26 +1,161 @@
 {% extends "base.html" %}
 
-{% block title %}Problema y contexto | Etapa 1{% endblock %}
+{% block title %}Problema y Contexto | Etapa 1{% endblock %}
 
 {% block content %}
 <section class="page-header">
     <div class="container">
-        <h1>Problema y contexto</h1>
-        <p>Definición del problema de investigación y contextualización del tema en los niveles global, nacional y regional.</p>
+        <span class="section-eyebrow page-header__eyebrow">Etapa 1 &middot; Formulación del Problema</span>
+        <h1>Problema y Contexto de Investigación</h1>
+        <p>
+            Contextualización general de la Gig Economy y delimitación del problema de investigación
+            analizado desde las escalas global, nacional (Colombia) y regional.
+        </p>
         <div class="page-header__rule"></div>
     </div>
 </section>
 
 <section class="section">
     <div class="container">
-        <div class="panel">
-            <div class="notice">
-                <span class="notice__badge">Etapa 1</span>
-                <p>Este espacio documentará el contexto general del tema <strong>Mercado laboral y
-                transformación del empleo</strong>, la delimitación del problema de investigación y el
-                análisis del fenómeno en los niveles global, nacional (Colombia) y regional.</p>
+
+        <!-- 1. Contexto General -->
+        <div class="content-box">
+            <span class="section-eyebrow">01 / Contexto General</span>
+            <h2 class="section-title">La Transformación del Trabajo en la Era de las Plataformas Digitales</h2>
+            <p>
+                La <strong>Gig Economy</strong> (economía colaborativa o de plataformas digitales) representa una de las
+                transformaciones más profundas del mercado laboral en el siglo XXI. Impulsada por la penetración de teléfonos
+                inteligentes, el acceso a internet móvil y algoritmos de optimización en tiempo real, este modelo sustituye la
+                relación laboral tradicional de dependencia y horario fijo por un esquema de intermediación digital por tareas,
+                carreras o pedidos puntuales (*gigs*).
+            </p>
+            <p>
+                Este ecosistema se divide principalmente en dos grandes vertientes operativas:
+            </p>
+            <div class="grid grid--2 mt-1 mb-2">
+                <div class="card">
+                    <h3 class="card__title text-accent">1. Plataformas Físicas (Location-Based)</h3>
+                    <p class="card__text">
+                        Requieren presencia física local del trabajador en un territorio determinado. Incluyen el
+                        <strong>transporte de pasajeros</strong> (Uber, DiDi, InDrive, Cabify), el <strong>reparto y entrega
+                        de comida/paquetería</strong> (Rappi, DiDi Food, iFood, Mensajeros Urbanos) y los servicios domésticos
+                        o mantenimiento puntual (TaskRabbit, Jelpit).
+                    </p>
+                </div>
+                <div class="card">
+                    <h3 class="card__title text-accent">2. Plataformas en Línea (Web-Based / Cloud)</h3>
+                    <p class="card__text">
+                        Permiten la ejecución y entrega del trabajo 100% de manera remota a través de internet. Abarcan
+                        servicios altamente especializados como <strong>desarrollo de software y TI</strong>, diseño multimedia,
+                        traducción y asesoría profesional (Upwork, Freelancer, Workana, Fiverr), así como tareas fragmentadas
+                        repetitivas o <strong>microtareas / etiquetado de datos para IA</strong> (Amazon Mechanical Turk, Appen, Remotasks).
+                    </p>
+                </div>
+            </div>
+            <p>
+                Si bien las plataformas ofrecen barreras de entrada reducidas, flexibilidad horaria y generación inmediata de ingresos,
+                simultáneamente trasladan la totalidad de los costos operativos (combustible, depreciación de vehículos, conectividad,
+                equipos de cómputo) y los riesgos de salud y accidentes al trabajador independiente, operando frecuentemente en zonas
+                grises de desprotección en seguridad social (salud, pensión y ARL).
+            </p>
+        </div>
+
+        <!-- 2. Delimitación del Problema -->
+        <div class="content-box content-box--highlight">
+            <span class="section-eyebrow">02 / Delimitación Específica</span>
+            <h2 class="section-title">Delimitación del Problema de Investigación</h2>
+            <p>
+                El problema central de investigación se delimita en el análisis de los <strong>factores determinantes de la vulnerabilidad
+                laboral, la dispersión salarial neta por hora y la sobrecarga en horas de trabajo</strong> de las personas vinculadas a
+                plataformas digitales, contrastando los perfiles de trabajadores de plataformas físicas frente a plataformas en línea.
+            </p>
+            <div class="panel mt-1">
+                <p><strong>Enunciado formal del problema:</strong></p>
+                <p class="text-muted" style="font-size: 1.05rem; font-style: italic;">
+                    "En los mercados laborales contemporáneos, los trabajadores de plataformas digitales experimentan una marcada
+                    heterogeneidad en sus ingresos reales tras descontar costos operativos y comisiones algorítmicas, viéndose expuestos
+                    a extensas jornadas laborales (>48 horas semanales) y a una baja cobertura en el sistema de seguridad social. Existe
+                    una necesidad crítica de identificar qué patrones demográficos, educativos, territoriales y del modelo de plataforma
+                    condicionan la probabilidad de caer en situaciones de precarización o, por el contrario, de consolidar rentabilidades
+                    sostenibles."
+                </p>
             </div>
         </div>
+
+        <!-- 3. Análisis en Tres Niveles -->
+        <div class="content-box">
+            <span class="section-eyebrow">03 / Análisis Multinivel</span>
+            <h2 class="section-title">El Fenómeno en Tres Escalas: Global, Nacional y Regional</h2>
+            <p>
+                Para comprender integralmente la dinámica de la Gig Economy, el fenómeno se analiza desde tres niveles complementarios:
+            </p>
+
+            <div class="grid grid--3 mt-2">
+                <div class="card card--dark">
+                    <div class="card__icon">🌎</div>
+                    <h3 class="card__title">Nivel Global</h3>
+                    <p class="card__text">
+                        A nivel internacional (OIT, Banco Mundial, Oxford Internet Institute), la economía de plataformas moviliza
+                        a decenas de millones de personas. Se observa una marcada <strong>asimetría Norte-Sur</strong>: clientes de
+                        economías desarrolladas subcontratan servicios freelance en países en desarrollo a tarifas competitivas en dólares,
+                        mientras que en las plataformas físicas de transporte y reparto se replican tensiones regulatorias globales
+                        en torno al estatus de 'empleado' vs. 'contratista independiente'.
+                    </p>
+                </div>
+
+                <div class="card card--dark">
+                    <div class="card__icon">🇨🇴</div>
+                    <h3 class="card__title">Nivel Nacional (Colombia)</h3>
+                    <p class="card__text">
+                        En Colombia, la Gig Economy interactúa con un mercado laboral caracterizado por una <strong>informalidad estructural
+                        superior al 55%</strong> y altas tasas de desempleo juvenil. Las plataformas se han convertido en un mecanismo clave
+                        de absorción laboral inmediata (especialmente para población migrante y jóvenes), pero con desafíos severos en la
+                        cotización a salud, pensiones y ARL, siendo el foco central del debate en la Reforma Laboral colombiana.
+                    </p>
+                </div>
+
+                <div class="card card--dark">
+                    <div class="card__icon">🏙️</div>
+                    <h3 class="card__title">Nivel Regional</h3>
+                    <p class="card__text">
+                        Al interior de Colombia, el trabajo en plataformas exhibe fuertes <strong>disparidades territoriales</strong>. Las
+                        grandes aglomeraciones urbanas (Bogotá D.C., Medellín/Valle de Aburrá, Cali y Barranquilla) concentran más del 70%
+                        de la demanda y del tráfico de aplicaciones físicas, pero registran mayores costos de vida y congestión; mientras
+                        que en ciudades intermedias y regiones periféricas la oferta es más reducida y los ingresos netos difieren sensiblemente.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Conocimiento Esperado mediante Minería de Datos -->
+        <div class="content-box">
+            <span class="section-eyebrow">04 / Potencial Analítico</span>
+            <h2 class="section-title">Conocimiento que se Espera Obtener mediante Minería de Datos</h2>
+            <p>
+                A partir del conjunto de datos estructurado en este proyecto, se aplicarán técnicas de minería de datos en las
+                etapas posteriores para descubrir patrones no triviales:
+            </p>
+            <ul style="line-height: 2;">
+                <li>
+                    <strong>Segmentación no supervisada (Clustering):</strong> Identificar conglomerados o arquetipos de trabajadores
+                    (ej. <em>"Colaboradores de supervivencia a tiempo completo"</em> vs. <em>"Freelancers profesionales altamente rentables"</em>
+                    vs. <em>"Generadores de ingreso complementario ocasional"</em>) combinando variables de horas, ingresos, costos y educación.
+                </li>
+                <li>
+                    <strong>Reglas de Asociación (Algoritmos Apriori / FP-Growth):</strong> Descubrir patrones ocultos y reglas de co-ocurrencia
+                    entre modalidades de plataforma, ausencia de aportes a pensión/ARL, jornadas laborales extenuantes (>50 h/sem) y rangos etarios.
+                </li>
+                <li>
+                    <strong>Modelado Predictivo y Clasificación:</strong> Estimar modelos de regresión y árboles de decisión para predecir el
+                    ingreso neto real por hora y clasificar el nivel de vulnerabilidad socioeconómica del trabajador según sus atributos.
+                </li>
+                <li>
+                    <strong>Análisis Multidimensional de Disparidades:</strong> Contrastar de forma sistemática la rentabilidad horaria y la
+                    tasa de protección social entre las escalas Global, Nacional (Colombia) y Regional (Departamentos).
+                </li>
+            </ul>
+        </div>
+
     </div>
 </section>
 {% endblock %}

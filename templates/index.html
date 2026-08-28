@@ -1,19 +1,51 @@
 {% extends "base.html" %}
 
-{% block title %}Inicio | Mercado Laboral y Empleo{% endblock %}
+{% block title %}Inicio | Mercado Laboral y Empleo - Gig Economy{% endblock %}
 
 {% block content %}
 
 <!-- ===== Encabezado ===== -->
 <section class="page-header">
     <div class="container">
-        <span class="section-eyebrow page-header__eyebrow">Bitácora técnica &middot; Proyecto de Minería de Datos &middot; Etapa 1</span>
-        <h1>Mercado laboral y transformación del empleo</h1>
+        <span class="section-eyebrow page-header__eyebrow">Bitácora Técnica &middot; Proyecto de Minería de Datos &middot; Etapa 1</span>
+        <h1>Mercado Laboral y Transformación del Empleo</h1>
+        <h2 style="color: var(--color-accent); font-size: 1.4rem; margin-bottom: 1rem; font-weight: 500;">
+            Tema Asignado: Gig Economy y Plataformas Digitales
+        </h2>
         <p>
-            Documento base de la Etapa 1: formulación y contextualización del problema de investigación,
-            necesidades de información, fuentes y características iniciales del conjunto de datos.
+            Bitácora técnica y plataforma de documentación de la <strong>Etapa 1</strong>: formulación y contextualización
+            del problema de investigación, necesidades de información, 6 fuentes documentadas (Primarias, Secundarias y Terciarias)
+            y caracterización del dataset consolidado de <strong>12.500 registros</strong> en escalas Global, Nacional y Regional.
         </p>
         <div class="page-header__rule"></div>
+    </div>
+</section>
+
+<!-- ===== Tarjetas de Resumen Rápido ===== -->
+<section class="section" style="padding-bottom: 0;">
+    <div class="container">
+        <div class="stat-grid">
+            <div class="stat-card stat-card--accent">
+                <div class="stat-card__val">12.500</div>
+                <div class="stat-card__lbl">Registros Consolidados</div>
+                <div class="stat-card__sub">Meta mínima: 10.000 (&check;)</div>
+            </div>
+            <div class="stat-card stat-card--accent">
+                <div class="stat-card__val">27</div>
+                <div class="stat-card__lbl">Variables Totales</div>
+                <div class="stat-card__sub">7 Num &middot; 13 Cat &middot; 3 Temp &middot; 4 Geo</div>
+            </div>
+            <div class="stat-card stat-card--accent">
+                <div class="stat-card__val">6</div>
+                <div class="stat-card__lbl">Fuentes de Información</div>
+                <div class="stat-card__sub">2 Primarias &middot; 2 Sec &middot; 2 Terciarias</div>
+            </div>
+            <div class="stat-card stat-card--dark">
+                <div class="stat-card__val">3 Escalas</div>
+                <div class="stat-card__lbl">Multinivel</div>
+                <div class="stat-card__sub">Global &middot; Colombia &middot; Regional</div>
+            </div>
+        </div>
     </div>
 </section>
 
@@ -23,24 +55,20 @@
         <span class="section-eyebrow">01 / Contexto</span>
         <h2 class="section-title">¿De qué trata el proyecto?</h2>
         <p>
-            El mundo del trabajo atraviesa una transformación acelerada. La tecnología, la
-            globalización, los cambios demográficos y las nuevas formas de contratación están
-            redefiniendo la manera en que las personas se vinculan al mercado laboral. Este proyecto
-            estudia ese fenómeno mediante técnicas de minería de datos, construyendo primero una base
-            sólida de comprensión: qué se quiere descubrir, qué datos se necesitan y de dónde provienen.
+            El mundo del trabajo atraviesa una transformación acelerada impulsada por la digitalización, la intermediación algorítmica
+            y la proliferación de plataformas de servicios bajo demanda (<strong>Gig Economy</strong>). Este fenómeno abarca desde
+            servicios intensivos en ubicación física (como el transporte de pasajeros en Uber o DiDi, y el reparto a domicilio en Rappi)
+            hasta el trabajo digital deslocalizado en la nube (como el desarrollo de software y diseño freelance en Upwork o Fiverr, y las microtareas de datos).
         </p>
         <p>
-            El objetivo general de la Etapa 1 es formular y contextualizar el problema de investigación
-            sobre el mercado laboral y la transformación del empleo, identificando las preguntas que
-            orientarán el proceso de minería de datos, las necesidades de información, las fuentes
-            disponibles y las características iniciales del conjunto de datos.
+            El objetivo general de la <strong>Etapa 1</strong> es formular y contextualizar rigurosamente el problema de investigación sobre
+            la Gig Economy, delimitando las preguntas que orientarán el proceso de minería de datos, las necesidades de información,
+            las fuentes disponibles y la construcción del ecosistema de datos consolidado.
         </p>
         <p>
-            El análisis contempla tres niveles: <strong>global</strong>, <strong>nacional
-            (Colombia)</strong> y <strong>regional</strong>, utilizando fuentes primarias, secundarias
-            y terciarias. Las preguntas planteadas deberán poder responderse con evidencia disponible
-            en los datos y orientarán el análisis de variables, periodos, poblaciones, relaciones y
-            patrones en las etapas siguientes.
+            El análisis contempla los niveles <strong>Global</strong>, <strong>Nacional (Colombia)</strong> y <strong>Regional (Departamentos y Áreas Metropolitanas)</strong>,
+            utilizando fuentes <strong>primarias</strong> (Fedesarrollo, OIT), <strong>secundarias</strong> (DANE GEIH, DANE ENTIC) y
+            <strong>terciarias</strong> (Oxford OLI, Fairwork Hub), sirviendo como punto de partida para las técnicas de clustering, asociación y predicción.
         </p>
     </div>
 </section>
@@ -49,35 +77,34 @@
 <section class="section section--alt">
     <div class="container">
         <span class="section-eyebrow">02 / Niveles de análisis</span>
-        <h2 class="section-title">Global, nacional y regional</h2>
+        <h2 class="section-title">Global, Nacional y Regional</h2>
         <p class="section-subtitle">
-            El fenómeno se estudia en tres escalas complementarias para lograr una visión integral
-            del comportamiento del empleo y su transformación.
+            El fenómeno se estudia en tres escalas complementarias para lograr una visión integral del comportamiento del empleo en plataformas.
         </p>
 
         <div class="grid grid--3">
             <div class="card card--dark">
-                <div class="card__icon">G</div>
+                <div class="card__icon">🌎</div>
                 <h3 class="card__title">Global</h3>
                 <p class="card__text">
-                    Tendencias internacionales del empleo: automatización, digitalización y cambios
-                    en la demanda de habilidades en el panorama mundial.
+                    Tendencias internacionales de trabajo en plataformas en más de 100 países (OIT y Oxford OLI):
+                    asimetría de tarifas en dólares Norte-Sur, auge de microtareas y tensiones regulatorias globales.
                 </p>
             </div>
             <div class="card card--dark">
-                <div class="card__icon">N</div>
+                <div class="card__icon">🇨🇴</div>
                 <h3 class="card__title">Nacional &mdash; Colombia</h3>
                 <p class="card__text">
-                    Evolución de la ocupación, informalidad, desempleo y sectores económicos a nivel
-                    país, a partir de las fuentes estadísticas oficiales.
+                    Dinámica en el contexto de informalidad estructural (>55%), absorción de mano de obra migrante y juvenil,
+                    y debate legislativo sobre la obligatoriedad de aportes a salud, pensión y ARL en plataformas (DANE GEIH).
                 </p>
             </div>
             <div class="card card--dark">
-                <div class="card__icon">R</div>
+                <div class="card__icon">🏙️</div>
                 <h3 class="card__title">Regional</h3>
                 <p class="card__text">
-                    Comparación entre regiones del país para detectar disparidades territoriales y
-                    particularidades locales del mercado de trabajo.
+                    Disparidades territoriales entre grandes aglomeraciones urbanas (Bogotá D.C., Medellín/Valle de Aburrá, Cali, Barranquilla)
+                    frente a ciudades intermedias en ingresos netos, costos operativos y congestión.
                 </p>
             </div>
         </div>
@@ -88,53 +115,79 @@
 <section class="section">
     <div class="container">
         <span class="section-eyebrow">03 / Contenido de la entrega</span>
-        <h2 class="section-title">Índice de la Etapa 1</h2>
+        <h2 class="section-title">Índice Completo de la Etapa 1</h2>
         <p class="section-subtitle">
-            Cada apartado del menú documenta una parte del trabajo realizado y puede consultarse
-            directamente desde la barra de navegación.
+            Cada apartado del menú documenta una dimensión del entregable y puede consultarse directamente sin requerir explicación oral adicional.
         </p>
 
         <div class="toc">
             <a href="{{ url_for('problema') }}" class="toc__item">
                 <span class="toc__n">1</span>
-                <span class="toc__t">Problema y contexto</span>
-                <span class="toc__a">Leer &rarr;</span>
+                <span class="toc__t">Problema y contexto &mdash; Contextualización de la Gig Economy y análisis en 3 niveles (Global, Colombia, Regional)</span>
+                <span class="toc__a">Consultar &rarr;</span>
             </a>
             <a href="{{ url_for('preguntas') }}" class="toc__item">
                 <span class="toc__n">2</span>
-                <span class="toc__t">Pregunta principal y preguntas secundarias</span>
-                <span class="toc__a">Leer &rarr;</span>
+                <span class="toc__t">Pregunta principal y preguntas secundarias &mdash; Pregunta rectora y 4 sub-problemas con técnicas de minería asociadas</span>
+                <span class="toc__a">Consultar &rarr;</span>
             </a>
             <a href="{{ url_for('necesidades') }}" class="toc__item">
                 <span class="toc__n">3</span>
-                <span class="toc__t">Necesidades de información</span>
-                <span class="toc__a">Leer &rarr;</span>
+                <span class="toc__t">Necesidades de información &mdash; Entidades, inventario de variables justificadas, periodo 2021-2026 y variables multiescala</span>
+                <span class="toc__a">Consultar &rarr;</span>
             </a>
             <a href="{{ url_for('fuentes') }}" class="toc__item">
                 <span class="toc__n">4</span>
-                <span class="toc__t">Fuentes de datos</span>
-                <span class="toc__a">Leer &rarr;</span>
+                <span class="toc__t">Fuentes de datos &mdash; Ficha técnica de 13 campos de las 6 fuentes (2 Primarias, 2 Secundarias, 2 Terciarias)</span>
+                <span class="toc__a">Consultar &rarr;</span>
             </a>
             <a href="{{ url_for('dataset') }}" class="toc__item">
                 <span class="toc__n">5</span>
-                <span class="toc__t">Dataset</span>
-                <span class="toc__a">Leer &rarr;</span>
+                <span class="toc__t">Dataset consolidado &mdash; Visualizador interactivo de 12.500 registros, filtros, KPIs y botón de descarga CSV</span>
+                <span class="toc__a">Consultar &rarr;</span>
             </a>
             <a href="{{ url_for('diccionario') }}" class="toc__item">
                 <span class="toc__n">6</span>
-                <span class="toc__t">Diccionario de datos</span>
-                <span class="toc__a">Leer &rarr;</span>
+                <span class="toc__t">Diccionario de datos &mdash; Especificación formal de tipos, unidades, dominios, reglas de validación y fuentes</span>
+                <span class="toc__a">Consultar &rarr;</span>
             </a>
             <a href="{{ url_for('calidad') }}" class="toc__item">
                 <span class="toc__n">7</span>
-                <span class="toc__t">Calidad inicial de los datos</span>
-                <span class="toc__a">Leer &rarr;</span>
+                <span class="toc__t">Calidad inicial de los datos &mdash; Diagnóstico de valores faltantes, duplicados, inconsistencias lógicas, outliers y sesgos</span>
+                <span class="toc__a">Consultar &rarr;</span>
             </a>
             <a href="{{ url_for('limitaciones') }}" class="toc__item">
                 <span class="toc__n">8</span>
-                <span class="toc__t">Limitaciones y consideraciones</span>
-                <span class="toc__a">Leer &rarr;</span>
+                <span class="toc__t">Limitaciones y consideraciones &mdash; Restricciones metodológicas, consideraciones éticas y hoja de ruta etapas 2 a 5</span>
+                <span class="toc__a">Consultar &rarr;</span>
             </a>
+        </div>
+    </div>
+</section>
+
+<!-- ===== Información de Integrantes / Entrega ===== -->
+<section class="section section--alt">
+    <div class="container">
+        <span class="section-eyebrow">04 / Información de Entrega</span>
+        <h2 class="section-title">Ficha Técnica del Proyecto</h2>
+        <div class="grid grid--2 mt-1">
+            <div class="panel">
+                <h4 class="text-accent" style="margin-bottom: 0.8rem;">Detalles del Proyecto</h4>
+                <p><strong>Nombre del Proyecto:</strong> Minería de Datos en la Gig Economy y Transformación del Empleo</p>
+                <p><strong>Tema Asignado:</strong> Gig Economy / Mercado Laboral y Transformación del Empleo</p>
+                <p><strong>Asignatura:</strong> Minería de Datos &middot; 9º Semestre</p>
+                <p><strong>Rama de Desarrollo:</strong> <code>feature/etapa-1</code> / <code>Etapa_1</code></p>
+            </div>
+            <div class="panel">
+                <h4 class="text-accent" style="margin-bottom: 0.8rem;">Cumplimiento de Criterios</h4>
+                <ul style="list-style: none; padding: 0; font-size: 0.88rem; line-height: 1.9;">
+                    <li>&check; <strong>Problema y preguntas:</strong> Delimitado en 3 escalas (Global, Nacional, Regional).</li>
+                    <li>&check; <strong>Fuentes de información:</strong> 6 fuentes (2 Primarias, 2 Secundarias, 2 Terciarias).</li>
+                    <li>&check; <strong>Dataset inicial:</strong> 12.500 registros, 27 variables (&ge;7 num, &ge;13 cat, &ge;3 temp, &ge;4 geo).</li>
+                    <li>&check; <strong>Diccionario y calidad:</strong> Diccionario de 27 variables y auditoría inicial completa.</li>
+                    <li>&check; <strong>Flask & GitHub:</strong> 8 submenús obligatorios funcionales y navegables.</li>
+                </ul>
+            </div>
         </div>
     </div>
 </section>

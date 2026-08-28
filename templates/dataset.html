@@ -1,26 +1,250 @@
 {% extends "base.html" %}
 
-{% block title %}Dataset | Etapa 1{% endblock %}
+{% block title %}Dataset Consolidado | Etapa 1{% endblock %}
 
 {% block content %}
 <section class="page-header">
     <div class="container">
-        <h1>Dataset</h1>
-        <p>Construcción del dataset inicial consolidado y caracterización de los datos.</p>
+        <span class="section-eyebrow page-header__eyebrow">Etapa 1 &middot; Construcción del Ecosistema de Datos</span>
+        <h1>Dataset Consolidado de la Gig Economy</h1>
+        <p>
+            Ecosistema inicial integrado con 12.500 registros individuales, 27 variables y cobertura multiescala
+            (Global, Nacional y Regional) a partir de las 6 fuentes documentadas.
+        </p>
         <div class="page-header__rule"></div>
     </div>
 </section>
 
 <section class="section">
     <div class="container">
-        <div class="panel">
-            <div class="notice">
-                <span class="notice__badge">Etapa 1</span>
-                <p>Este espacio documentará la construcción del dataset inicial: número de registros
-                consolidados, variables (numéricas, categóricas, temporales y geográficas), unidad de
-                análisis y la integración de las fuentes.</p>
+
+        <!-- KPIs del Dataset -->
+        <div class="stat-grid">
+            <div class="stat-card stat-card--accent">
+                <div class="stat-card__val">{{ "{:,}".format(summary.total_registros) }}</div>
+                <div class="stat-card__lbl">Registros Consolidados</div>
+                <div class="stat-card__sub">Meta mínima: 10.000 (&check; Cumplida)</div>
+            </div>
+            <div class="stat-card stat-card--accent">
+                <div class="stat-card__val">{{ summary.total_variables }}</div>
+                <div class="stat-card__lbl">Variables Totales</div>
+                <div class="stat-card__sub">Meta mínima: 10 (&check; Cumplida)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card__val text-accent">{{ summary.variables_numericas }}</div>
+                <div class="stat-card__lbl">Variables Numéricas</div>
+                <div class="stat-card__sub">Ingresos, horas, costos, edad, etc.</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card__val text-accent">{{ summary.variables_categoricas }}</div>
+                <div class="stat-card__lbl">Variables Categóricas</div>
+                <div class="stat-card__sub">Plataforma, género, educación, salud</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card__val text-accent">{{ summary.variables_temporales }} / {{ summary.variables_geograficas }}</div>
+                <div class="stat-card__lbl">Temp. / Geográficas</div>
+                <div class="stat-card__sub">2021-2026 &middot; 8 Países + Dptos</div>
             </div>
         </div>
+
+        <!-- Botón de Descarga y Acciones -->
+        <div class="content-box content-box--highlight">
+            <div class="content-box__header">
+                <div>
+                    <h3 class="content-box__title">Descarga del Archivo Consolidado</h3>
+                    <p class="text-muted" style="font-size: 0.88rem; margin: 0;">
+                        Descarga directa del dataset completo en formato estándar <code>.csv</code> con codificación UTF-8 para su procesamiento en Python, R o software de minería de datos.
+                    </p>
+                </div>
+                <a href="{{ url_for('descargar_dataset') }}" class="btn btn--primary">
+                    📥 Descargar CSV Consolidado (12.500 Filas)
+                </a>
+            </div>
+        </div>
+
+        <!-- Distribución Multinivel del Dataset -->
+        <div class="grid grid--3 mb-2">
+            <div class="content-box" style="margin-bottom: 0;">
+                <span class="section-eyebrow">Escala Territorial</span>
+                <h4 style="margin-bottom: 0.8rem;">Distribución por Nivel</h4>
+                <ul style="list-style: none; padding: 0; font-size: 0.88rem;">
+                    {% for k, v in summary.territorios.items() %}
+                    <li style="display: flex; justify-content: space-between; padding: 0.4rem 0; border-bottom: 1px dashed var(--color-border);">
+                        <span><strong>{{ k }}</strong></span>
+                        <span class="badge badge--accent">{{ "{:,}".format(v) }} ({{ "%.1f"|format(v / summary.total_registros * 100) }}%)</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="content-box" style="margin-bottom: 0;">
+                <span class="section-eyebrow">Modelo Operativo</span>
+                <h4 style="margin-bottom: 0.8rem;">Tipo de Plataforma</h4>
+                <ul style="list-style: none; padding: 0; font-size: 0.88rem;">
+                    {% for k, v in summary.tipos_plat.items() %}
+                    <li style="display: flex; justify-content: space-between; padding: 0.4rem 0; border-bottom: 1px dashed var(--color-border);">
+                        <span><strong>{{ k }}</strong></span>
+                        <span class="badge badge--info">{{ "{:,}".format(v) }} ({{ "%.1f"|format(v / summary.total_registros * 100) }}%)</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="content-box" style="margin-bottom: 0;">
+                <span class="section-eyebrow">Fuentes de Origen</span>
+                <h4 style="margin-bottom: 0.8rem;">Trazabilidad por Fuente</h4>
+                <ul style="list-style: none; padding: 0; font-size: 0.88rem;">
+                    {% for k, v in summary.fuentes.items() %}
+                    <li style="display: flex; justify-content: space-between; padding: 0.4rem 0; border-bottom: 1px dashed var(--color-border);">
+                        <span><code>{{ k }}</code></span>
+                        <span class="badge badge--purple">{{ "{:,}".format(v) }} ({{ "%.1f"|format(v / summary.total_registros * 100) }}%)</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <!-- Explorador Interactivo del Dataset -->
+        <div class="content-box">
+            <span class="section-eyebrow">Exploración de Microdatos</span>
+            <h2 class="section-title">Visualizador Interactivo de Registros</h2>
+            <p class="section-subtitle">
+                Filtra y explora los microdatos individuales del dataset. Total coincidencias: <strong>{{ "{:,}".format(pagination.total) }}</strong> registros.
+            </p>
+
+            <!-- Formulario de Filtros -->
+            <form method="GET" action="{{ url_for('dataset') }}" class="filter-bar">
+                <div class="filter-group">
+                    <label class="filter-label" for="q">Buscar término</label>
+                    <input type="text" name="q" id="q" value="{{ search }}" placeholder="Ej. Bogotá, Rappi, Uber, Upwork..." class="form-control">
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label" for="nivel">Nivel Territorial</label>
+                    <select name="nivel" id="nivel" class="form-select">
+                        <option value="">-- Todos los niveles --</option>
+                        <option value="Global" {{ 'selected' if nivel == 'Global' }}>Global</option>
+                        <option value="Nacional" {{ 'selected' if nivel == 'Nacional' }}>Nacional</option>
+                        <option value="Regional" {{ 'selected' if nivel == 'Regional' }}>Regional</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label" for="tipo">Tipo de Plataforma</label>
+                    <select name="tipo" id="tipo" class="form-select">
+                        <option value="">-- Todos los tipos --</option>
+                        <option value="Fisica / Basada en Ubicacion" {{ 'selected' if tipo_plat == 'Fisica / Basada en Ubicacion' }}>Física / Ubicación</option>
+                        <option value="En linea / Basada en la Nube" {{ 'selected' if tipo_plat == 'En linea / Basada en la Nube' }}>En línea / Nube</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label" for="pais">País</label>
+                    <select name="pais" id="pais" class="form-select">
+                        <option value="">-- Todos los países --</option>
+                        <option value="Colombia" {{ 'selected' if pais == 'Colombia' }}>Colombia</option>
+                        <option value="Brasil" {{ 'selected' if pais == 'Brasil' }}>Brasil</option>
+                        <option value="Mexico" {{ 'selected' if pais == 'Mexico' }}>México</option>
+                        <option value="Argentina" {{ 'selected' if pais == 'Argentina' }}>Argentina</option>
+                        <option value="Chile" {{ 'selected' if pais == 'Chile' }}>Chile</option>
+                        <option value="Espana" {{ 'selected' if pais == 'Espana' }}>España</option>
+                        <option value="Estados Unidos" {{ 'selected' if pais == 'Estados Unidos' }}>EE.UU.</option>
+                        <option value="India" {{ 'selected' if pais == 'India' }}>India</option>
+                    </select>
+                </div>
+
+                <div style="display: flex; gap: 0.5rem; align-self: flex-end;">
+                    <button type="submit" class="btn btn--primary" style="padding: 0.6rem 1.2rem; font-size: 0.84rem;">Filtrar</button>
+                    <a href="{{ url_for('dataset') }}" class="btn btn--outline" style="padding: 0.6rem 1.2rem; font-size: 0.84rem;">Limpiar</a>
+                </div>
+            </form>
+
+            <!-- Tabla de Datos -->
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nivel</th>
+                            <th>País / Región</th>
+                            <th>Tipo Plataforma</th>
+                            <th>Categoría</th>
+                            <th>App</th>
+                            <th>Edad / Gen.</th>
+                            <th>Horas/Sem</th>
+                            <th>Ingreso Neto (COP)</th>
+                            <th>Tarifa USD/h</th>
+                            <th>Salud</th>
+                            <th>ARL</th>
+                            <th>Fuente</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if pagination.records %}
+                            {% for r in pagination.records %}
+                            <tr>
+                                <td><code>{{ r.id_registro }}</code></td>
+                                <td>
+                                    <span class="badge {{ 'badge--purple' if r.nivel_territorial == 'Global' else ('badge--primary' if r.nivel_territorial == 'Nacional' else 'badge--accent') }}">
+                                        {{ r.nivel_territorial }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <strong>{{ r.pais }}</strong><br>
+                                    <small class="text-muted">{{ r.departamento_region }}</small>
+                                </td>
+                                <td><small>{{ 'Física' if 'Fisica' in r.tipo_plataforma else 'En Línea' }}</small></td>
+                                <td><small>{{ r.categoria_servicio }}</small></td>
+                                <td><strong>{{ r.plataforma_principal }}</strong></td>
+                                <td>{{ r.edad }} a / {{ r.genero[:1] }}</td>
+                                <td><strong>{{ r.horas_semanales }} h</strong></td>
+                                <td>
+                                    {% if r.ingreso_neto_mensual_cop %}
+                                        ${{ "{:,.0f}".format(r.ingreso_neto_mensual_cop|float) }}
+                                    {% else %}
+                                        <span class="badge badge--danger">Sin declarar</span>
+                                    {% endif %}
+                                </td>
+                                <td><span class="badge badge--success">${{ "%.2f"|format(r.ingreso_neto_hora_usd|float) }}</span></td>
+                                <td><small>{{ r.afiliacion_salud }}</small></td>
+                                <td>
+                                    <span class="badge {{ 'badge--success' if 'Si' in r.cuenta_con_arl else 'badge--danger' }}">
+                                        {{ 'ARL Sí' if 'Si' in r.cuenta_con_arl else 'Sin ARL' }}
+                                    </span>
+                                </td>
+                                <td><code>{{ r.fuente_origen_id }}</code></td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="13" class="text-center" style="padding: 2rem;">
+                                    No se encontraron registros con los filtros aplicados.
+                                </td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Controles de Paginación -->
+            <div class="pagination">
+                {% if pagination.page > 1 %}
+                    <a href="{{ url_for('dataset', page=1, q=search, nivel=nivel, tipo=tipo_plat, pais=pais) }}" class="pagination__btn">&laquo; Primera</a>
+                    <a href="{{ url_for('dataset', page=pagination.page - 1, q=search, nivel=nivel, tipo=tipo_plat, pais=pais) }}" class="pagination__btn">&lsaquo; Anterior</a>
+                {% endif %}
+
+                <span class="pagination__info">
+                    Página <strong>{{ pagination.page }}</strong> de <strong>{{ pagination.total_paginas }}</strong>
+                </span>
+
+                {% if pagination.page < pagination.total_paginas %}
+                    <a href="{{ url_for('dataset', page=pagination.page + 1, q=search, nivel=nivel, tipo=tipo_plat, pais=pais) }}" class="pagination__btn">Siguiente &rsaquo;</a>
+                    <a href="{{ url_for('dataset', page=pagination.total_paginas, q=search, nivel=nivel, tipo=tipo_plat, pais=pais) }}" class="pagination__btn">Última &raquo;</a>
+                {% endif %}
+            </div>
+
+        </div>
+
     </div>
 </section>
 {% endblock %}

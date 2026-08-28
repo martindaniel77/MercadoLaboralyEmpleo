@@ -1,25 +1,113 @@
 {% extends "base.html" %}
 
-{% block title %}Diccionario de datos | Etapa 1{% endblock %}
+{% block title %}Diccionario de Datos | Etapa 1{% endblock %}
 
 {% block content %}
 <section class="page-header">
     <div class="container">
-        <h1>Diccionario de datos</h1>
-        <p>Caracterización de cada variable del dataset para comprenderlo sin depender de explicaciones verbales.</p>
+        <span class="section-eyebrow page-header__eyebrow">Etapa 1 &middot; Metadatos y Estructura</span>
+        <h1>Diccionario de Datos</h1>
+        <p>
+            Especificación técnica formal de las 27 variables del dataset consolidado: tipo de dato,
+            unidad de medida, dominio de valores permitidos, restricciones de integridad y trazabilidad.
+        </p>
         <div class="page-header__rule"></div>
     </div>
 </section>
 
 <section class="section">
     <div class="container">
-        <div class="panel">
-            <div class="notice">
-                <span class="notice__badge">Etapa 1</span>
-                <p>Este espacio documentará el diccionario de datos: unidad de análisis, variables,
-                tipo, unidad de medida y dominio o posibles valores de cada una.</p>
+
+        <!-- Resumen de Metadatos -->
+        <div class="grid grid--2 mb-2">
+            <div class="content-box" style="margin-bottom: 0;">
+                <span class="section-eyebrow">Definición Estructural</span>
+                <h3 class="content-box__title">Unidad de Análisis y Registro</h3>
+                <p>
+                    <strong>Unidad de análisis:</strong> Trabajador individual de plataformas digitales (*Gig Worker*).
+                </p>
+                <p>
+                    <strong>Definición de Registro:</strong> Cada fila representa a un colaborador de plataforma único (identificado con <code>id_registro</code>), capturado en un momento temporal específico con su caracterización operativa, demográfica, económica y de protección social.
+                </p>
+            </div>
+
+            <div class="content-box" style="margin-bottom: 0;">
+                <span class="section-eyebrow">Taxonomía de Tipos</span>
+                <h3 class="content-box__title">Composición del Esquema</h3>
+                <ul style="list-style: none; padding: 0; font-size: 0.88rem;">
+                    <li style="display: flex; justify-content: space-between; padding: 0.35rem 0; border-bottom: 1px dashed var(--color-border);">
+                        <span>Variables Numéricas (Continuas y Discretas):</span>
+                        <span class="badge badge--success">7 variables</span>
+                    </li>
+                    <li style="display: flex; justify-content: space-between; padding: 0.35rem 0; border-bottom: 1px dashed var(--color-border);">
+                        <span>Variables Categóricas (Nominales y Ordinales):</span>
+                        <span class="badge badge--info">13 variables</span>
+                    </li>
+                    <li style="display: flex; justify-content: space-between; padding: 0.35rem 0; border-bottom: 1px dashed var(--color-border);">
+                        <span>Variables Temporales (Fechas, Años, Meses):</span>
+                        <span class="badge badge--accent">3 variables</span>
+                    </li>
+                    <li style="display: flex; justify-content: space-between; padding: 0.35rem 0; border-bottom: 1px dashed var(--color-border);">
+                        <span>Variables Geográficas / Espaciales:</span>
+                        <span class="badge badge--purple">4 variables</span>
+                    </li>
+                </ul>
             </div>
         </div>
+
+        <!-- Tabla Completa del Diccionario de Datos -->
+        <div class="content-box">
+            <span class="section-eyebrow">Catálogo Completo</span>
+            <h2 class="section-title">Especificación Detallada de Variables</h2>
+            <p class="section-subtitle">
+                Estructura de metadatos exhaustiva para garantizar la trazabilidad y la comprensión total del dataset sin explicaciones verbales.
+            </p>
+
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Variable / Etiqueta</th>
+                            <th>Dimensión</th>
+                            <th>Tipo de Dato</th>
+                            <th>Unidad de Medida</th>
+                            <th>Dominio / Rango Válido</th>
+                            <th>Restricciones & Reglas de Validación</th>
+                            <th>Fuente Origen</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for var in diccionario %}
+                        <tr>
+                            <td><strong>{{ loop.index }}</strong></td>
+                            <td>
+                                <code>{{ var.columna }}</code><br>
+                                <small class="text-muted">{{ var.etiqueta }}</small>
+                            </td>
+                            <td>
+                                <span class="badge {{ 'badge--success' if var.categoria_tipo == 'Numérica' else ('badge--info' if var.categoria_tipo == 'Categórica' else ('badge--accent' if var.categoria_tipo == 'Temporal' else ('badge--purple' if var.categoria_tipo == 'Geográfica' else 'badge--primary'))) }}">
+                                    {{ var.categoria_tipo }}
+                                </span>
+                            </td>
+                            <td><small>{{ var.tipo_tecnico }}</small></td>
+                            <td><small>{{ var.unidad }}</small></td>
+                            <td style="font-size: 0.82rem; max-width: 200px;">
+                                <code>{{ var.dominio }}</code>
+                            </td>
+                            <td style="font-size: 0.82rem; max-width: 240px;">
+                                {{ var.restricciones }}
+                            </td>
+                            <td>
+                                <small class="text-muted">{{ var.fuente }}</small>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </div>
 </section>
 {% endblock %}

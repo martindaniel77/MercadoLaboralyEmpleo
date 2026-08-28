@@ -1,26 +1,161 @@
 {% extends "base.html" %}
 
-{% block title %}Preguntas de investigación | Etapa 1{% endblock %}
+{% block title %}Preguntas de Investigación | Etapa 1{% endblock %}
 
 {% block content %}
 <section class="page-header">
     <div class="container">
-        <h1>Pregunta principal y preguntas secundarias</h1>
-        <p>Preguntas que orientan el proceso de minería de datos y que deben poder responderse con evidencia disponible en los datos.</p>
+        <span class="section-eyebrow page-header__eyebrow">Etapa 1 &middot; Formulación de Preguntas</span>
+        <h1>Pregunta Principal y Preguntas Secundarias</h1>
+        <p>
+            Preguntas rectoras del proceso de minería de datos, articuladas con las variables,
+            relaciones, poblaciones y técnicas analíticas a desarrollar.
+        </p>
         <div class="page-header__rule"></div>
     </div>
 </section>
 
 <section class="section">
     <div class="container">
-        <div class="panel">
-            <div class="notice">
-                <span class="notice__badge">Etapa 1</span>
-                <p>Este espacio documentará la pregunta principal de investigación y las preguntas
-                secundarias, junto con las variables, periodos, poblaciones, relaciones y patrones
-                que orientan.</p>
+
+        <!-- Pregunta Principal -->
+        <div class="content-box content-box--highlight">
+            <div class="content-box__header">
+                <span class="badge badge--accent">Pregunta Principal de Investigación</span>
+                <span class="badge badge--primary">Núcleo del Proyecto</span>
+            </div>
+            <h2 class="content-box__title" style="font-size: 1.35rem; line-height: 1.45;">
+                ¿Cuáles son los principales factores determinantes (demográficos, ocupacionales, geográficos y del modelo de plataforma)
+                que condicionan el ingreso neto por hora, la sobrecarga laboral y la desprotección en seguridad social en los trabajadores
+                de la Gig Economy en Colombia, y cómo contrastan estos patrones frente a dinámicas regionales y globales?
+            </h2>
+            <div class="panel mt-2" style="background: rgba(237, 189, 76, 0.08);">
+                <p><strong>Justificación y alcance analítico:</strong></p>
+                <p class="text-muted">
+                    Esta pregunta orienta todo el flujo de minería de datos al vincular variables predictoras
+                    (edad, género, nivel educativo, tipo de plataforma, categoría, departamento/país, costos operativos) con
+                    variables de respuesta clave (ingreso neto por hora en USD, horas trabajadas por semana y condición de cotización
+                    a salud, pensión y ARL). Permite examinar la heterogeneidad del empleo en plataformas en tres dimensiones territoriales:
+                    Global, Nacional (Colombia) y Regional (Departamentos y Áreas Metropolitanas).
+                </p>
             </div>
         </div>
+
+        <span class="section-eyebrow mt-3">Preguntas Secundarias de Investigación</span>
+        <h2 class="section-title">Sub-problemas y Técnicas de Minería Asociadas</h2>
+        <p class="section-subtitle">
+            Cada pregunta secundaria aborda una arista específica del problema y está diseñada para ser respondida
+            con algoritmos concretos de minería de datos.
+        </p>
+
+        <!-- Pregunta Secundaria 1 -->
+        <div class="content-box">
+            <div class="content-box__header">
+                <h3 class="content-box__title">
+                    <span class="text-accent">PS1.</span> Brecha entre Plataformas Físicas y Plataformas en Línea
+                </h3>
+                <span class="badge badge--info">Análisis Comparativo &middot; Hipótesis</span>
+            </div>
+            <p><strong>Pregunta:</strong> <em>¿Existe una brecha estadísticamente significativa en el ingreso neto real por hora, la intensidad de la jornada semanal y la volatilidad económica entre los trabajadores de plataformas físicas (reparto y transporte) y los trabajadores de plataformas en línea (desarrollo de software, diseño, microtareas)?</em></p>
+            
+            <div class="grid grid--2 mt-1">
+                <div class="panel" style="padding: 1.2rem;">
+                    <p class="stat-card__lbl">Variables involucradas</p>
+                    <p class="text-muted" style="font-size: 0.86rem; margin: 0;">
+                        <code>tipo_plataforma</code>, <code>categoria_servicio</code>, <code>ingreso_neto_hora_usd</code>, 
+                        <code>horas_semanales</code>, <code>costos_operativos_mensuales_cop</code>.
+                    </p>
+                </div>
+                <div class="panel" style="padding: 1.2rem;">
+                    <p class="stat-card__lbl">Técnica de Minería / Análisis</p>
+                    <p class="text-muted" style="font-size: 0.86rem; margin: 0;">
+                        Pruebas de hipótesis no paramétricas (Mann-Whitney / Kruskal-Wallis), análisis de varianza (ANOVA) y contraste de distribuciones multidimensionales.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pregunta Secundaria 2 -->
+        <div class="content-box">
+            <div class="content-box__header">
+                <h3 class="content-box__title">
+                    <span class="text-accent">PS2.</span> Retornos al Capital Humano y Brechas Sociodemográficas
+                </h3>
+                <span class="badge badge--success">Modelado Predictivo</span>
+            </div>
+            <p><strong>Pregunta:</strong> <em>¿En qué medida el nivel educativo alcanzado, la edad, el género y la antigüedad en la plataforma determinan el nivel de ingresos netos y la probabilidad de tener el trabajo en plataformas como única fuente de subsistencia (dependencia 100%)?</em></p>
+            
+            <div class="grid grid--2 mt-1">
+                <div class="panel" style="padding: 1.2rem;">
+                    <p class="stat-card__lbl">Variables involucradas</p>
+                    <p class="text-muted" style="font-size: 0.86rem; margin: 0;">
+                        <code>nivel_educativo</code>, <code>edad</code>, <code>genero</code>, <code>antiguedad_meses</code>, 
+                        <code>dependencia_ingresos</code>, <code>ingreso_neto_mensual_cop</code>.
+                    </p>
+                </div>
+                <div class="panel" style="padding: 1.2rem;">
+                    <p class="stat-card__lbl">Técnica de Minería / Análisis</p>
+                    <p class="text-muted" style="font-size: 0.86rem; margin: 0;">
+                        Modelos de Regresión Lineal Múltiple, Bosques Aleatorios (Random Forest) para importancia de variables y Regresión Logística Ordinal para nivel de dependencia.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pregunta Secundaria 3 -->
+        <div class="content-box">
+            <div class="content-box__header">
+                <h3 class="content-box__title">
+                    <span class="text-accent">PS3.</span> Segmentación y Perfiles de Vulnerabilidad Laboral
+                </h3>
+                <span class="badge badge--purple">Clustering No Supervisado</span>
+            </div>
+            <p><strong>Pregunta:</strong> <em>¿Cuáles son los perfiles o arquetipos homogéneos de trabajadores de la Gig Economy que emergen al combinar simultáneamente su jornada semanal, ingresos netos, régimen de salud y cobertura de riesgos laborales (ARL)?</em></p>
+            
+            <div class="grid grid--2 mt-1">
+                <div class="panel" style="padding: 1.2rem;">
+                    <p class="stat-card__lbl">Variables involucradas</p>
+                    <p class="text-muted" style="font-size: 0.86rem; margin: 0;">
+                        <code>horas_semanales</code>, <code>ingreso_neto_hora_usd</code>, <code>afiliacion_salud</code>, 
+                        <code>afiliacion_pension</code>, <code>cuenta_con_arl</code>, <code>dependencia_ingresos</code>.
+                    </p>
+                </div>
+                <div class="panel" style="padding: 1.2rem;">
+                    <p class="stat-card__lbl">Técnica de Minería / Análisis</p>
+                    <p class="text-muted" style="font-size: 0.86rem; margin: 0;">
+                        Algoritmos de agrupamiento K-Means, Clustering Jerárquico Aglomerativo y Reducción de Dimensionalidad mediante PCA (Análisis de Componentes Principales) y t-SNE.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pregunta Secundaria 4 -->
+        <div class="content-box">
+            <div class="content-box__header">
+                <h3 class="content-box__title">
+                    <span class="text-accent">PS4.</span> Reglas de Asociación en Desprotección Social y Algoritmos
+                </h3>
+                <span class="badge badge--warning">Reglas de Asociación</span>
+            </div>
+            <p><strong>Pregunta:</strong> <em>¿Qué reglas de asociación y patrones de co-ocurrencia existen entre la sobrecarga laboral (>48 horas semanales), la alta calificación algorítmica en la app (>=4.8 estrellas) y la ausencia total de cotización a pensión y ARL?</em></p>
+            
+            <div class="grid grid--2 mt-1">
+                <div class="panel" style="padding: 1.2rem;">
+                    <p class="stat-card__lbl">Variables involucradas</p>
+                    <p class="text-muted" style="font-size: 0.86rem; margin: 0;">
+                        <code>horas_semanales</code>, <code>calificacion_promedio_app</code>, <code>afiliacion_pension</code>, 
+                        <code>cuenta_con_arl</code>, <code>plataforma_principal</code>, <code>departamento_region</code>.
+                    </p>
+                </div>
+                <div class="panel" style="padding: 1.2rem;">
+                    <p class="stat-card__lbl">Técnica de Minería / Análisis</p>
+                    <p class="text-muted" style="font-size: 0.86rem; margin: 0;">
+                        Minería de patrones frecuentes mediante Algoritmo Apriori y FP-Growth, evaluando métricas de Soporte, Confianza y Lift para identificar reglas de precarización laboral.
+                    </p>
+                </div>
+            </div>
+        </div>
+
     </div>
 </section>
 {% endblock %}
