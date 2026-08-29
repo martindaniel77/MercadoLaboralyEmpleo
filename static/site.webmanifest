@@ -1,0 +1,19 @@
+{
+  "name": "Mercado Laboral y Empleo | Minería de Datos",
+  "short_name": "MercadoLaboral",
+  "icons": [
+    {
+      "src": "/static/img/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/img/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#1D170C",
+  "background_color": "#FAF6EA",
+  "display": "standalone"
+}

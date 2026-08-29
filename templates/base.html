@@ -8,6 +8,16 @@
     <title>{% block title %}Mercado Laboral y Empleo | Minería de Datos{% endblock %}</title>
     <meta name="description"
         content="Bitácora técnica y plataforma de documentación del proyecto de Minería de Datos sobre el mercado laboral y la transformación del empleo.">
+    <meta name="theme-color" content="#1d170c">
+
+    <!-- Favicon e Iconos de pestaña -->
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/favicon.svg') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='img/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='img/favicon-16x16.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='img/apple-touch-icon.png') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
     {% block head %}{% endblock %}
