@@ -8,7 +8,8 @@
         <span class="section-eyebrow page-header__eyebrow">Etapa 1 &middot; Alcance y Consideraciones</span>
         <h1>Limitaciones y Consideraciones Metodológicas</h1>
         <p>
-            Reflexión crítica sobre los alcances del dataset, las restricciones metodológicas del estudio de la Gig Economy,
+            Reflexión crítica sobre los alcances del dataset, las restricciones metodológicas del estudio de la Gig
+            Economy,
             los aspectos éticos de privacidad y la hoja de ruta hacia las siguientes etapas del proyecto.
         </p>
         <div class="page-header__rule"></div>
@@ -23,32 +24,46 @@
             <span class="section-eyebrow">01 / Desafíos de Medición</span>
             <h2 class="section-title">Limitaciones Inherentes al Estudio de la Gig Economy</h2>
             <p>
-                La economía de plataformas presenta desafíos empíricos particulares que deben ser tenidos en cuenta al interpretar los hallazgos:
+                La economía de plataformas presenta desafíos empíricos particulares que deben ser tenidos en cuenta al
+                interpretar los hallazgos:
             </p>
 
             <div class="grid grid--2 mt-2">
                 <div class="card">
                     <h3 class="card__title text-accent">1. Opacidad Algorítmica y de Datos Corporativos</h3>
                     <p class="card__text">
-                        Las empresas de plataformas (Rappi, Uber, DiDi, etc.) no publican de forma abierta sus registros operativos internos (tasas de aceptación de viajes, algoritmos de asignación, tarifas dinámicas en tiempo real ni comisiones exactas por transacción). En consecuencia, los análisis dependen de encuestas a trabajadores, auditorías externas (Fairwork) y aproximaciones indirectas de encuestas de hogares (GEIH).
+                        Las empresas de plataformas (Rappi, Uber, DiDi, etc.) no publican de forma abierta sus registros
+                        operativos internos (tasas de aceptación de viajes, algoritmos de asignación, tarifas dinámicas
+                        en tiempo real ni comisiones exactas por transacción). En consecuencia, los análisis dependen de
+                        encuestas a trabajadores, auditorías externas (Fairwork) y aproximaciones indirectas de
+                        encuestas de hogares (GEIH).
                     </p>
                 </div>
                 <div class="card">
                     <h3 class="card__title text-accent">2. Multiactividad y "Multi-Homing"</h3>
                     <p class="card__text">
-                        Una proporción importante de trabajadores opera simultáneamente en varias plataformas (p. ej. conectados al mismo tiempo a Uber y DiDi, o a Rappi e iFood). Aunque el dataset identifica la <code>plataforma_principal</code>, es complejo aislar el tiempo exacto de espera compartido entre múltiples aplicaciones.
+                        Una proporción importante de trabajadores opera simultáneamente en varias plataformas (p. ej.
+                        conectados al mismo tiempo a Uber y DiDi, o a Rappi e iFood). Aunque el dataset identifica la
+                        <code>plataforma_principal</code>, es complejo aislar el tiempo exacto de espera compartido
+                        entre múltiples aplicaciones.
                     </p>
                 </div>
                 <div class="card">
                     <h3 class="card__title text-accent">3. Subregistro en Estadísticas Oficiales</h3>
                     <p class="card__text">
-                        Las encuestas de empleo tradicionales como la GEIH del DANE no cuentan con una casilla unívoca de "Trabajador de Plataforma", requiriendo filtros por ocupaciones CIUO-08 y cuenta propia. Esto puede generar subestimación de trabajadores a tiempo parcial o sobrestimación de mensajeros tradicionales no digitales.
+                        Las encuestas de empleo tradicionales como la GEIH del DANE no cuentan con una casilla unívoca
+                        de "Trabajador de Plataforma", requiriendo filtros por ocupaciones CIUO-08 y cuenta propia. Esto
+                        puede generar subestimación de trabajadores a tiempo parcial o sobrestimación de mensajeros
+                        tradicionales no digitales.
                     </p>
                 </div>
                 <div class="card">
                     <h3 class="card__title text-accent">4. Fluctuación y Paridad Cambiaria (PPA)</h3>
                     <p class="card__text">
-                        Para la escala global, la conversión a <code>ingreso_neto_hora_usd</code> estandariza las tarifas, pero las diferencias en el poder adquisitivo local y costo de la canasta básica entre países (ej. Colombia vs. Estados Unidos o España) implican que una misma tarifa en dólares rinde de forma diferente en cada contexto.
+                        Para la escala global, la conversión a <code>ingreso_neto_hora_usd</code> estandariza las
+                        tarifas, pero las diferencias en el poder adquisitivo local y costo de la canasta básica entre
+                        países (ej. Colombia vs. Estados Unidos o España) implican que una misma tarifa en dólares rinde
+                        de forma diferente en cada contexto.
                     </p>
                 </div>
             </div>
@@ -63,18 +78,26 @@
             </p>
             <ul style="line-height: 1.9; font-size: 0.92rem;">
                 <li>
-                    <strong>Anonimización Total y Protección de PII:</strong> No se almacena información personal identificable (nombres, cédulas, placas de vehículos, direcciones IP, números telefónicos ni ubicaciones GPS exactas). Cada individuo está codificado bajo un pseudónimo alfanumérico (<code>id_registro</code>).
+                    <strong>Anonimización Total y Protección de PII:</strong> No se almacena información personal
+                    identificable (nombres, cédulas, placas de vehículos, direcciones IP, números telefónicos ni
+                    ubicaciones GPS exactas). Cada individuo está codificado bajo un pseudónimo alfanumérico
+                    (<code>id_registro</code>).
                 </li>
                 <li>
-                    <strong>Cumplimiento de la Reserva Estadística:</strong> La información derivada de fuentes oficiales del DANE se utiliza en concordancia con la <em>Ley 79 de 1993</em> y la <em>Resolución 173 de 2008</em>, asegurando que los microdatos se utilicen exclusivamente con fines estadísticos y de investigación académica.
+                    <strong>Cumplimiento de la Reserva Estadística:</strong> La información derivada de fuentes
+                    oficiales del DANE se utiliza en concordancia con la <em>Ley 79 de 1993</em> y la <em>Resolución 173
+                        de 2008</em>, asegurando que los microdatos se utilicen exclusivamente con fines estadísticos y
+                    de investigación académica.
                 </li>
                 <li>
-                    <strong>No Discriminación y Sesgos Algorítmicos:</strong> Los resultados del análisis de minería de datos están orientados a visibilizar brechas de protección social y calidad laboral, evitando inferencias estigmatizantes sobre colectivos vulnerables o trabajadores migrantes.
+                    <strong>No Discriminación y Sesgos Algorítmicos:</strong> Los resultados del análisis de minería de
+                    datos están orientados a visibilizar brechas de protección social y calidad laboral, evitando
+                    inferencias estigmatizantes sobre colectivos vulnerables o trabajadores migrantes.
                 </li>
             </ul>
         </div>
 
-        <!-- 3. Hoja de Ruta para las Siguientes Etapas -->
+        <!-- 3. Hoja de Ruta para las Siguientes Etapas 
         <div class="content-box">
             <span class="section-eyebrow">03 / Plan de Evolución</span>
             <h2 class="section-title">Hoja de Ruta para las Siguientes Etapas del Proyecto</h2>
@@ -86,33 +109,43 @@
                 <div class="panel" style="border-top: 3px solid var(--color-accent);">
                     <h4 class="text-accent">Etapa 2: Preprocesamiento y Limpieza de Datos</h4>
                     <p style="font-size: 0.86rem;" class="text-muted">
-                        Tratamiento de valores faltantes (imputación MICE para ingresos), estandarización de escalas numéricas (Z-score / MinMax), codificación de variables categóricas (One-Hot Encoding para plataformas y Target Encoding para ocupaciones) y detección robusta de outliers multivariados mediante Isolation Forest.
+                        Tratamiento de valores faltantes (imputación MICE para ingresos), estandarización de escalas
+                        numéricas (Z-score / MinMax), codificación de variables categóricas (One-Hot Encoding para
+                        plataformas y Target Encoding para ocupaciones) y detección robusta de outliers multivariados
+                        mediante Isolation Forest.
                     </p>
                 </div>
 
                 <div class="panel" style="border-top: 3px solid var(--color-accent);">
                     <h4 class="text-accent">Etapa 3: Minería Descriptiva y Agrupamiento (Clustering)</h4>
                     <p style="font-size: 0.86rem;" class="text-muted">
-                        Implementación de algoritmos K-Means, DBSCAN y Clustering Jerárquico para caracterizar perfiles de vulnerabilidad laboral. Análisis de componentes principales (PCA) y extracción de reglas de asociación con algoritmos Apriori y FP-Growth.
+                        Implementación de algoritmos K-Means, DBSCAN y Clustering Jerárquico para caracterizar perfiles
+                        de vulnerabilidad laboral. Análisis de componentes principales (PCA) y extracción de reglas de
+                        asociación con algoritmos Apriori y FP-Growth.
                     </p>
                 </div>
 
                 <div class="panel" style="border-top: 3px solid var(--color-accent);">
                     <h4 class="text-accent">Etapa 4: Modelado Predictivo y Clasificación</h4>
                     <p style="font-size: 0.86rem;" class="text-muted">
-                        Entrenamiento de modelos supervisados (Random Forest Regressor, XGBoost, Regresión Logística) para predecir el ingreso neto por hora y clasificar la probabilidad de desprotección en seguridad social (ARL y Pensión) según atributos sociodemográficos.
+                        Entrenamiento de modelos supervisados (Random Forest Regressor, XGBoost, Regresión Logística)
+                        para predecir el ingreso neto por hora y clasificar la probabilidad de desprotección en
+                        seguridad social (ARL y Pensión) según atributos sociodemográficos.
                     </p>
                 </div>
 
                 <div class="panel" style="border-top: 3px solid var(--color-accent);">
                     <h4 class="text-accent">Etapa 5: Evaluación, Visualización e Impacto</h4>
                     <p style="font-size: 0.86rem;" class="text-muted">
-                        Evaluación rigurosa de modelos con métricas de desempeño ($R^2$, RMSE, ROC-AUC, F1-Score), interpretabilidad mediante valores SHAP y despliegue de tableros interactivos para toma de decisiones y recomendaciones de política pública.
+                        Evaluación rigurosa de modelos con métricas de desempeño ($R^2$, RMSE, ROC-AUC, F1-Score),
+                        interpretabilidad mediante valores SHAP y despliegue de tableros interactivos para toma de
+                        decisiones y recomendaciones de política pública.
                     </p>
                 </div>
             </div>
         </div>
 
     </div>
+    -->
 </section>
 {% endblock %}

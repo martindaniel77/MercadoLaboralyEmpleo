@@ -24,10 +24,12 @@
                 <span class="section-eyebrow">Definición Estructural</span>
                 <h3 class="content-box__title">Unidad de Análisis y Registro</h3>
                 <p>
-                    <strong>Unidad de análisis:</strong> Trabajador individual de plataformas digitales (*Gig Worker*).
+                    <strong>Unidad de análisis:</strong> Trabajador individual de plataformas digitales (Gig Worker).
                 </p>
                 <p>
-                    <strong>Definición de Registro:</strong> Cada fila representa a un colaborador de plataforma único (identificado con <code>id_registro</code>), capturado en un momento temporal específico con su caracterización operativa, demográfica, económica y de protección social.
+                    <strong>Definición de Registro:</strong> Cada fila representa a un colaborador de plataforma único
+                    (identificado con <code>id_registro</code>), capturado en un momento temporal específico con su
+                    caracterización operativa, demográfica, económica y de protección social.
                 </p>
             </div>
 
@@ -35,19 +37,23 @@
                 <span class="section-eyebrow">Taxonomía de Tipos</span>
                 <h3 class="content-box__title">Composición del Esquema</h3>
                 <ul style="list-style: none; padding: 0; font-size: 0.88rem;">
-                    <li style="display: flex; justify-content: space-between; padding: 0.35rem 0; border-bottom: 1px dashed var(--color-border);">
+                    <li
+                        style="display: flex; justify-content: space-between; padding: 0.35rem 0; border-bottom: 1px dashed var(--color-border);">
                         <span>Variables Numéricas (Continuas y Discretas):</span>
                         <span class="badge badge--success">7 variables</span>
                     </li>
-                    <li style="display: flex; justify-content: space-between; padding: 0.35rem 0; border-bottom: 1px dashed var(--color-border);">
+                    <li
+                        style="display: flex; justify-content: space-between; padding: 0.35rem 0; border-bottom: 1px dashed var(--color-border);">
                         <span>Variables Categóricas (Nominales y Ordinales):</span>
                         <span class="badge badge--info">13 variables</span>
                     </li>
-                    <li style="display: flex; justify-content: space-between; padding: 0.35rem 0; border-bottom: 1px dashed var(--color-border);">
+                    <li
+                        style="display: flex; justify-content: space-between; padding: 0.35rem 0; border-bottom: 1px dashed var(--color-border);">
                         <span>Variables Temporales (Fechas, Años, Meses):</span>
                         <span class="badge badge--accent">3 variables</span>
                     </li>
-                    <li style="display: flex; justify-content: space-between; padding: 0.35rem 0; border-bottom: 1px dashed var(--color-border);">
+                    <li
+                        style="display: flex; justify-content: space-between; padding: 0.35rem 0; border-bottom: 1px dashed var(--color-border);">
                         <span>Variables Geográficas / Espaciales:</span>
                         <span class="badge badge--purple">4 variables</span>
                     </li>
@@ -60,7 +66,8 @@
             <span class="section-eyebrow">Catálogo Completo</span>
             <h2 class="section-title">Especificación Detallada de Variables</h2>
             <p class="section-subtitle">
-                Estructura de metadatos exhaustiva para garantizar la trazabilidad y la comprensión total del dataset sin explicaciones verbales.
+                Estructura de metadatos exhaustiva para garantizar la trazabilidad y la comprensión total del dataset
+                sin explicaciones verbales.
             </p>
 
             <div class="table-wrapper">
@@ -86,7 +93,8 @@
                                 <small class="text-muted">{{ var.etiqueta }}</small>
                             </td>
                             <td>
-                                <span class="badge {{ 'badge--success' if var.categoria_tipo == 'Numérica' else ('badge--info' if var.categoria_tipo == 'Categórica' else ('badge--accent' if var.categoria_tipo == 'Temporal' else ('badge--purple' if var.categoria_tipo == 'Geográfica' else 'badge--primary'))) }}">
+                                <span
+                                    class="badge {{ 'badge--success' if var.categoria_tipo == 'Numérica' else ('badge--info' if var.categoria_tipo == 'Categórica' else ('badge--accent' if var.categoria_tipo == 'Temporal' else ('badge--purple' if var.categoria_tipo == 'Geográfica' else 'badge--primary'))) }}">
                                     {{ var.categoria_tipo }}
                                 </span>
                             </td>

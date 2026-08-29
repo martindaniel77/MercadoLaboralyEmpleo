@@ -1,74 +1,91 @@
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{% block title %}Mercado Laboral y Empleo | Minería de Datos{% endblock %}</title>
-        <meta name="description" content="Bitácora técnica y plataforma de documentación del proyecto de Minería de Datos sobre el mercado laboral y la transformación del empleo.">
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
-        {% block head %}{% endblock %}
-    </head>
-    <body>
 
-        <header class="navbar" id="navbar">
-            <div class="navbar__topbar"></div>
-            <div class="navbar__inner container">
-                <a href="{{ url_for('home') }}" class="navbar__brand">
-                    <span class="navbar__brand-mark">ML</span>
-                    <span class="navbar__brand-text">
-                        <strong>Mercado Laboral &amp; Empleo</strong>
-                        <small>Proyecto de Minería de Datos</small>
-                    </span>
-                </a>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Mercado Laboral y Empleo | Minería de Datos{% endblock %}</title>
+    <meta name="description"
+        content="Bitácora técnica y plataforma de documentación del proyecto de Minería de Datos sobre el mercado laboral y la transformación del empleo.">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
+    {% block head %}{% endblock %}
+</head>
 
-                <button class="navbar__toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
+<body>
 
-                <nav class="navbar__menu" id="navMenu" aria-label="Menú principal">
-                    <a href="{{ url_for('home') }}" class="nav-link {{ 'active' if request.endpoint == 'home' }}">Inicio</a>
+    <header class="navbar" id="navbar">
+        <div class="navbar__topbar"></div>
+        <div class="navbar__inner container">
+            <a href="{{ url_for('home') }}" class="navbar__brand">
+                <span class="navbar__brand-mark">ML</span>
+                <span class="navbar__brand-text">
+                    <strong>Mercado Laboral &amp; Empleo</strong>
+                    <small>Proyecto de Minería de Datos</small>
+                </span>
+            </a>
 
-                    <div class="nav-item nav-item--dropdown">
-                        <button class="nav-link nav-link--dropdown" aria-haspopup="true" aria-expanded="false">
-                            Etapa 1 <span class="nav-caret"></span>
-                        </button>
-                        <ul class="dropdown">
-                            <li><a href="{{ url_for('problema') }}" class="{{ 'active' if request.endpoint == 'problema' }}">Problema y contexto</a></li>
-                            <li><a href="{{ url_for('preguntas') }}" class="{{ 'active' if request.endpoint == 'preguntas' }}">Pregunta principal y secundarias</a></li>
-                            <li><a href="{{ url_for('necesidades') }}" class="{{ 'active' if request.endpoint == 'necesidades' }}">Necesidades de información</a></li>
-                            <li><a href="{{ url_for('fuentes') }}" class="{{ 'active' if request.endpoint == 'fuentes' }}">Fuentes de datos</a></li>
-                            <li><a href="{{ url_for('dataset') }}" class="{{ 'active' if request.endpoint == 'dataset' }}">Dataset</a></li>
-                            <li><a href="{{ url_for('diccionario') }}" class="{{ 'active' if request.endpoint == 'diccionario' }}">Diccionario de datos</a></li>
-                            <li><a href="{{ url_for('calidad') }}" class="{{ 'active' if request.endpoint == 'calidad' }}">Calidad inicial de los datos</a></li>
-                            <li><a href="{{ url_for('limitaciones') }}" class="{{ 'active' if request.endpoint == 'limitaciones' }}">Limitaciones y consideraciones</a></li>
-                        </ul>
-                    </div>
+            <button class="navbar__toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
 
-                    <span class="nav-link nav-link--disabled">Etapa 2</span>
-                    <span class="nav-link nav-link--disabled">Etapa 3</span>
-                    <span class="nav-link nav-link--disabled">Etapa 4</span>
-                    <span class="nav-link nav-link--disabled">Etapa 5</span>
-                </nav>
-            </div>
-        </header>
+            <nav class="navbar__menu" id="navMenu" aria-label="Menú principal">
+                <a href="{{ url_for('home') }}" class="nav-link {{ 'active' if request.endpoint == 'home' }}">Inicio</a>
 
-        <main class="content">
-            {% block content %}{% endblock %}
-        </main>
+                <div class="nav-item nav-item--dropdown">
+                    <button class="nav-link nav-link--dropdown" aria-haspopup="true" aria-expanded="false">
+                        Etapa 1 <span class="nav-caret"></span>
+                    </button>
+                    <ul class="dropdown">
+                        <li><a href="{{ url_for('problema') }}"
+                                class="{{ 'active' if request.endpoint == 'problema' }}">Problema y contexto</a></li>
+                        <li><a href="{{ url_for('preguntas') }}"
+                                class="{{ 'active' if request.endpoint == 'preguntas' }}">Pregunta principal y
+                                secundarias</a></li>
+                        <li><a href="{{ url_for('necesidades') }}"
+                                class="{{ 'active' if request.endpoint == 'necesidades' }}">Necesidades de
+                                información</a></li>
+                        <li><a href="{{ url_for('fuentes') }}"
+                                class="{{ 'active' if request.endpoint == 'fuentes' }}">Fuentes de datos</a></li>
+                        <li><a href="{{ url_for('dataset') }}"
+                                class="{{ 'active' if request.endpoint == 'dataset' }}">Dataset</a></li>
+                        <li><a href="{{ url_for('diccionario') }}"
+                                class="{{ 'active' if request.endpoint == 'diccionario' }}">Diccionario de datos</a>
+                        </li>
+                        <li><a href="{{ url_for('calidad') }}"
+                                class="{{ 'active' if request.endpoint == 'calidad' }}">Calidad inicial de los datos</a>
+                        </li>
+                        <li><a href="{{ url_for('limitaciones') }}"
+                                class="{{ 'active' if request.endpoint == 'limitaciones' }}">Limitaciones y
+                                consideraciones</a></li>
+                    </ul>
+                </div>
 
-        <footer class="footer">
-            <div class="container footer__inner">
-                <span class="footer__brand">Mercado Laboral &amp; Empleo</span>
-                <span>Proyecto académico de Minería de Datos &mdash; Etapa 1</span>
-                <span>&copy; 2026</span>
-            </div>
-        </footer>
+                <span class="nav-link nav-link--disabled">Etapa 2</span>
+                <span class="nav-link nav-link--disabled">Etapa 3</span>
+                <span class="nav-link nav-link--disabled">Etapa 4</span>
+                <span class="nav-link nav-link--disabled">Etapa 5</span>
+            </nav>
+        </div>
+    </header>
 
-        <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-        {% block scripts %}{% endblock %}
-    </body>
+    <main class="content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="container footer__inner">
+            <span class="footer__brand">Mercado Laboral &amp; Empleo</span>
+            <span>Proyecto académico de Minería de Datos</span>
+            <span>&copy; 2026</span>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+
 </html>
