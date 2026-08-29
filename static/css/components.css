@@ -338,6 +338,14 @@
     font-size: 1.1rem;
 }
 
+.card__icon svg,
+.card__svg {
+    width: 26px;
+    height: 26px;
+    stroke: currentColor;
+    display: block;
+}
+
 .card__title {
     font-size: 1.15rem;
     margin-bottom: 0.5rem;
