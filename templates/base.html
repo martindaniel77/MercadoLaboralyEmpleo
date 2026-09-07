@@ -75,25 +75,27 @@
                 </div>
 
                 <div class="nav-item nav-item--dropdown">
-                    <button class="nav-link nav-link--dropdown {{ 'active' if 'etapa2_' in request.endpoint or 'etapa-2' in request.path }}" aria-haspopup="true" aria-expanded="false">
+                    <button
+                        class="nav-link nav-link--dropdown {{ 'active' if 'etapa2_' in request.endpoint or 'etapa-2' in request.path }}"
+                        aria-haspopup="true" aria-expanded="false">
                         Etapa 2 <span class="nav-caret"></span>
                     </button>
                     <ul class="dropdown">
                         <li><a href="{{ url_for('etapa2_proposito') }}"
-                                class="{{ 'active' if request.endpoint == 'etapa2_proposito' }}">Propósito y requisitos</a></li>
+                                class="{{ 'active' if request.endpoint == 'etapa2_proposito' }}">Propósito y
+                                requisitos</a></li>
                         <li><a href="{{ url_for('etapa2_perfilamiento') }}"
-                                class="{{ 'active' if request.endpoint == 'etapa2_perfilamiento' }}">Perfilamiento del dataset</a></li>
+                                class="{{ 'active' if request.endpoint == 'etapa2_perfilamiento' }}">Perfilamiento del
+                                dataset</a></li>
                         <li><a href="{{ url_for('etapa2_dimensiones') }}"
-                                class="{{ 'active' if request.endpoint == 'etapa2_dimensiones' }}">Dimensiones y métricas</a></li>
+                                class="{{ 'active' if request.endpoint == 'etapa2_dimensiones' }}">Dimensiones y
+                                métricas</a></li>
                         <li><a href="{{ url_for('etapa2_inventario') }}"
-                                class="{{ 'active' if request.endpoint == 'etapa2_inventario' }}">Inventario de problemas</a></li>
+                                class="{{ 'active' if request.endpoint == 'etapa2_inventario' }}">Inventario de
+                                problemas</a></li>
                         <li><a href="{{ url_for('etapa2_tratamiento') }}"
-                                class="{{ 'active' if request.endpoint == 'etapa2_tratamiento' }}">Plan de tratamiento</a></li>
-                        <li><a href="{{ url_for('etapa2_comparacion') }}"
-                                class="{{ 'active' if request.endpoint == 'etapa2_comparacion' }}">Comparación antes y después</a></li>
-                        <li><a href="{{ url_for('etapa2_dataset_tratado') }}"
-                                class="{{ 'active' if request.endpoint == 'etapa2_dataset_tratado' }}">Dataset tratado (Limpio)</a></li>
-                    </ul>
+                                class="{{ 'active' if request.endpoint == 'etapa2_tratamiento' }}">Plan de
+                                tratamiento</a></li>
                 </div>
 
                 <span class="nav-link nav-link--disabled">Etapa 3</span>

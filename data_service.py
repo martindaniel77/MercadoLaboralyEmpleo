@@ -14,7 +14,7 @@ import datetime
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(BASE_DIR, 'data')
 CSV_PATH = os.path.join(DATA_DIR, 'dataset_gig_economy.csv')
-TREATED_CSV_PATH = os.path.join(DATA_DIR, 'dataset_gig_economy_tratado.csv')
+
 
 # Requisitos de calidad esperados según problema y usuarios objetivo
 REQUISITOS_CALIDAD = {
@@ -703,26 +703,12 @@ def ensure_dataset_exists(force=False):
         writer.writeheader()
         writer.writerows(registros)
         
-    # Generar el dataset tratado de inmediato
-    apply_data_treatment_pipeline()
-
-def ensure_treated_dataset_exists(force=False):
-    """Asegura que el dataset tratado y limpio exista en disco."""
-    if not force and os.path.exists(TREATED_CSV_PATH) and os.path.getsize(TREATED_CSV_PATH) > 100000:
-        return
-    apply_data_treatment_pipeline()
-
-def get_all_records(dataset_type='raw'):
-    """Retorna todos los registros como lista de diccionarios (raw o tratado)."""
+    
+def get_all_records():
+    """Retorna todos los registros como lista de diccionarios del dataset raw."""
     ensure_dataset_exists()
-    if dataset_type == 'tratado':
-        ensure_treated_dataset_exists()
-        target_path = TREATED_CSV_PATH
-    else:
-        target_path = CSV_PATH
-        
     records = []
-    with open(target_path, 'r', encoding='utf-8') as f:
+    with open(CSV_PATH, 'r', encoding='utf-8') as f:
         reader = csv.DictReader(f)
         for row in reader:
             records.append(row)
@@ -1205,192 +1191,10 @@ def get_treatment_plan_steps():
         }
     ]
 
-def apply_data_treatment_pipeline():
-    """Ejecuta el pipeline completo de tratamiento de datos y genera dataset_gig_economy_tratado.csv."""
-    raw_records = get_all_records('raw')
-    
-    # Paso 1: Desduplicación
-    seen_hashes = set()
-    dedup_records = []
-    
-    for r in raw_records:
-        # Clave única sin ID para detectar duplicados reales
-        attrs_key = tuple(v for k, v in sorted(r.items()) if k != 'id_registro')
-        if attrs_key not in seen_hashes:
-            seen_hashes.add(attrs_key)
-            dedup_records.append(dict(r))
-            
-    # Calcular medianas condicionales por categoría de servicio para imputación
-    costos_por_cat = {}
-    horas_por_cat = {}
-    
-    for r in dedup_records:
-        cat = r['categoria_servicio']
-        if r['costos_operativos_mensuales_cop'] != "":
-            try:
-                costos_por_cat.setdefault(cat, []).append(float(r['costos_operativos_mensuales_cop']))
-            except ValueError:
-                pass
-        if r['horas_semanales'] != "":
-            try:
-                horas_por_cat.setdefault(cat, []).append(float(r['horas_semanales']))
-            except ValueError:
-                pass
-                
-    medianas_costos = {k: sorted(v)[len(v)//2] for k, v in costos_por_cat.items() if v}
-    medianas_horas = {k: sorted(v)[len(v)//2] for k, v in horas_por_cat.items() if v}
-    
-    # Diccionario de homologación geográfica canónica
-    CIUDADES_CANONICAS = {
-        'bogota': 'Bogota',
-        'bogotá d.c.': 'Bogota',
-        'bogota d.c.': 'Bogota',
-        'bogotá': 'Bogota',
-        'medellin': 'Medellin',
-        'medellín': 'Medellin',
-        'cali': 'Cali',
-        'santiago de cali': 'Cali',
-        'barranquilla': 'Barranquilla',
-        'bucaramanga': 'Bucaramanga',
-        'cartagena': 'Cartagena',
-        'pereira': 'Pereira',
-        'manizales': 'Manizales',
-        'sao paulo': 'Sao Paulo',
-        'ciudad de mexico': 'Ciudad de Mexico',
-        'buenos aires': 'Buenos Aires',
-        'santiago': 'Santiago',
-        'madrid': 'Madrid',
-        'san francisco': 'San Francisco',
-        'bengaluru': 'Bengaluru'
-    }
-    
-    treated_records = []
-    tasa_cambio = 4050.0
-    
-    for idx, r in enumerate(dedup_records, start=1):
-        clean_r = dict(r)
-        
-        # Paso 1: Reasignar ID único ordenado
-        clean_r['id_registro'] = f"GIG-{idx:05d}"
-        
-        # Paso 2: Homologación de ciudad y texto
-        ciu_raw = str(clean_r.get('ciudad_municipio', '')).strip().lower()
-        clean_r['ciudad_municipio'] = CIUDADES_CANONICAS.get(ciu_raw, clean_r.get('ciudad_municipio', '').strip())
-        
-        # Paso 5: Tratamiento de outliers en edad y horas
-        try:
-            edad_int = int(clean_r['edad'])
-            if edad_int < 18:
-                edad_int = 18
-            elif edad_int > 70:
-                edad_int = 70
-            clean_r['edad'] = edad_int
-        except (ValueError, TypeError):
-            clean_r['edad'] = 30
-            
-        # Paso 4: Imputación de horas faltantes y winsorización de outliers
-        cat_serv = clean_r['categoria_servicio']
-        if clean_r['horas_semanales'] == "" or clean_r['horas_semanales'] is None:
-            horas_f = medianas_horas.get(cat_serv, 45.0)
-        else:
-            try:
-                horas_f = float(clean_r['horas_semanales'])
-            except ValueError:
-                horas_f = medianas_horas.get(cat_serv, 45.0)
-                
-        # Acotar horas entre 5.0 y 84.0
-        horas_f = max(5.0, min(84.0, horas_f))
-        clean_r['horas_semanales'] = round(horas_f, 1)
-        
-        # Paso 4: Imputación de costos operativos
-        try:
-            bruto_f = float(clean_r['ingreso_bruto_mensual_cop'])
-        except (ValueError, TypeError):
-            bruto_f = 2000000.0
-        clean_r['ingreso_bruto_mensual_cop'] = int(round(bruto_f, -2))
-        
-        if clean_r['costos_operativos_mensuales_cop'] == "" or clean_r['costos_operativos_mensuales_cop'] is None:
-            costos_f = medianas_costos.get(cat_serv, bruto_f * 0.25)
-        else:
-            try:
-                costos_f = float(clean_r['costos_operativos_mensuales_cop'])
-            except ValueError:
-                costos_f = medianas_costos.get(cat_serv, bruto_f * 0.25)
-                
-        costos_f = min(costos_f, bruto_f * 0.70)
-        clean_r['costos_operativos_mensuales_cop'] = int(round(costos_f, -2))
-        
-        # Paso 3: Reconciliación determinística de ingreso neto y tarifa USD
-        neto_f = max(200000.0, bruto_f - costos_f)
-        clean_r['ingreso_neto_mensual_cop'] = int(round(neto_f, -2))
-        
-        horas_mes = max(20.0, horas_f * 4.33)
-        ingreso_neto_usd = round((neto_f / horas_mes) / tasa_cambio, 2)
-        clean_r['ingreso_neto_hora_usd'] = ingreso_neto_usd
-        
-        # Paso 4: Imputación de calificaciones faltantes
-        if clean_r['calificacion_promedio_app'] == "" or clean_r['calificacion_promedio_app'] is None:
-            clean_r['calificacion_promedio_app'] = "4.65"
-            
-        # Paso 6: Corrección de consistencia en seguridad social
-        salud = clean_r['afiliacion_salud']
-        pension = clean_r['afiliacion_pension']
-        arl = clean_r['cuenta_con_arl']
-        
-        if salud == 'Regimen Subsidiado' and (pension == 'Cotiza activamente' or 'Si' in arl):
-            clean_r['afiliacion_salud'] = 'Regimen Contributivo (Cotizante)'
-            
-        treated_records.append(clean_r)
-        
-    fieldnames = list(treated_records[0].keys())
-    with open(TREATED_CSV_PATH, 'w', newline='', encoding='utf-8') as f:
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerows(treated_records)
 
-def get_before_after_comparison():
-    """Genera la matriz comparativa de métricas e indicadores de calidad antes vs después del tratamiento."""
-    raw_dims = calculate_quality_dimensions('raw')
-    treated_dims = calculate_quality_dimensions('tratado')
-    
-    raw_prof = profile_dataset('raw')
-    treated_prof = profile_dataset('tratado')
-    
-    comparativa_dimensiones = []
-    for r_dim, t_dim in zip(raw_dims['dimensiones'], treated_dims['dimensiones']):
-        delta = round(t_dim['score'] - r_dim['score'], 2)
-        comparativa_dimensiones.append({
-            'nombre': r_dim['nombre'],
-            'score_antes': r_dim['score'],
-            'score_despues': t_dim['score'],
-            'delta': delta,
-            'afectados_antes': r_dim['afectados'],
-            'afectados_despues': t_dim['afectados'],
-            'unidad': r_dim['unidad_afectados'],
-            'impacto_mejora': 'Alta' if delta >= 3.0 else 'Moderada' if delta > 0.0 else 'Mantenida'
-        })
-        
-    kpis_generales = {
-        'registros_antes': raw_prof['total_registros'],
-        'registros_despues': treated_prof['total_registros'],
-        'duplicados_eliminados': raw_prof['duplicados_id'],
-        'celdas_nulas_antes': raw_prof['total_nulos'],
-        'celdas_nulas_despues': treated_prof['total_nulos'],
-        'dqi_antes': raw_dims['dqi_global'],
-        'dqi_despues': treated_dims['dqi_global'],
-        'delta_dqi': round(treated_dims['dqi_global'] - raw_dims['dqi_global'], 2)
-    }
-    
-    return {
-        'dimensiones': comparativa_dimensiones,
-        'kpis': kpis_generales,
-        'raw_summary': raw_dims,
-        'treated_summary': treated_dims
-    }
-
-def get_dataset_summary(dataset_type='raw'):
+def get_dataset_summary():
     """Genera estadísticas descriptivas y KPIs para la vista del dataset y calidad (compatible Etapa 1)."""
-    records = get_all_records(dataset_type)
+    records = get_all_records()
     total = len(records)
     
     # Contadores
@@ -1498,12 +1302,7 @@ def get_dataset_summary(dataset_type='raw'):
 
 def get_filtered_sample(page=1, per_page=15, search="", nivel="", tipo_plat="", pais=""):
     """Filtra y pagina los registros para la visualización interactiva del dataset raw."""
-    records = get_all_records('raw')
-    return _paginate_and_filter(records, page, per_page, search, nivel, tipo_plat, pais)
-
-def get_filtered_treated_sample(page=1, per_page=15, search="", nivel="", tipo_plat="", pais=""):
-    """Filtra y pagina los registros para la visualización interactiva del dataset tratado."""
-    records = get_all_records('tratado')
+    records = get_all_records()
     return _paginate_and_filter(records, page, per_page, search, nivel, tipo_plat, pais)
 
 def _paginate_and_filter(records, page=1, per_page=15, search="", nivel="", tipo_plat="", pais=""):

@@ -113,35 +113,6 @@ def etapa2_tratamiento():
     return render_template('etapa2_tratamiento.html', steps=steps)
 
 
-@app.route('/etapa-2/comparacion-antes-despues')
-def etapa2_comparacion():
-    comparison = data_service.get_before_after_comparison()
-    return render_template('etapa2_comparacion.html', comparison=comparison)
-
-
-@app.route('/etapa-2/dataset-tratado')
-def etapa2_dataset_tratado():
-    summary = data_service.get_dataset_summary('tratado')
-    page = request.args.get('page', 1, type=int)
-    search = request.args.get('q', '', type=str)
-    nivel = request.args.get('nivel', '', type=str)
-    tipo_plat = request.args.get('tipo', '', type=str)
-    pais = request.args.get('pais', '', type=str)
-    
-    pagination = data_service.get_filtered_treated_sample(
-        page=page, per_page=12, search=search, nivel=nivel, tipo_plat=tipo_plat, pais=pais
-    )
-    
-    return render_template(
-        'etapa2_dataset_tratado.html',
-        summary=summary,
-        pagination=pagination,
-        search=search,
-        nivel=nivel,
-        tipo_plat=tipo_plat,
-        pais=pais
-    )
-
 
 @app.route('/descargar-dataset')
 def descargar_dataset():
@@ -152,45 +123,6 @@ def descargar_dataset():
         download_name='dataset_gig_economy_inicial_raw.csv',
         mimetype='text/csv'
     )
-
-
-@app.route('/descargar-dataset-tratado')
-def descargar_dataset_tratado():
-    data_service.ensure_treated_dataset_exists()
-    return send_file(
-        data_service.TREATED_CSV_PATH,
-        as_attachment=True,
-        download_name='dataset_gig_economy_tratado_limpio.csv',
-        mimetype='text/csv'
-    )
-
-
-@app.route('/api/dataset')
-def api_dataset():
-    page = request.args.get('page', 1, type=int)
-    search = request.args.get('q', '', type=str)
-    nivel = request.args.get('nivel', '', type=str)
-    tipo_plat = request.args.get('tipo', '', type=str)
-    pais = request.args.get('pais', '', type=str)
-    
-    pagination = data_service.get_filtered_sample(
-        page=page, per_page=12, search=search, nivel=nivel, tipo_plat=tipo_plat, pais=pais
-    )
-    return jsonify(pagination)
-
-
-@app.route('/api/dataset-tratado')
-def api_dataset_tratado():
-    page = request.args.get('page', 1, type=int)
-    search = request.args.get('q', '', type=str)
-    nivel = request.args.get('nivel', '', type=str)
-    tipo_plat = request.args.get('tipo', '', type=str)
-    pais = request.args.get('pais', '', type=str)
-    
-    pagination = data_service.get_filtered_treated_sample(
-        page=page, per_page=12, search=search, nivel=nivel, tipo_plat=tipo_plat, pais=pais
-    )
-    return jsonify(pagination)
 
 
 @app.route('/favicon.ico')

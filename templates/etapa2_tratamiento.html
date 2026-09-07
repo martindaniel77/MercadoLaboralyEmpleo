@@ -31,7 +31,8 @@
                 <div class="pipeline-step">
                     <div class="pipeline-step__num">{{ s.paso }}</div>
                     <div class="pipeline-step__content">
-                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
                             <h3>{{ s.nombre }}</h3>
                             <span class="badge badge--dark">{{ s.problema_asociado }}</span>
                         </div>
@@ -55,26 +56,28 @@
                 <div class="card">
                     <h3 class="card__title text-accent">¿Por qué Imputación por Mediana Condicional?</h3>
                     <p class="card__text" style="font-size: 0.85rem;">
-                        Las variables de <code>costos_operativos</code> y <code>horas_semanales</code> exhiben distribuciones asimétricas
-                        con sesgo a la derecha según el sector. Imputar con la media global inflaría artificialmente los costos de un repartidor
-                        o subestimaría los de un conductor de Uber. La <strong>mediana por categoría de servicio</strong> preserva la representatividad
+                        Las variables de <code>costos_operativos</code> y <code>horas_semanales</code> exhiben
+                        distribuciones asimétricas
+                        con sesgo a la derecha según el sector. Imputar con la media global inflaría artificialmente los
+                        costos de un repartidor
+                        o subestimaría los de un conductor de Uber. La <strong>mediana por categoría de
+                            servicio</strong> preserva la representatividad
                         de cada subgrupo sin distorsionar la varianza.
                     </p>
                 </div>
                 <div class="card">
                     <h3 class="card__title text-accent">¿Por qué Winsorización en lugar de Eliminación?</h3>
                     <p class="card__text" style="font-size: 0.85rem;">
-                        Eliminar filas con jornadas extremas (> 96h) reduciría el tamaño muestral en segmentos vulnerables.
-                        El <strong>acotamiento acotado (Winsorizing)</strong> al rango legal plausible [5h, 84h] retiene la observación
+                        Eliminar filas con jornadas extremas (> 96h) reduciría el tamaño muestral en segmentos
+                        vulnerables.
+                        El <strong>acotamiento acotado (Winsorizing)</strong> al rango legal plausible [5h, 84h] retiene
+                        la observación
                         y corrige el error tipográfico de captura sin perder las demás características del individuo.
                     </p>
                 </div>
             </div>
         </div>
 
-        <div class="mt-2 text-center">
-            <a href="{{ url_for('etapa2_comparacion') }}" class="btn btn--primary">Ver Comparación Antes y Después &rarr;</a>
-        </div>
 
     </div>
 </section>
