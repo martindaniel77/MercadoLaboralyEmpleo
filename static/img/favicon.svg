@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <!-- Gradient for Squircle Badge -->
+    <linearGradient id="mlGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FCE280" />
+      <stop offset="45%" stop-color="#EDBD4C" />
+      <stop offset="100%" stop-color="#B67F16" />
+    </linearGradient>
+    
+    <!-- Border Gradient -->
+    <linearGradient id="mlBorderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF8E0" stop-opacity="0.9" />
+      <stop offset="100%" stop-color="#7C5209" stop-opacity="0.75" />
+    </linearGradient>
+    
+    <!-- Subtle Drop Shadow -->
+    <filter id="mlShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#1D170C" flood-opacity="0.35" />
+    </filter>
+  </defs>
+
+  <!-- Squircle Base -->
+  <rect x="4" y="4" width="56" height="56" rx="14" ry="14" fill="url(#mlGoldGrad)" stroke="url(#mlBorderGrad)" stroke-width="1.5" filter="url(#mlShadow)" />
+
+  <!-- Data mining analytics bars (subtle background motif) -->
+  <rect x="41" y="35" width="3.5" height="11" rx="1.5" fill="#1D170C" opacity="0.16" />
+  <rect x="46.5" y="27" width="3.5" height="19" rx="1.5" fill="#1D170C" opacity="0.16" />
+  <rect x="52" y="19" width="3.5" height="27" rx="1.5" fill="#1D170C" opacity="0.16" />
+
+  <!-- Data node indicator -->
+  <circle cx="50.5" cy="14.5" r="3.8" fill="#1D170C" />
+  <circle cx="50.5" cy="14.5" r="1.6" fill="#FCE280" />
+  <line x1="43" y1="18.5" x2="50.5" y2="14.5" stroke="#1D170C" stroke-width="1.2" stroke-dasharray="1.5 1.5" opacity="0.5" />
+
+  <!-- Monospace 'M' Vector Path -->
+  <path d="M 11 18 L 17.5 18 L 22 29 L 26.5 18 L 33 18 L 33 46 L 27.5 46 L 27.5 27 L 23.5 36.5 L 20.5 36.5 L 16.5 27 L 16.5 46 L 11 46 Z" fill="#1D170C" />
+
+  <!-- Monospace 'L' Vector Path -->
+  <path d="M 36.5 18 L 42.5 18 L 42.5 40.5 L 53 40.5 L 53 46 L 36.5 46 Z" fill="#1D170C" />
+</svg>
