@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block title %}Perfilamiento de Datos (Profiling) | Etapa 2{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <span class="section-eyebrow page-header__eyebrow">Etapa 2 &middot; Diagnóstico de Datos</span>
+        <h1>Perfilamiento del Conjunto de Datos</h1>
+        <p>
+            Auditoría exhaustiva de la estructura, cardinalidad, tipos de datos, valores nulos, registros duplicados
+            y comportamiento estadístico para las 27 variables del dataset inicial.
+        </p>
+        <div class="page-header__rule"></div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <!-- KPIs Globales de Perfilamiento -->
+        <div class="stat-grid mb-2">
+            <div class="stat-card stat-card--accent">
+                <div class="stat-card__val">{{ profile.total_registros }}</div>
+                <div class="stat-card__lbl">Total de Registros</div>
+                <div class="stat-card__sub">{{ profile.duplicados_filas }} duplicados detectados</div>
+            </div>
+            <div class="stat-card stat-card--accent">
+                <div class="stat-card__val">{{ profile.total_variables }}</div>
+                <div class="stat-card__lbl">Variables Totales</div>
+                <div class="stat-card__sub">{{ profile.total_celdas }} celdas evaluadas</div>
+            </div>
+            <div class="stat-card stat-card--accent">
+                <div class="stat-card__val">{{ profile.total_nulos }}</div>
+                <div class="stat-card__lbl">Celdas Nulas / Vacías</div>
+                <div class="stat-card__sub">{{ profile.pct_nulos_global }}% del volumen total</div>
+            </div>
+            <div class="stat-card stat-card--dark">
+                <div class="stat-card__val">{{ profile.salud_global_pct }}%</div>
+                <div class="stat-card__lbl">Salud Inicial del Dataset</div>
+                <div class="stat-card__sub">Completitud global bruta</div>
+            </div>
+        </div>
+
+        <!-- Tabla Completa de Perfilamiento -->
+        <div class="content-box">
+            <span class="section-eyebrow">01 / Variables y Distribuciones</span>
+            <h2 class="section-title">Matriz Completa de Perfilamiento (27 Variables)</h2>
+            <p class="section-subtitle">
+                Inspección variable por variable: cardinalidad, nulos, estadísticas de tendencia central y detección de outliers mediante IQR:
+            </p>
+
+            <div class="table-container">
+                <table class="data-table" style="font-size: 0.8rem;">
+                    <thead>
+                        <tr>
+                            <th>Variable / Campo</th>
+                            <th>Tipo y Categoría</th>
+                            <th>No Nulos</th>
+                            <th>Nulos (%)</th>
+                            <th>Únicos</th>
+                            <th>Mín / Máx</th>
+                            <th>Media &plusmn; DesvStd</th>
+                            <th>Mediana (Q1 - Q3)</th>
+                            <th>Outliers IQR</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for v in profile.variables_profile %}
+                        <tr>
+                            <td>
+                                <strong>{{ v.columna }}</strong><br>
+                                <small class="text-muted">{{ v.etiqueta }}</small>
+                            </td>
+                            <td>
+                                <span class="badge badge--dark">{{ v.categoria_tipo }}</span><br>
+                                <small class="text-muted">{{ v.tipo_tecnico }}</small>
+                            </td>
+                            <td>{{ profile.total_registros - v.nulos }}</td>
+                            <td>
+                                {% if v.nulos > 0 %}
+                                    <span class="badge badge--critical">{{ v.nulos }} ({{ v.pct_nulos }}%)</span>
+                                {% else %}
+                                    <span class="badge badge--success">0 (0.0%)</span>
+                                {% endif %}
+                            </td>
+                            <td><span class="badge badge--primary">{{ v.unicos }}</span></td>
+                            
+                            {% if v.es_numerica %}
+                                <td>{{ v.min }} / {{ v.max }}</td>
+                                <td>{{ v.media }} &plusmn; {{ v.desv_std }}</td>
+                                <td>{{ v.mediana }} ({{ v.q1 }} - {{ v.q3 }})</td>
+                                <td>
+                                    {% if v.outliers_count > 0 %}
+                                        <span class="badge badge--high">{{ v.outliers_count }} ({{ v.outliers_pct }}%)</span>
+                                    {% else %}
+                                        <span class="text-muted">0</span>
+                                    {% endif %}
+                                </td>
+                            {% else %}
+                                <td colspan="4" style="color: var(--color-text-muted); font-size: 0.74rem;">
+                                    <strong>Top valores:</strong> 
+                                    {% for top in v.top_valores[:3] %}
+                                        {{ top.valor }} ({{ top.pct }}%){% if not loop.last %}, {% endif %}
+                                    {% endfor %}
+                                </td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Hallazgos Principales -->
+        <div class="content-box">
+            <span class="section-eyebrow">02 / Diagnóstico Preliminar</span>
+            <h2 class="section-title">Hallazgos Críticos del Perfilamiento</h2>
+            <div class="grid grid--3">
+                <div class="card">
+                    <h3 class="card__title text-accent">1. Presencia de Duplicados</h3>
+                    <p class="card__text" style="font-size: 0.85rem;">
+                        Se detectaron <strong>{{ profile.duplicados_filas }} registros exactamente duplicados</strong> procedentes de la consolidación de tablas en el proceso ETL inicial.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3 class="card__title text-accent">2. Celdas Vacías Concentradas</h3>
+                    <p class="card__text" style="font-size: 0.85rem;">
+                        Los valores nulos no están distribuidos al azar: se concentran en <strong>ingreso neto (225 registros)</strong> y en <strong>calificación de microtareas (410 registros)</strong>.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3 class="card__title text-accent">3. Outliers de Jornada y Edad</h3>
+                    <p class="card__text" style="font-size: 0.85rem;">
+                        Variables como <code>horas_semanales</code> presentan valores atípicos superiores a 96h/semana derivados de errores de tipeo en las encuestas primarias.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-2 text-center">
+            <a href="{{ url_for('etapa2_dimensiones') }}" class="btn btn--primary">Ver Evaluación de las 6 Dimensiones de Calidad &rarr;</a>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

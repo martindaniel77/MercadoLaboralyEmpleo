@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}Inventario de Problemas y Causas Raíz | Etapa 2{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <span class="section-eyebrow page-header__eyebrow">Etapa 2 &middot; Diagnóstico y Auditoría</span>
+        <h1>Inventario de Problemas y Análisis de Causas Raíz</h1>
+        <p>
+            Registro detallado de los 7 problemas de calidad identificados en el dataset inicial,
+            clasificados por variable, dimensión, severidad, evidencia empírica y descomposición causal.
+        </p>
+        <div class="page-header__rule"></div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <!-- 1. Tabla de Inventario de Problemas -->
+        <div class="content-box">
+            <span class="section-eyebrow">01 / Registro de Hallazgos</span>
+            <h2 class="section-title">Inventario Estructurado de Problemas de Calidad</h2>
+            <p class="section-subtitle">
+                Matriz de no conformidades detectadas antes del tratamiento:
+            </p>
+
+            <div class="table-container">
+                <table class="data-table" style="font-size: 0.82rem;">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Variable Afectada</th>
+                            <th>Descripción del Problema</th>
+                            <th>Afectados (%)</th>
+                            <th>Dimensión</th>
+                            <th>Impacto</th>
+                            <th>Evidencia Concreta</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in inventory %}
+                        <tr>
+                            <td><strong>{{ p.id }}</strong></td>
+                            <td><code>{{ p.variable }}</code></td>
+                            <td>{{ p.descripcion }}</td>
+                            <td>
+                                <strong>{{ p.registros_afectados }}</strong><br>
+                                <small class="text-muted">({{ p.pct_afectado }}%)</small>
+                            </td>
+                            <td><span class="badge badge--dark">{{ p.dimension }}</span></td>
+                            <td>
+                                {% if p.impacto == 'Crítico' %}
+                                    <span class="badge badge--critical">{{ p.impacto }}</span>
+                                {% elif p.impacto == 'Alto' %}
+                                    <span class="badge badge--high">{{ p.impacto }}</span>
+                                {% elif p.impacto == 'Medio' %}
+                                    <span class="badge badge--medium">{{ p.impacto }}</span>
+                                {% else %}
+                                    <span class="badge badge--low">{{ p.impacto }}</span>
+                                {% endif %}
+                            </td>
+                            <td style="font-size: 0.76rem; color: var(--color-primary-soft);">{{ p.evidencia }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 2. Análisis de Causas Raíz -->
+        <div class="content-box">
+            <span class="section-eyebrow">02 / Causalidad</span>
+            <h2 class="section-title">Análisis de Causas Raíz (Root Cause Analysis)</h2>
+            <p class="section-subtitle">
+                Descomposición de los factores estructurales que originaron los problemas de calidad:
+            </p>
+
+            <div class="grid grid--3">
+                {% for eje in causes.ejes_causales %}
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;">
+                        <span class="badge badge--dark">Eje {{ loop.index }}</span>
+                        <span class="badge badge--primary">{{ eje.peso_relativo }} impacto</span>
+                    </div>
+                    <h3 class="card__title text-accent">{{ eje.categoria }}</h3>
+                    <p class="card__text" style="font-size: 0.84rem; margin-bottom: 0.8rem;">
+                        {{ eje.descripcion }}
+                    </p>
+                    <ul style="font-size: 0.78rem; padding-left: 1.1rem; color: var(--color-text);">
+                        {% for m in eje.mecanismos %}
+                        <li style="margin-bottom: 0.4rem;">{{ m }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="mt-2 text-center">
+            <a href="{{ url_for('etapa2_tratamiento') }}" class="btn btn--primary">Ver Plan de Tratamiento y Pipeline ETL &rarr;</a>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Propósito y Requisitos de Calidad | Etapa 2{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <span class="section-eyebrow page-header__eyebrow">Etapa 2 &middot; Calidad de Datos</span>
+        <h1>Propósito y Requisitos de Calidad</h1>
+        <p>
+            Definición explícita del propósito analítico del conjunto de datos en Minería de Datos,
+            identificación de usuarios objetivo y especificación de umbrales cuantitativos de aceptación.
+        </p>
+        <div class="page-header__rule"></div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <!-- 1. Propósito Analítico -->
+        <div class="content-box">
+            <span class="section-eyebrow">01 / Alcance y Finalidad</span>
+            <h2 class="section-title">Propósito del Conjunto de Datos</h2>
+            <p>
+                El conjunto de datos sobre la <strong>Gig Economy y Transformación del Empleo</strong> ha sido construido
+                y estructurado para servir como insumo empírico fundamental en las etapas posteriores del ciclo de Minería de Datos.
+                Su finalidad es modelar, contrastar y predecir los factores determinantes de las condiciones laborales,
+                la precarización económica, la brecha de ingresos reales y la cobertura de seguridad social en las tres escalas de análisis:
+                <strong>Global</strong> (contrastes entre economías desarrolladas y emergentes), <strong>Nacional</strong> (Colombia)
+                y <strong>Regional</strong> (heterogeneidad entre las principales áreas metropolitanas).
+            </p>
+            <div class="card card--accent mt-1 mb-1">
+                <h3 class="card__title text-accent">Objetivo Analítico Primario</h3>
+                <p class="card__text" style="font-size: 0.95rem;">
+                    {{ requisitos.proposito }}
+                </p>
+            </div>
+            <p>
+                A partir de este conjunto de datos se aplicarán técnicas no supervisadas (<em>K-Means</em> y <em>Clustering Jerárquico</em>
+                para segmentar perfiles de trabajadores de plataformas), reglas de asociación (<em>Apriori</em> para identificar patrones
+                de pluriactividad y desprotección social) y modelos predictivos supervisados (árboles de decisión y regresiones para estimar
+                la remuneración neta efectiva por hora).
+            </p>
+        </div>
+
+        <!-- 2. Usuarios Objetivo y Requisitos -->
+        <div class="content-box">
+            <span class="section-eyebrow">02 / Stakeholders</span>
+            <h2 class="section-title">Usuarios Objetivo y Necesidades de Calidad</h2>
+            <p class="section-subtitle">
+                Diferentes actores interactúan con los resultados del proyecto, demandando garantías específicas sobre la calidad de la información:
+            </p>
+
+            <div class="grid grid--3">
+                {% for u in requisitos.usuarios_objetivo %}
+                <div class="card">
+                    <span class="badge badge--dark mb-1">{{ loop.index }}</span>
+                    <h3 class="card__title text-accent">{{ u.rol }}</h3>
+                    <p class="card__text" style="font-size: 0.85rem; margin-bottom: 0.8rem;">
+                        <strong>Necesidad:</strong> {{ u.necesidad }}
+                    </p>
+                    <div style="background: var(--color-bg); padding: 0.6rem 0.8rem; border-radius: var(--radius-sm); border-left: 3px solid var(--color-accent-dark); font-size: 0.78rem;">
+                        <strong>Requisito Crítico:</strong> {{ u.requisito_critico }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- 3. Criterios de Aceptación -->
+        <div class="content-box">
+            <span class="section-eyebrow">03 / Estándares</span>
+            <h2 class="section-title">Matriz de Criterios de Aceptación por Dimensión</h2>
+            <p class="section-subtitle">
+                Umbrales cuantitativos mínimos requeridos para considerar el conjunto de datos apto para algoritmos de minería:
+            </p>
+
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Dimensión de Calidad</th>
+                            <th>Umbral Mínimo de Aceptación</th>
+                            <th>Justificación Técnica en Minería de Datos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for c in requisitos.criterios_aceptacion %}
+                        <tr>
+                            <td><strong>{{ c.dimension }}</strong></td>
+                            <td><span class="badge badge--primary">{{ c.umbral_minimo }}</span></td>
+                            <td style="font-size: 0.84rem;">{{ c.justificacion }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 4. Navegación rápida Etapa 2 -->
+        <div class="mt-2 text-center">
+            <a href="{{ url_for('etapa2_perfilamiento') }}" class="btn btn--primary">Continuar al Perfilamiento de Datos &rarr;</a>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

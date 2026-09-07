@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Plan de Tratamiento y Pipeline | Etapa 2{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <span class="section-eyebrow page-header__eyebrow">Etapa 2 &middot; Limpieza y Transformación</span>
+        <h1>Plan de Tratamiento y Pipeline de Limpieza</h1>
+        <p>
+            Estrategia técnica de depuración, corrección de inconsistencias, estandarización ortográfica,
+            imputación justificada de valores nulos y winsorización de outliers.
+        </p>
+        <div class="page-header__rule"></div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <!-- Flujo del Pipeline -->
+        <div class="content-box">
+            <span class="section-eyebrow">01 / Arquitectura ETL</span>
+            <h2 class="section-title">Pipeline Automatizado de Tratamiento (6 Fases)</h2>
+            <p class="section-subtitle">
+                Secuencia determinística de transformaciones ejecutadas por <code>data_service.py</code>:
+            </p>
+
+            <div class="pipeline-flow">
+                {% for s in steps %}
+                <div class="pipeline-step">
+                    <div class="pipeline-step__num">{{ s.paso }}</div>
+                    <div class="pipeline-step__content">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                            <h3>{{ s.nombre }}</h3>
+                            <span class="badge badge--dark">{{ s.problema_asociado }}</span>
+                        </div>
+                        <p style="font-size: 0.86rem; margin: 0.4rem 0;">
+                            <strong>Técnica:</strong> {{ s.tecnica_aplicada }}
+                        </p>
+                        <p style="font-size: 0.80rem; color: var(--color-text-muted); margin: 0;">
+                            <strong>Justificación en Minería:</strong> {{ s.justificacion }}
+                        </p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Criterios de Imputación y Transformación -->
+        <div class="content-box">
+            <span class="section-eyebrow">02 / Decisiones Metodológicas</span>
+            <h2 class="section-title">Justificación Técnica de los Tratamientos Aplicados</h2>
+            <div class="grid grid--2">
+                <div class="card">
+                    <h3 class="card__title text-accent">¿Por qué Imputación por Mediana Condicional?</h3>
+                    <p class="card__text" style="font-size: 0.85rem;">
+                        Las variables de <code>costos_operativos</code> y <code>horas_semanales</code> exhiben distribuciones asimétricas
+                        con sesgo a la derecha según el sector. Imputar con la media global inflaría artificialmente los costos de un repartidor
+                        o subestimaría los de un conductor de Uber. La <strong>mediana por categoría de servicio</strong> preserva la representatividad
+                        de cada subgrupo sin distorsionar la varianza.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3 class="card__title text-accent">¿Por qué Winsorización en lugar de Eliminación?</h3>
+                    <p class="card__text" style="font-size: 0.85rem;">
+                        Eliminar filas con jornadas extremas (> 96h) reduciría el tamaño muestral en segmentos vulnerables.
+                        El <strong>acotamiento acotado (Winsorizing)</strong> al rango legal plausible [5h, 84h] retiene la observación
+                        y corrige el error tipográfico de captura sin perder las demás características del individuo.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-2 text-center">
+            <a href="{{ url_for('etapa2_comparacion') }}" class="btn btn--primary">Ver Comparación Antes y Después &rarr;</a>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

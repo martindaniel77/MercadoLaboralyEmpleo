@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Dimensiones y Métricas de Calidad | Etapa 2{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <span class="section-eyebrow page-header__eyebrow">Etapa 2 &middot; Medición de Calidad</span>
+        <h1>Evaluación de las 6 Dimensiones de Calidad</h1>
+        <p>
+            Medición cuantitativa, formulación matemática y cálculo de indicadores para las 6 dimensiones
+            fundamentales de calidad sobre el conjunto de datos antes de aplicar el tratamiento.
+        </p>
+        <div class="page-header__rule"></div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <!-- Banner de DQI Global Inicial -->
+        <div class="card card--dark mb-2" style="border-left: 6px solid var(--color-accent);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                <div>
+                    <span class="section-eyebrow" style="color: var(--color-accent-soft);">Índice Compuesto Global</span>
+                    <h2 style="color: var(--color-white); margin-bottom: 0.3rem;">DQI Inicial (Data Quality Index): {{ dimensions.dqi_global }}%</h2>
+                    <p style="color: rgba(255,255,255,0.8); font-size: 0.88rem; margin: 0;">
+                        Promedio ponderado de Completitud (20%), Exactitud (25%), Consistencia (20%), Unicidad (15%), Validez (10%) y Actualidad (10%).
+                    </p>
+                </div>
+                <div style="text-align: right;">
+                    <span class="badge badge--medium" style="font-size: 1rem; padding: 0.5rem 1rem;">Estado: Requiere Tratamiento</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grid de las 6 Dimensiones -->
+        <div class="grid grid--2 mb-2">
+            {% for d in dimensions.dimensiones %}
+            <div class="quality-card">
+                <div>
+                    <div class="quality-card__header">
+                        <div>
+                            <span class="badge badge--dark">Dimensión {{ loop.index }}</span>
+                            <h3 style="margin-top: 0.4rem; margin-bottom: 0.2rem;">{{ d.nombre }}</h3>
+                        </div>
+                        <div class="quality-card__score {% if d.score >= 99.0 %}quality-card__score--high{% elif d.score >= 95.0 %}quality-card__score--mid{% else %}quality-card__score--low{% endif %}">
+                            {{ d.score }}%
+                        </div>
+                    </div>
+
+                    <p style="font-size: 0.85rem; color: var(--color-text); margin-bottom: 0.6rem;">
+                        <strong>Métrica:</strong> {{ d.metrica }}
+                    </p>
+
+                    <div class="quality-card__formula">
+                        <strong>Fórmula:</strong> <code>{{ d.formula }}</code>
+                    </div>
+
+                    <div style="font-size: 0.82rem; margin-bottom: 0.8rem;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.2rem;">
+                            <span class="text-muted">Casos conformes:</span>
+                            <strong>{{ d.numerador }} / {{ d.denominador }}</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span class="text-muted">{{ d.unidad_afectados }}:</span>
+                            <strong style="color: {% if d.afectados > 0 %}#b91c1c{% else %}#15803d{% endif %};">{{ d.afectados }}</strong>
+                        </div>
+                    </div>
+
+                    <div class="progress-track mb-1">
+                        <div class="progress-fill {% if d.score >= 99.0 %}progress-fill--success{% elif d.score >= 95.0 %}progress-fill--warning{% else %}progress-fill--danger{% endif %}" style="width: {{ d.score }}%;"></div>
+                    </div>
+                </div>
+
+                <div style="border-top: 1px solid var(--color-border); padding-top: 0.6rem; font-size: 0.78rem; color: var(--color-text-muted);">
+                    <strong>Interpretación:</strong> {{ d.interpretacion }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Síntesis Metodológica -->
+        <div class="content-box">
+            <span class="section-eyebrow">02 / Justificación Teórica</span>
+            <h2 class="section-title">Marco de Medición de Calidad de Datos</h2>
+            <p>
+                La evaluación de calidad no se limita a contar valores nulos. En Minería de Datos, la <strong>Exactitud</strong> y la
+                <strong>Consistencia</strong> son determinantes: un dataset con 0% de nulos pero con contradicciones contables
+                (ingreso neto mayor que el bruto) o inconsistencias legales (trabajadores en Sisbén que cotizan a ARL) distorsionaría
+                por completo los árboles de decisión y los modelos de regresión.
+            </p>
+        </div>
+
+        <div class="mt-2 text-center">
+            <a href="{{ url_for('etapa2_inventario') }}" class="btn btn--primary">Ver Inventario de Problemas y Causas &rarr;</a>
+        </div>
+
+    </div>
+</section>
+{% endblock %}
