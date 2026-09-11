@@ -704,8 +704,8 @@ def ensure_dataset_exists(force=False):
         writer.writerows(registros)
         
     
-def get_all_records():
-    """Retorna todos los registros como lista de diccionarios del dataset raw."""
+def get_all_records(dataset_type='raw'):
+    """Retorna todos los registros como lista de diccionarios del dataset."""
     ensure_dataset_exists()
     records = []
     with open(CSV_PATH, 'r', encoding='utf-8') as f:
