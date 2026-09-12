@@ -25,74 +25,110 @@
 
 <body>
 
-    <header class="navbar" id="navbar">
-        <div class="navbar__topbar"></div>
-        <div class="navbar__inner container">
-            <a href="{{ url_for('home') }}" class="navbar__brand">
-                <span class="navbar__brand-mark">ML</span>
-                <span class="navbar__brand-text">
-                    <strong>Mercado Laboral &amp; Empleo</strong>
-                    <small>Proyecto de Minería de Datos</small>
-                </span>
-            </a>
+    {% set endpoint = request.endpoint or '' %}
+    {% set is_etapa1 = endpoint in ['problema', 'preguntas', 'necesidades', 'fuentes', 'dataset', 'diccionario', 'calidad', 'limitaciones'] %}
+    {% set is_etapa2 = endpoint.startswith('etapa2_') or request.path.startswith('/etapa-2/') %}
 
-            <button class="navbar__toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-
-            <nav class="navbar__menu" id="navMenu" aria-label="Menú principal">
-                <a href="{{ url_for('home') }}" class="nav-link {{ 'active' if request.endpoint == 'home' }}">Inicio</a>
-
-                <div class="nav-item nav-item--dropdown">
-                    <button class="nav-link nav-link--dropdown" aria-haspopup="true" aria-expanded="false">
-                        Etapa 1 <span class="nav-caret"></span>
-                    </button>
-                    <ul class="dropdown">
-                        <li><a href="{{ url_for('problema') }}"
-                                class="{{ 'active' if request.endpoint == 'problema' }}">Problema y contexto</a></li>
-                        <li><a href="{{ url_for('preguntas') }}"
-                                class="{{ 'active' if request.endpoint == 'preguntas' }}">Pregunta principal y
-                                secundarias</a></li>
-                        <li><a href="{{ url_for('necesidades') }}"
-                                class="{{ 'active' if request.endpoint == 'necesidades' }}">Necesidades de
-                                información</a></li>
-                        <li><a href="{{ url_for('fuentes') }}"
-                                class="{{ 'active' if request.endpoint == 'fuentes' }}">Fuentes de datos</a></li>
-                        <li><a href="{{ url_for('dataset') }}"
-                                class="{{ 'active' if request.endpoint == 'dataset' }}">Dataset</a></li>
-                        <li><a href="{{ url_for('diccionario') }}"
-                                class="{{ 'active' if request.endpoint == 'diccionario' }}">Diccionario de datos</a>
-                        </li>
-                        <li><a href="{{ url_for('calidad') }}"
-                                class="{{ 'active' if request.endpoint == 'calidad' }}">Calidad inicial de los datos</a>
-                        </li>
-                        <li><a href="{{ url_for('limitaciones') }}"
-                                class="{{ 'active' if request.endpoint == 'limitaciones' }}">Limitaciones y
-                                consideraciones</a></li>
-                    </ul>
+    <div class="app">
+        <!-- ===== Sidebar / Índice de la bitácora ===== -->
+        <aside class="sidebar" id="navMenu" aria-label="Índice de la bitácora">
+            <div class="sidebar__header">
+                <div class="sidebar__identity">
+                    <span class="sidebar__mark">ML</span>
+                    <div class="sidebar__identity-text">
+                        <span class="sidebar__eyebrow">Proyecto de Minería de Datos</span>
+                        <strong class="sidebar__title">Mercado Laboral y Transformación del Empleo</strong>
+                    </div>
                 </div>
+                <button class="sidebar__toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
 
-                <span class="nav-link nav-link--disabled">Etapa 2</span>
-                <span class="nav-link nav-link--disabled">Etapa 3</span>
-                <span class="nav-link nav-link--disabled">Etapa 4</span>
-                <span class="nav-link nav-link--disabled">Etapa 5</span>
+            <nav class="sidebar__nav">
+                <a href="{{ url_for('home') }}" class="sidebar__home {{ 'active' if endpoint == 'home' }}">Inicio</a>
+
+                <!-- ETAPA 1 -->
+                <details class="stage {{ 'stage--active' if is_etapa1 }}" {{ 'open' if is_etapa1 }}>
+                    <summary>
+                        <span class="stage__num">ETAPA 01</span>
+                        <span class="stage__sep">&mdash;</span>
+                        <span class="stage__title">Formulación y contexto</span>
+                    </summary>
+                    <ul class="stage__pages">
+                        <li><a href="{{ url_for('problema') }}" class="{{ 'active' if endpoint == 'problema' }}"><span class="stage__page-num">01</span> Problema y contexto</a></li>
+                        <li><a href="{{ url_for('preguntas') }}" class="{{ 'active' if endpoint == 'preguntas' }}"><span class="stage__page-num">02</span> Pregunta principal y secundarias</a></li>
+                        <li><a href="{{ url_for('necesidades') }}" class="{{ 'active' if endpoint == 'necesidades' }}"><span class="stage__page-num">03</span> Necesidades de información</a></li>
+                        <li><a href="{{ url_for('fuentes') }}" class="{{ 'active' if endpoint == 'fuentes' }}"><span class="stage__page-num">04</span> Fuentes de datos</a></li>
+                        <li><a href="{{ url_for('dataset') }}" class="{{ 'active' if endpoint == 'dataset' }}"><span class="stage__page-num">05</span> Dataset</a></li>
+                        <li><a href="{{ url_for('diccionario') }}" class="{{ 'active' if endpoint == 'diccionario' }}"><span class="stage__page-num">06</span> Diccionario de datos</a></li>
+                        <li><a href="{{ url_for('calidad') }}" class="{{ 'active' if endpoint == 'calidad' }}"><span class="stage__page-num">07</span> Calidad inicial de los datos</a></li>
+                        <li><a href="{{ url_for('limitaciones') }}" class="{{ 'active' if endpoint == 'limitaciones' }}"><span class="stage__page-num">08</span> Limitaciones y consideraciones</a></li>
+                    </ul>
+                </details>
+
+                <!-- ETAPA 2 -->
+                <details class="stage {{ 'stage--active' if is_etapa2 }}" {{ 'open' if is_etapa2 }}>
+                    <summary>
+                        <span class="stage__num">ETAPA 02</span>
+                        <span class="stage__sep">&mdash;</span>
+                        <span class="stage__title">Calidad y preparación de datos</span>
+                    </summary>
+                    <ul class="stage__pages">
+                        <li><a href="{{ url_for('etapa2_proposito') }}" class="{{ 'active' if endpoint == 'etapa2_proposito' }}"><span class="stage__page-num">01</span> Propósito y requisitos</a></li>
+                        <li><a href="{{ url_for('etapa2_perfilamiento') }}" class="{{ 'active' if endpoint == 'etapa2_perfilamiento' }}"><span class="stage__page-num">02</span> Perfilamiento del dataset</a></li>
+                        <li><a href="{{ url_for('etapa2_dimensiones') }}" class="{{ 'active' if endpoint == 'etapa2_dimensiones' }}"><span class="stage__page-num">03</span> Dimensiones y métricas</a></li>
+                        <li><a href="{{ url_for('etapa2_inventario') }}" class="{{ 'active' if endpoint == 'etapa2_inventario' }}"><span class="stage__page-num">04</span> Inventario de problemas</a></li>
+                        <li><a href="{{ url_for('etapa2_tratamiento') }}" class="{{ 'active' if endpoint == 'etapa2_tratamiento' }}"><span class="stage__page-num">05</span> Plan de tratamiento</a></li>
+                    </ul>
+                </details>
+
+                <!-- ETAPAS 3, 4 y 5 (pendientes) -->
+                <div class="stage stage--locked">
+                    <span class="stage__num">ETAPA 03</span>
+                    <span class="stage__sep">&mdash;</span>
+                    <span class="stage__title">Por definir</span>
+                </div>
+                <div class="stage stage--locked">
+                    <span class="stage__num">ETAPA 04</span>
+                    <span class="stage__sep">&mdash;</span>
+                    <span class="stage__title">Por definir</span>
+                </div>
+                <div class="stage stage--locked">
+                    <span class="stage__num">ETAPA 05</span>
+                    <span class="stage__sep">&mdash;</span>
+                    <span class="stage__title">Por definir</span>
+                </div>
             </nav>
-        </div>
-    </header>
 
-    <main class="content">
-        {% block content %}{% endblock %}
-    </main>
+            <div class="sidebar__progress">
+                <div class="sidebar__progress-top">
+                    <span class="sidebar__progress-label">Progreso</span>
+                    <strong class="sidebar__progress-count">1 / 5 etapas</strong>
+                </div>
+                <div class="progress-track" aria-hidden="true">
+                    <div class="progress-fill" style="width: 30%;"></div>
+                </div>
+                <span class="sidebar__progress-status">Etapa 1 terminada &middot; Etapa 2 en curso</span>
+            </div>
+        </aside>
 
-    <footer class="footer">
-        <div class="container footer__inner">
-            <span class="footer__brand">Mercado Laboral &amp; Empleo</span>
-            <span>Proyecto académico de Minería de Datos</span>
-            <span>&copy; 2026</span>
+        <div class="app__main">
+            <main class="content">
+                {% block content %}{% endblock %}
+            </main>
+
+            <footer class="footer">
+                <div class="container footer__inner">
+                    <span class="footer__brand">Mercado Laboral &amp; Empleo</span>
+                    <span>Proyecto académico de Minería de Datos</span>
+                    <span>&copy; 2026</span>
+                </div>
+            </footer>
         </div>
-    </footer>
+    </div>
 
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     {% block scripts %}{% endblock %}

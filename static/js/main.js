@@ -28,4 +28,16 @@
             }
         });
     });
+
+    // Cerrar el sidebar al elegir una página (solo en móvil)
+    var sidebarLinks = menu ? menu.querySelectorAll('a') : [];
+
+    Array.prototype.forEach.call(sidebarLinks, function (link) {
+        link.addEventListener('click', function () {
+            if (menu.classList.contains('is-open')) {
+                menu.classList.remove('is-open');
+                toggle.setAttribute('aria-expanded', 'false');
+            }
+        });
+    });
 })();

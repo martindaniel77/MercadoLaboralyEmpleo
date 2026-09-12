@@ -77,29 +77,52 @@ def limitaciones():
     return render_template('limitaciones.html')
 
 
+# ============================================================
+# RUTAS DE LA ETAPA 2: CALIDAD, DIAGNÓSTICO Y TRATAMIENTO
+# ============================================================
+
+@app.route('/etapa-2/proposito-requisitos')
+def etapa2_proposito():
+    requisitos = data_service.REQUISITOS_CALIDAD
+    return render_template('etapa2_proposito.html', requisitos=requisitos)
+
+
+@app.route('/etapa-2/perfilamiento')
+def etapa2_perfilamiento():
+    profile = data_service.profile_dataset('raw')
+    diccionario_datos = data_service.DICCIONARIO_DATOS
+    return render_template('etapa2_perfilamiento.html', profile=profile, diccionario=diccionario_datos)
+
+
+@app.route('/etapa-2/dimensiones-metricas')
+def etapa2_dimensiones():
+    dimensions = data_service.calculate_quality_dimensions('raw')
+    return render_template('etapa2_dimensiones.html', dimensions=dimensions)
+
+
+@app.route('/etapa-2/inventario-problemas')
+def etapa2_inventario():
+    inventory = data_service.get_problem_inventory()
+    causes = data_service.get_root_cause_analysis()
+    return render_template('etapa2_inventario.html', inventory=inventory, causes=causes)
+
+
+@app.route('/etapa-2/plan-tratamiento')
+def etapa2_tratamiento():
+    steps = data_service.get_treatment_plan_steps()
+    return render_template('etapa2_tratamiento.html', steps=steps)
+
+
+
 @app.route('/descargar-dataset')
 def descargar_dataset():
     data_service.ensure_dataset_exists()
     return send_file(
         data_service.CSV_PATH,
         as_attachment=True,
-        download_name='dataset_gig_economy_consolidado.csv',
+        download_name='dataset_gig_economy_inicial_raw.csv',
         mimetype='text/csv'
     )
-
-
-@app.route('/api/dataset')
-def api_dataset():
-    page = request.args.get('page', 1, type=int)
-    search = request.args.get('q', '', type=str)
-    nivel = request.args.get('nivel', '', type=str)
-    tipo_plat = request.args.get('tipo', '', type=str)
-    pais = request.args.get('pais', '', type=str)
-    
-    pagination = data_service.get_filtered_sample(
-        page=page, per_page=12, search=search, nivel=nivel, tipo_plat=tipo_plat, pais=pais
-    )
-    return jsonify(pagination)
 
 
 @app.route('/favicon.ico')
@@ -109,3 +132,4 @@ def favicon():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
