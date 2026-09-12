@@ -34,6 +34,46 @@
             </div>
         </div>
 
+        <!-- Proceso de Medición de Dimensiones -->
+        <div class="content-box">
+            <span class="section-eyebrow">01 / Metodología</span>
+            <h2 class="section-title">Proceso para Medir las 6 Dimensiones</h2>
+            <p class="section-subtitle">
+                Cada puntaje se obtuvo mediante la función <code>calculate_quality_dimensions()</code> de
+                <code>data_service.py</code>, evaluando las 12.500 filas del dataset raw. El proceso fue:
+            </p>
+            <ol style="font-size: 0.88rem; line-height: 1.9;">
+                <li><strong>Definición de requisitos y umbrales de aceptación:</strong> a partir de
+                    <code>REQUISITOS_CALIDAD</code> se fijaron el propósito analítico, los usuarios objetivo y el
+                    umbral mínimo exigido por dimensión (Completitud ≥ 99%, Exactitud = 100%, Consistencia = 100%,
+                    Unicidad = 100%, Validez ≥ 99.5%, Actualidad = 100%).</li>
+                <li><strong>Operacionalización métrica:</strong> cada dimensión se formalizó como una fórmula con
+                    numerador y denominador explícitos (ver tarjetas de cada dimensión), evitando evaluaciones
+                    subjetivas.</li>
+                <li><strong>Evaluación fila a fila sobre el dataset:</strong>
+                    <ul style="font-size: 0.88rem; line-height: 1.9;">
+                        <li><strong>Completitud:</strong> celdas no nulas sobre el total de 337.500 celdas.</li>
+                        <li><strong>Exactitud:</strong> registros donde |Neto − (Bruto − Costos)| ≤ 150 COP
+                            (margen de redondeo).</li>
+                        <li><strong>Consistencia:</strong> registros sin contradicciones lógicas (Régimen Subsidiado
+                            con cotización a pensión y ARL; Posgrado con edad &lt; 22).</li>
+                        <li><strong>Unicidad:</strong> registros libres de duplicidad de clave o fila completa.</li>
+                        <li><strong>Validez:</strong> registros conformes con dominios (países, niveles), rangos de
+                            edad [18,75], jornadas [4h, 88h] y ciudades canónicas.</li>
+                        <li><strong>Actualidad:</strong> registros con año dentro de la ventana 2021–2026.</li>
+                    </ul>
+                </li>
+                <li><strong>Ponderación del DQI:</strong> índice compuesto
+                    <code>0.20·Completitud + 0.25·Exactitud + 0.20·Consistencia + 0.15·Unicidad + 0.10·Validez +
+                        0.10·Actualidad</code> (los pesos reflejan la criticidad de cada dimensión para los modelos).</li>
+                <li><strong>Clasificación del estado:</strong> cada dimensión se etiqueta como
+                    <em>Excelente / Aceptable / Crítico</em> según su umbral; un DQI por debajo del nivel exigido
+                    confirma que el dataset requiere tratamiento antes de minería.</li>
+                <li><strong>Interpretación:</strong> el DQI inicial obtenido es la línea base que se contrastará con
+                    el DQI del dataset tratado para validar la efectividad del plan de limpieza.</li>
+            </ol>
+        </div>
+
         <!-- Grid de las 6 Dimensiones -->
         <div class="grid grid--2 mb-2">
             {% for d in dimensions.dimensiones %}
@@ -82,7 +122,7 @@
 
         <!-- Síntesis Metodológica -->
         <div class="content-box">
-            <span class="section-eyebrow">02 / Justificación Teórica</span>
+            <span class="section-eyebrow">03 / Justificación Teórica</span>
             <h2 class="section-title">Marco de Medición de Calidad de Datos</h2>
             <p>
                 La evaluación de calidad no se limita a contar valores nulos. En Minería de Datos, la <strong>Exactitud</strong> y la

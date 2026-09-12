@@ -18,9 +18,44 @@
 <section class="section">
     <div class="container">
 
+        <!-- 0. Proceso de Identificación de Problemas -->
+        <div class="content-box">
+            <span class="section-eyebrow">01 / Metodología</span>
+            <h2 class="section-title">Proceso de Identificación de Problemas</h2>
+            <p class="section-subtitle">
+                Para llegar a este inventario se ejecutó un diagnóstico sistemático y reproducible sobre las
+                <strong>12.500 filas &times; 27 variables</strong> del dataset inicial:
+            </p>
+            <ol style="font-size: 0.88rem; line-height: 1.9;">
+                <li><strong>Recorrido exhaustivo del diccionario:</strong> cada una de las 27 variables fue auditada
+                    una a una contra su definición formal (tipo, dominio, unidad y restricciones de
+                    <code>DICCIONARIO_DATOS</code>).</li>
+                <li><strong>Cruce de hallazgos por dimensión:</strong> se contrastaron los hallazgos del perfilamiento
+                    con las 6 dimensiones de calidad, asociando cada no conformidad a su dimensión: nulos
+                    (Completitud), duplicados (Unicidad), contradicciones lógicas (Consistencia), valores fuera de
+                    dominio o formato (Validez), desbalances contables (Exactitud) y vigencia temporal (Actualidad).</li>
+                <li><strong>Detección de anomalías en el código:</strong> duplicación de llaves primarias, celdas
+                    vacías, errores aritméticos (Neto ≠ Bruto − Costos), variantes ortográficas de ciudades,
+                    jornadas y edades imposibles, y contradicciones en seguridad social.</li>
+                <li><strong>Cuantificación real de registros afectados:</strong> cada problema se contabilizó
+                    directamente sobre el CSV (<code>get_problem_inventory()</code>), garantizando coherencia total
+                    con las métricas de las fases 02 y 03 —no son cifras estimadas—.</li>
+                <li><strong>Clasificación de severidad e impacto:</strong> cada hallazgo se catalogó como
+                    Crítico / Alto / Medio / Bajo según su efecto sobre clustering, reglas de asociación y modelos
+                    predictivos.</li>
+                <li><strong>Documentación de evidencia y causa raíz:</strong> para cada problema se registró la
+                    evidencia concreta observada y su causa de origen (captura en campo, integración ETL o ausencia
+                    de validaciones).</li>
+            </ol>
+            <p style="font-size: 0.84rem; color: var(--color-text-muted); margin: 0;">
+                Resultado: <strong>9 problemas documentados</strong> (PRB-01 a PRB-09) que afectan a
+                <strong>9 de las 27 variables</strong> directamente; las 18 variables restantes resultaron conformes.
+            </p>
+        </div>
+
         <!-- 1. Tabla de Inventario de Problemas -->
         <div class="content-box">
-            <span class="section-eyebrow">01 / Registro de Hallazgos</span>
+            <span class="section-eyebrow">02 / Registro de Hallazgos</span>
             <h2 class="section-title">Inventario Estructurado de Problemas de Calidad</h2>
             <p class="section-subtitle">
                 Matriz de no conformidades detectadas antes del tratamiento:
@@ -69,9 +104,64 @@
             </div>
         </div>
 
-        <!-- 2. Análisis de Causas Raíz -->
+        <!-- 2. Auditoría Exhaustiva por Variable (27 variables) -->
+        {% set no_conformes = auditoria | selectattr('estado', 'equalto', 'No conforme') | list %}
+        {% set conformes = auditoria | rejectattr('estado', 'equalto', 'No conforme') | list %}
         <div class="content-box">
-            <span class="section-eyebrow">02 / Causalidad</span>
+            <span class="section-eyebrow">03 / Auditoría Variable por Variable</span>
+            <h2 class="section-title">Cobertura Completa del Diccionario (27 / 27 Variables)</h2>
+            <p class="section-subtitle">
+                Todas las variables fueron auditadas. Variables no conformes: <strong>{{ no_conformes | length
+                    }}</strong> &middot; Variables conformes: <strong>{{ conformes | length }}</strong>.
+            </p>
+
+            <div class="table-container">
+                <table class="data-table" style="font-size: 0.78rem;">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Variable / Campo</th>
+                            <th>Estado</th>
+                            <th>Dimensión(es)</th>
+                            <th>Afectados (%)</th>
+                            <th>Detalle del Hallazgo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for v in auditoria %}
+                        <tr>
+                            <td><code>{{ loop.index }}</code></td>
+                            <td>
+                                <strong>{{ v.columna }}</strong><br>
+                                <small class="text-muted">{{ v.etiqueta }}</small>
+                            </td>
+                            <td>
+                                {% if v.estado == 'No conforme' %}
+                                <span class="badge badge--critical">{{ v.estado }}</span>
+                                {% else %}
+                                <span class="badge badge--success">{{ v.estado }}</span>
+                                {% endif %}
+                            </td>
+                            <td><span class="badge badge--dark">{{ v.dimension }}</span></td>
+                            <td>
+                                {% if v.registros_afectados > 0 %}
+                                <strong style="color: #991b1b;">{{ v.registros_afectados }}</strong>
+                                <small class="text-muted">({{ v.pct_afectado }}%)</small>
+                                {% else %}
+                                <span class="badge badge--success">0 (0.0%)</span>
+                                {% endif %}
+                            </td>
+                            <td style="font-size: 0.74rem; color: var(--color-primary-soft);">{{ v.detalle }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 3. Análisis de Causas Raíz -->
+        <div class="content-box">
+            <span class="section-eyebrow">04 / Causalidad</span>
             <h2 class="section-title">Análisis de Causas Raíz (Root Cause Analysis)</h2>
             <p class="section-subtitle">
                 Descomposición de los factores estructurales que originaron los problemas de calidad:

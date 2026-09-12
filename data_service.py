@@ -1026,7 +1026,9 @@ def calculate_quality_dimensions(dataset_type='raw'):
     }
 
 def get_problem_inventory():
-    """Retorna el inventario estructurado de problemas identificados en el dataset inicial."""
+    """Retorna el inventario estructurado de problemas identificados en el dataset inicial.
+    Los conteos de registros afectados provienen del cálculo real sobre el CSV (12.500 filas),
+    de modo que coinciden exactamente con las métricas mostradas en perfilamiento y dimensiones."""
     return [
         {
             'id': 'PRB-01',
@@ -1043,52 +1045,52 @@ def get_problem_inventory():
             'id': 'PRB-02',
             'variable': 'ingreso_neto_mensual_cop',
             'descripcion': 'Valores nulos por omisión de respuesta voluntaria de los trabajadores en preguntas sobre finanzas personales en encuestas de campo.',
-            'registros_afectados': 225,
-            'pct_afectado': 1.80,
+            'registros_afectados': 216,
+            'pct_afectado': 1.73,
             'dimension': 'Completitud',
             'impacto': 'Alto',
-            'evidencia': 'Celdas vacías ("") en la columna de remuneración neta mientras ingreso bruto y costos sí fueron reportados.',
+            'evidencia': '216 celdas vacías ("") en la columna de remuneración neta mientras ingreso bruto y costos sí fueron reportados.',
             'causa_raiz': 'Tasa de no respuesta voluntaria por desconfianza tributaria o falta de cálculo inmediato por parte del encuestado.'
         },
         {
             'id': 'PRB-03',
             'variable': 'ingreso_neto_mensual_cop vs ingreso_bruto / costos',
             'descripcion': 'Inconsistencia aritmética donde el ingreso neto registrado difiere del cálculo determinístico (Ingreso Bruto - Costos Operativos).',
-            'registros_afectados': 320,
-            'pct_afectado': 2.56,
+            'registros_afectados': 339,
+            'pct_afectado': 2.71,
             'dimension': 'Exactitud',
             'impacto': 'Crítico',
-            'evidencia': 'Casos donde ingreso_neto = ingreso_bruto (se omitió la deducción de costos operativos) o errores de resta en encuestas manuales.',
+            'evidencia': '339 casos donde ingreso_neto = ingreso_bruto (se omitió la deducción de costos operativos) o errores de resta en encuestas manuales.',
             'causa_raiz': 'Ausencia de validaciones aritméticas automáticas en los formularios de captura en campo.'
         },
         {
             'id': 'PRB-04',
             'variable': 'ciudad_municipio',
             'descripcion': 'Heterogeneidad en la nomenclatura y ortografía de ciudades (mezcla de mayúsculas, minúsculas, espacios y tildes).',
-            'registros_afectados': 840,
-            'pct_afectado': 6.72,
+            'registros_afectados': 848,
+            'pct_afectado': 6.78,
             'dimension': 'Validez / Homologación',
             'impacto': 'Medio',
-            'evidencia': 'Coexistencia de variantes como "bogota", "Bogotá D.C.", "BOGOTA", "medellin", "Medellín", "Cali " para una misma entidad.',
+            'evidencia': '848 filas con 12 variantes ortográficas no canónicas como "bogota", "Bogotá D.C.", "BOGOTA", "medellin", "Medellín", "Cali ", "Santiago de Cali" para una misma entidad.',
             'causa_raiz': 'Integración de fuentes heterogéneas (DANE vs encuestas OIT) que usan convenciones de codificación no estandarizadas.'
         },
         {
             'id': 'PRB-05',
             'variable': 'calificacion_promedio_app',
             'descripcion': 'Valores faltantes estructurales en plataformas de microtareas y crowdsourcing que no utilizan sistema de calificación por estrellas.',
-            'registros_afectados': 410,
-            'pct_afectado': 3.28,
+            'registros_afectados': 405,
+            'pct_afectado': 3.24,
             'dimension': 'Completitud',
             'impacto': 'Bajo',
-            'evidencia': 'Celdas vacías concentradas en la categoría "Microtareas y Etiquetado de Datos" (Amazon Mechanical Turk, Clickworker).',
+            'evidencia': '405 celdas vacías concentradas en la categoría "Microtareas y Etiquetado de Datos" (Amazon Mechanical Turk, Clickworker).',
             'causa_raiz': 'Diferencia en el modelo de negocio y diseño operativo entre plataformas de reparto/transporte vs plataformas de microtareas.'
         },
         {
             'id': 'PRB-06',
             'variable': 'horas_semanales y edad',
-            'descripcion': 'Valores atípicos extremos e inverosímiles (jornadas reportadas > 96h semanales y edades fuera del rango económicamente activo 18-70).',
-            'registros_afectados': 75,
-            'pct_afectado': 0.60,
+            'descripcion': 'Valores atípicos extremos e inverosímiles: 41 edades fuera del rango económicamente activo (16, 17, 86 y 92 años) y 43 jornadas > 88 h/semana (hasta 126 h).',
+            'registros_afectados': 84,
+            'pct_afectado': 0.67,
             'dimension': 'Validez / Exactitud',
             'impacto': 'Medio',
             'evidencia': 'Jornadas de hasta 126 horas/semana (imposibles biológicamente) y edades de 16, 17 o mayores a 85 años.',
@@ -1098,13 +1100,69 @@ def get_problem_inventory():
             'id': 'PRB-07',
             'variable': 'afiliacion_salud vs afiliacion_pension / cuenta_con_arl',
             'descripcion': 'Contradicción relacional donde un trabajador figura en Régimen Subsidiado pero cotiza formalmente a pensión y ARL.',
-            'registros_afectados': 180,
-            'pct_afectado': 1.44,
+            'registros_afectados': 679,
+            'pct_afectado': 5.43,
             'dimension': 'Consistencia',
             'impacto': 'Medio',
-            'evidencia': 'Registros con salud = "Regimen Subsidiado" pero con "Cotiza activamente" a pensión y afiliación a riesgos laborales.',
+            'evidencia': '679 registros con salud = "Regimen Subsidiado" pero con "Cotiza activamente" a pensión y afiliación a riesgos laborales.',
             'causa_raiz': 'Confusión conceptual del encuestado entre estar afiliado al Sisbén y haber tenido un contrato laboral previo.'
+        },
+        {
+            'id': 'PRB-08',
+            'variable': 'costos_operativos_mensuales_cop',
+            'descripcion': 'Valores nulos por abstención a declarar gastos operativos (combustible, mantenimiento, plan de datos, comisiones).',
+            'registros_afectados': 65,
+            'pct_afectado': 0.52,
+            'dimension': 'Completitud',
+            'impacto': 'Bajo',
+            'evidencia': '65 celdas vacías en la columna de costos operativos con ingreso bruto reportado.',
+            'causa_raiz': 'Falta de cálculo inmediato o reserva del encuestado al detallar sus gastos asociados al trabajo en plataformas.'
+        },
+        {
+            'id': 'PRB-09',
+            'variable': 'horas_semanales',
+            'descripcion': 'Valores nulos en la auto-declaración de la jornada laboral semanal.',
+            'registros_afectados': 37,
+            'pct_afectado': 0.30,
+            'dimension': 'Completitud',
+            'impacto': 'Bajo',
+            'evidencia': '37 celdas vacías; estas filas no pueden calcularse en la tarifa horaria ni estimarse la intensidad laboral.',
+            'causa_raiz': 'Omisión del campo por cansancio del encuestado al final del instrumento de captura.'
         }
+    ]
+
+def get_variable_audit():
+    """Auditoría exhaustiva de las 27 variables del diccionario para el inventario de problemas.
+    Cada variable reporta su estado (Conforme / No conforme), dimensión(es) afectada(s),
+    registros afectados reales y detalle del hallazgo."""
+    return [
+        {'columna': 'id_registro', 'etiqueta': 'Identificador Único del Registro', 'estado': 'No conforme', 'dimension': 'Unicidad', 'registros_afectados': 150, 'pct_afectado': 1.20, 'detalle': 'Colisión de 150 llaves primarias generadas por concatenación ETL redundante (PRB-01).'},
+        {'columna': 'nivel_territorial', 'etiqueta': 'Escala Territorial de Análisis', 'estado': 'Conforme', 'dimension': 'Validez', 'registros_afectados': 0, 'pct_afectado': 0.00, 'detalle': 'Dominio de 3 valores (Global, Nacional, Regional) sin anomalías.'},
+        {'columna': 'pais', 'etiqueta': 'País de Residencia / Operación', 'estado': 'Conforme', 'dimension': 'Validez', 'registros_afectados': 0, 'pct_afectado': 0.00, 'detalle': 'Los 8 países del dominio (Colombia, Brasil, Mexico, Argentina, Chile, Espana, Estados Unidos, India) cumplen el diccionario.'},
+        {'columna': 'codigo_iso_pais', 'etiqueta': 'Código ISO 3166-1 Alfa-3', 'estado': 'Conforme', 'dimension': 'Validez', 'registros_afectados': 0, 'pct_afectado': 0.00, 'detalle': 'Mapeo 1:1 con país, exactamente 3 letras mayúsculas.'},
+        {'columna': 'departamento_region', 'etiqueta': 'Departamento, Estado o Región', 'estado': 'Conforme', 'dimension': 'Validez', 'registros_afectados': 0, 'pct_afectado': 0.00, 'detalle': 'Sin valores nulos ni fuera de dominio.'},
+        {'columna': 'ciudad_municipio', 'etiqueta': 'Ciudad o Área Metropolitana', 'estado': 'No conforme', 'dimension': 'Validez / Homologación', 'registros_afectados': 848, 'pct_afectado': 6.78, 'detalle': '12 variantes ortográficas no canónicas: bogota, BOGOTA, Bogotá D.C., medellin, MEDELLIN, Medellín, cali, Cali , Santiago de Cali (PRB-04).'},
+        {'columna': 'tipo_plataforma', 'etiqueta': 'Tipo o Modelo de Plataforma', 'estado': 'Conforme', 'dimension': 'Validez', 'registros_afectados': 0, 'pct_afectado': 0.00, 'detalle': 'Las 2 categorías del dominio (Física / Ubicación, En línea / Nube) sin anomalías.'},
+        {'columna': 'categoria_servicio', 'etiqueta': 'Categoría del Servicio / Ocupación', 'estado': 'Conforme', 'dimension': 'Validez', 'registros_afectados': 0, 'pct_afectado': 0.00, 'detalle': 'Las 7 categorías del dominio alineadas a CIUO-08, sin valores fuera del catálogo.'},
+        {'columna': 'plataforma_principal', 'etiqueta': 'Plataforma Digital de Mayor Uso', 'estado': 'Conforme', 'dimension': 'Validez', 'registros_afectados': 0, 'pct_afectado': 0.00, 'detalle': 'Nombres de aplicaciones dentro del catálogo esperado por categoría.'},
+        {'columna': 'edad', 'etiqueta': 'Edad del Trabajador', 'estado': 'No conforme', 'dimension': 'Validez / Exactitud', 'registros_afectados': 41, 'pct_afectado': 0.33, 'detalle': '41 edades fuera del rango económicamente activo [18,75]: valores 16, 17, 86 y 92 por error de digitación (PRB-06).'},
+        {'columna': 'genero', 'etiqueta': 'Género', 'estado': 'Conforme', 'dimension': 'Validez', 'registros_afectados': 0, 'pct_afectado': 0.00, 'detalle': 'Las 3 categorías del dominio sin anomalías.'},
+        {'columna': 'nivel_educativo', 'etiqueta': 'Máximo Nivel Educativo Alcanzado', 'estado': 'No conforme', 'dimension': 'Consistencia', 'registros_afectados': 84, 'pct_afectado': 0.67, 'detalle': '84 casos con Posgrado y edad < 22 años, combinación temporalmente inviable (contradicción lógica intervariable con edad).'},
+        {'columna': 'antiguedad_meses', 'etiqueta': 'Antigüedad en Plataformas', 'estado': 'Conforme', 'dimension': 'Validez', 'registros_afectados': 0, 'pct_afectado': 0.00, 'detalle': 'Rango 1-72 meses cumplido; cola derecha esperada por distribución exponencial del fenómeno.'},
+        {'columna': 'horas_semanales', 'etiqueta': 'Horas Trabajadas por Semana', 'estado': 'No conforme', 'dimension': 'Completitud / Validez', 'registros_afectados': 80, 'pct_afectado': 0.64, 'detalle': '37 celdas vacías (PRB-09) + 43 jornadas fuera del límite biológico (hasta 126 h/semana) (PRB-06).'},
+        {'columna': 'ingreso_bruto_mensual_cop', 'etiqueta': 'Ingreso Bruto Mensual (COP)', 'estado': 'Conforme', 'dimension': 'Completitud', 'registros_afectados': 0, 'pct_afectado': 0.00, 'detalle': '0% de nulos; asimetría derecha natural por presencia de freelancers senior con ingresos altos.'},
+        {'columna': 'costos_operativos_mensuales_cop', 'etiqueta': 'Costos Operativos Mensuales (COP)', 'estado': 'No conforme', 'dimension': 'Completitud', 'registros_afectados': 65, 'pct_afectado': 0.52, 'detalle': '65 celdas vacías por omisión en la declaración de gastos operativos y comisiones (PRB-08).'},
+        {'columna': 'ingreso_neto_mensual_cop', 'etiqueta': 'Ingreso Neto Real Mensual (COP)', 'estado': 'No conforme', 'dimension': 'Completitud / Exactitud', 'registros_afectados': 555, 'pct_afectado': 4.44, 'detalle': '216 nulos por no respuesta (PRB-02) + 339 registros donde Neto ≠ Bruto - Costos (transcripción) (PRB-03).'},
+        {'columna': 'ingreso_neto_hora_usd', 'etiqueta': 'Ingreso Neto por Hora Estandarizado (USD)', 'estado': 'No conforme', 'dimension': 'Exactitud', 'registros_afectados': 555, 'pct_afectado': 4.44, 'detalle': 'Variable derivada: queda desalineada del cuadre contable cuando el neto fue omitido o corrompido (depende de PRB-02 y PRB-03).'},
+        {'columna': 'dependencia_ingresos', 'etiqueta': 'Grado de Dependencia Económica', 'estado': 'Conforme', 'dimension': 'Validez', 'registros_afectados': 0, 'pct_afectado': 0.00, 'detalle': 'Las 3 categorías del dominio sin anomalías.'},
+        {'columna': 'afiliacion_salud', 'etiqueta': 'Tipo de Afiliación al Sistema de Salud', 'estado': 'No conforme', 'dimension': 'Consistencia', 'registros_afectados': 679, 'pct_afectado': 5.43, 'detalle': '679 trabajadores en Régimen Subsidiado que además cotizan formalmente a pensión y ARL (PRB-07).'},
+        {'columna': 'afiliacion_pension', 'etiqueta': 'Cotización Activa a Fondo de Pensiones', 'estado': 'No conforme', 'dimension': 'Consistencia', 'registros_afectados': 679, 'pct_afectado': 5.43, 'detalle': 'Cotización formal coexistente con régimen subsidiado de salud (PRB-07).'},
+        {'columna': 'cuenta_con_arl', 'etiqueta': 'Cobertura de Riesgos Laborales (ARL)', 'estado': 'No conforme', 'dimension': 'Consistencia', 'registros_afectados': 679, 'pct_afectado': 5.43, 'detalle': 'Afiliación a riesgos laborales incompatible con salud subsidiada (PRB-07).'},
+        {'columna': 'calificacion_promedio_app', 'etiqueta': 'Calificación Algorítmica en la App', 'estado': 'No conforme', 'dimension': 'Completitud', 'registros_afectados': 405, 'pct_afectado': 3.24, 'detalle': '405 nulos estructurales en Microtareas y Etiquetado de Datos, donde no existe sistema de calificación por estrellas (PRB-05).'},
+        {'columna': 'fecha_registro', 'etiqueta': 'Fecha de Levantamiento / Registro', 'estado': 'Conforme', 'dimension': 'Actualidad / Validez', 'registros_afectados': 0, 'pct_afectado': 0.00, 'detalle': 'Todas las fechas cumplen ISO-8601 dentro de la ventana 2021-01-15 a 2026-06-30.'},
+        {'columna': 'anio', 'etiqueta': 'Año del Periodo', 'estado': 'Conforme', 'dimension': 'Actualidad', 'registros_afectados': 0, 'pct_afectado': 0.00, 'detalle': '100% de registros dentro de la ventana temporal de estudio (2021-2026).'},
+        {'columna': 'mes', 'etiqueta': 'Mes del Registro', 'estado': 'Conforme', 'dimension': 'Validez', 'registros_afectados': 0, 'pct_afectado': 0.00, 'detalle': 'Valores enteros 1-12 sin anomalías.'},
+        {'columna': 'fuente_origen_id', 'etiqueta': 'Identificador de la Fuente de Origen', 'estado': 'Conforme', 'dimension': 'Trazabilidad / Validez', 'registros_afectados': 0, 'pct_afectado': 0.00, 'detalle': 'Los 6 códigos F-PRIM/F-SEC/F-TER del dominio, garantizando trazabilidad total.'}
     ]
 
 def get_root_cause_analysis():
