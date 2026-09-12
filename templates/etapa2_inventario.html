@@ -8,7 +8,7 @@
         <span class="section-eyebrow page-header__eyebrow">Etapa 2 &middot; Diagnóstico y Auditoría</span>
         <h1>Inventario de Problemas y Análisis de Causas Raíz</h1>
         <p>
-            Registro detallado de los 7 problemas de calidad identificados en el dataset inicial,
+            Registro detallado de los 9 problemas de calidad identificados en el dataset inicial,
             clasificados por variable, dimensión, severidad, evidencia empírica y descomposición causal.
         </p>
         <div class="page-header__rule"></div>
@@ -29,11 +29,13 @@
             <ol style="font-size: 0.88rem; line-height: 1.9;">
                 <li><strong>Recorrido exhaustivo del diccionario:</strong> cada una de las 27 variables fue auditada
                     una a una contra su definición formal (tipo, dominio, unidad y restricciones de
-                    <code>DICCIONARIO_DATOS</code>).</li>
+                    <code>DICCIONARIO_DATOS</code>).
+                </li>
                 <li><strong>Cruce de hallazgos por dimensión:</strong> se contrastaron los hallazgos del perfilamiento
                     con las 6 dimensiones de calidad, asociando cada no conformidad a su dimensión: nulos
                     (Completitud), duplicados (Unicidad), contradicciones lógicas (Consistencia), valores fuera de
-                    dominio o formato (Validez), desbalances contables (Exactitud) y vigencia temporal (Actualidad).</li>
+                    dominio o formato (Validez), desbalances contables (Exactitud) y vigencia temporal (Actualidad).
+                </li>
                 <li><strong>Detección de anomalías en el código:</strong> duplicación de llaves primarias, celdas
                     vacías, errores aritméticos (Neto ≠ Bruto − Costos), variantes ortográficas de ciudades,
                     jornadas y edades imposibles, y contradicciones en seguridad social.</li>
@@ -87,13 +89,13 @@
                             <td><span class="badge badge--dark">{{ p.dimension }}</span></td>
                             <td>
                                 {% if p.impacto == 'Crítico' %}
-                                    <span class="badge badge--critical">{{ p.impacto }}</span>
+                                <span class="badge badge--critical">{{ p.impacto }}</span>
                                 {% elif p.impacto == 'Alto' %}
-                                    <span class="badge badge--high">{{ p.impacto }}</span>
+                                <span class="badge badge--high">{{ p.impacto }}</span>
                                 {% elif p.impacto == 'Medio' %}
-                                    <span class="badge badge--medium">{{ p.impacto }}</span>
+                                <span class="badge badge--medium">{{ p.impacto }}</span>
                                 {% else %}
-                                    <span class="badge badge--low">{{ p.impacto }}</span>
+                                <span class="badge badge--low">{{ p.impacto }}</span>
                                 {% endif %}
                             </td>
                             <td style="font-size: 0.76rem; color: var(--color-primary-soft);">{{ p.evidencia }}</td>
@@ -170,7 +172,8 @@
             <div class="grid grid--3">
                 {% for eje in causes.ejes_causales %}
                 <div class="card">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;">
                         <span class="badge badge--dark">Eje {{ loop.index }}</span>
                         <span class="badge badge--primary">{{ eje.peso_relativo }} impacto</span>
                     </div>
@@ -189,7 +192,8 @@
         </div>
 
         <div class="mt-2 text-center">
-            <a href="{{ url_for('etapa2_tratamiento') }}" class="btn btn--primary">Ver Plan de Tratamiento y Pipeline ETL &rarr;</a>
+            <a href="{{ url_for('etapa2_tratamiento') }}" class="btn btn--primary">Ver Plan de Tratamiento y Pipeline
+                ETL &rarr;</a>
         </div>
 
     </div>
