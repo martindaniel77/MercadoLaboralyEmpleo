@@ -786,6 +786,13 @@
     font-weight: 700;
 }
 
+.badge--dark {
+    background: #e9edf3;
+    color: #334155;
+    border: 1px solid #cbd5e1;
+    font-weight: 600;
+}
+
 /* Tarjetas de Dimensión de Calidad */
 .quality-card {
     background: var(--color-surface);

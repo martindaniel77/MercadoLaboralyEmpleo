@@ -42,9 +42,42 @@
             </div>
         </div>
 
+        <!-- Proceso Metodológico del Perfilamiento -->
+        <div class="content-box">
+            <span class="section-eyebrow">01 / Metodología</span>
+            <h2 class="section-title">Proceso para Llegar a Este Perfilamiento</h2>
+            <p class="section-subtitle">
+                La auditoría estructural y estadística se ejecutó de forma automatizada sobre el dataset inicial en
+                <code>data_service.py</code> (función <code>profile_dataset()</code>), siguiendo 8 pasos:
+            </p>
+            <ol style="font-size: 0.88rem; line-height: 1.9;">
+                <li><strong>Carga del dataset consolidado:</strong> se lee el archivo
+                    <code>dataset_gig_economy.csv</code> en su versión cruda (raw, sin tratamiento), obteniendo
+                    <strong>12.500 filas &times; 27 columnas</strong>.</li>
+                <li><strong>Inventario estructural:</strong> se calculan el total de registros, el total de variables
+                    (27) y el total de celdas evaluadas (12.500 &times; 27 = <strong>337.500 celdas</strong>).</li>
+                <li><strong>Detección de duplicados en dos niveles:</strong> (a) colisión de claves primarias
+                    (<code>id_registro</code> repetidos) y (b) filas idénticas en la tupla completa de atributos,
+                    detectando así la duplicidad originada en la concatenación ETL.</li>
+                <li><strong>Análisis univariado por variable:</strong> para cada una de las 27 variables se computan
+                    el conteo de valores nulos (cantidad y porcentaje), el número de valores únicos y las
+                    <em>top 5</em> frecuencias más altas.</li>
+                <li><strong>Estadísticos de tendencia central y dispersión:</strong> sobre las variables numéricas se
+                    calculan mínimo, máximo, media, mediana, cuartiles Q1 y Q3 y rango intercuartílico (IQR).</li>
+                <li><strong>Detección de outliers (método Tukey / 1.5 &times; IQR):</strong> se marcan como valores
+                    atípicos aquellos que caen fuera de los límites
+                    <code>Q1 − 1.5 &times; IQR</code> y <code>Q3 + 1.5 &times; IQR</code>, cuantificando su conteo y
+                    porcentaje por variable.</li>
+                <li><strong>Salud global del dataset:</strong> se calcula la completitud bruta como
+                    <code>100 − % de celdas nulas</code>, obteniendo el estado inicial de salud de los datos.</li>
+                <li><strong>Interpretación de hallazgos:</strong> los resultados alimentan la medición de las 6
+                    dimensiones de calidad (fase 03) y el inventario de problemas (fase 04).</li>
+            </ol>
+        </div>
+
         <!-- Tabla Completa de Perfilamiento -->
         <div class="content-box">
-            <span class="section-eyebrow">01 / Variables y Distribuciones</span>
+            <span class="section-eyebrow">02 / Variables y Distribuciones</span>
             <h2 class="section-title">Matriz Completa de Perfilamiento (27 Variables)</h2>
             <p class="section-subtitle">
                 Inspección variable por variable: cardinalidad, nulos, estadísticas de tendencia central y detección de outliers mediante IQR:
@@ -114,7 +147,7 @@
 
         <!-- Hallazgos Principales -->
         <div class="content-box">
-            <span class="section-eyebrow">02 / Diagnóstico Preliminar</span>
+            <span class="section-eyebrow">03 / Diagnóstico Preliminar</span>
             <h2 class="section-title">Hallazgos Críticos del Perfilamiento</h2>
             <div class="grid grid--3">
                 <div class="card">

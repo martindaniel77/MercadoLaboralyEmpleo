@@ -104,7 +104,8 @@ def etapa2_dimensiones():
 def etapa2_inventario():
     inventory = data_service.get_problem_inventory()
     causes = data_service.get_root_cause_analysis()
-    return render_template('etapa2_inventario.html', inventory=inventory, causes=causes)
+    auditoria = data_service.get_variable_audit()
+    return render_template('etapa2_inventario.html', inventory=inventory, causes=causes, auditoria=auditoria)
 
 
 @app.route('/etapa-2/plan-tratamiento')
