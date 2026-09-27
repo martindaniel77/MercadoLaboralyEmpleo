@@ -141,9 +141,7 @@
             <span class="section-eyebrow">03 / Contenido de la entrega</span>
             <h2 class="section-title">Índice Completo de la Etapa 1</h2>
             <p class="section-subtitle">
-                Cada apartado del menú documenta una dimensión del entregable y puede consultarse directamente sin
-                requerir
-                explicación oral adicional.
+                Formulación y contextualización del problema, necesidades de información, 6 fuentes y dataset inicial.
             </p>
 
             <div class="toc">
@@ -199,6 +197,43 @@
                     <span class="toc__t">Limitaciones y consideraciones &mdash; Restricciones metodológicas,
                         consideraciones
                         éticas y hoja de ruta etapas 2 a 5</span>
+                    <span class="toc__a">Consultar &rarr;</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- ===== Índice de la Etapa 2 ===== -->
+        <section class="section">
+            <span class="section-eyebrow">04 / Calidad &amp; Preparación</span>
+            <h2 class="section-title">Índice Completo de la Etapa 2</h2>
+            <p class="section-subtitle">
+                Diagnóstico profundo de calidad, perfilamiento de datos, medición de 6 dimensiones y pipeline ETL en SSIS.
+            </p>
+
+            <div class="toc">
+                <a href="{{ url_for('etapa2_proposito') }}" class="toc__item">
+                    <span class="toc__n">1</span>
+                    <span class="toc__t">Propósito y requisitos &mdash; Usuarios objetivo, necesidades y matriz de criterios de aceptación cuantitativos</span>
+                    <span class="toc__a">Consultar &rarr;</span>
+                </a>
+                <a href="{{ url_for('etapa2_perfilamiento') }}" class="toc__item">
+                    <span class="toc__n">2</span>
+                    <span class="toc__t">Perfilamiento del dataset &mdash; Resumen univariado de 27 variables, cuartiles, IQR y detección de outliers</span>
+                    <span class="toc__a">Consultar &rarr;</span>
+                </a>
+                <a href="{{ url_for('etapa2_dimensiones') }}" class="toc__item">
+                    <span class="toc__n">3</span>
+                    <span class="toc__t">Dimensiones y métricas &mdash; Medición cuantitativa de las 6 dimensiones de calidad y cálculo del DQI</span>
+                    <span class="toc__a">Consultar &rarr;</span>
+                </a>
+                <a href="{{ url_for('etapa2_inventario') }}" class="toc__item">
+                    <span class="toc__n">4</span>
+                    <span class="toc__t">Inventario de problemas &mdash; Auditoría de 27 variables, 9 anomalías diagnosticadas y análisis de causa raíz</span>
+                    <span class="toc__a">Consultar &rarr;</span>
+                </a>
+                <a href="{{ url_for('etapa2_tratamiento') }}" class="toc__item">
+                    <span class="toc__n">5</span>
+                    <span class="toc__t">Plan de tratamiento en SSIS &mdash; Paquete ETL, flujo de control, flujo de datos (Clean vs Rechazos) y decisiones de depuración</span>
                     <span class="toc__a">Consultar &rarr;</span>
                 </a>
             </div>

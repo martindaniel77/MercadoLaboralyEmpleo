@@ -111,7 +111,8 @@ def etapa2_inventario():
 @app.route('/etapa-2/plan-tratamiento')
 def etapa2_tratamiento():
     steps = data_service.get_treatment_plan_steps()
-    return render_template('etapa2_tratamiento.html', steps=steps)
+    ssis_info = data_service.get_ssis_package_info()
+    return render_template('etapa2_tratamiento.html', steps=steps, ssis=ssis_info)
 
 
 

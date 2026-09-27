@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 
-{% block title %}Plan de Tratamiento y Pipeline | Etapa 2{% endblock %}
+{% block title %}Plan de Tratamiento y Pipeline SSIS | Etapa 2{% endblock %}
 
 {% block content %}
 <section class="page-header">
     <div class="container">
-        <span class="section-eyebrow page-header__eyebrow">Etapa 2 &middot; Limpieza y Transformación</span>
-        <h1>Plan de Tratamiento y Pipeline de Limpieza</h1>
+        <span class="section-eyebrow page-header__eyebrow">Etapa 2 &middot; Arquitectura ETL &amp; Calidad de Datos</span>
+        <h1>Plan de Tratamiento y Pipeline de Limpieza en SSIS</h1>
         <p>
-            Estrategia técnica de depuración, corrección de inconsistencias, estandarización ortográfica,
-            imputación justificada de valores nulos y winsorización de outliers.
+            Estrategia de depuración, estandarización ortográfica, reconciliación contable, imputación justificada y segregación
+            de registros implementada a través de <strong>SQL Server Integration Services (SSIS)</strong>.
         </p>
         <div class="page-header__rule"></div>
     </div>
@@ -18,12 +18,155 @@
 <section class="section">
     <div class="container">
 
-        <!-- Flujo del Pipeline -->
+        <!-- ===== KPIs de Ejecución del Paquete SSIS ===== -->
+        <div class="stat-grid mb-2">
+            <div class="stat-card stat-card--accent">
+                <div class="stat-card__val">12.500</div>
+                <div class="stat-card__lbl">Registros en Staging (Raw)</div>
+                <div class="stat-card__sub">Origen CSV &middot; Con anomalías</div>
+            </div>
+            <div class="stat-card stat-card--accent">
+                <div class="stat-card__val">12.350</div>
+                <div class="stat-card__lbl">DEST_Fact_Clean</div>
+                <div class="stat-card__sub">100% Conformes &middot; Aptos para Minería</div>
+            </div>
+            <div class="stat-card stat-card--dark">
+                <div class="stat-card__val">150</div>
+                <div class="stat-card__lbl">DEST_Rechazos</div>
+                <div class="stat-card__sub">Duplicados &middot; Auditoría Trazable</div>
+            </div>
+            <div class="stat-card stat-card--dark">
+                <div class="stat-card__val">DTS_SUCCESS</div>
+                <div class="stat-card__lbl">Estado del Paquete</div>
+                <div class="stat-card__sub">Código 0 (0x0) &middot; Ejecución Exitosa</div>
+            </div>
+        </div>
+
+        <!-- ===== 1. Ficha Técnica de la Solución SSIS ===== -->
         <div class="content-box">
-            <span class="section-eyebrow">01 / Arquitectura ETL</span>
-            <h2 class="section-title">Pipeline Automatizado de Tratamiento (6 Fases)</h2>
+            <span class="section-eyebrow">01 / Entorno y Herramienta ETL</span>
+            <h2 class="section-title">Solución Empresarial: SQL Server Integration Services (SSIS)</h2>
+            <p>
+                Para garantizar un procesamiento de datos robusto, escalable, auditable y alineado con estándares de
+                Inteligencia de Negocios y Data Warehousing, el plan de tratamiento se diseñó y ejecutó utilizando
+                <strong>Microsoft SQL Server Integration Services (SSIS)</strong> dentro del entorno Visual Studio / SQL Server Data Tools (SSDT).
+            </p>
+
+            <div class="grid grid--2 mt-1">
+                <div class="panel">
+                    <h3 style="font-size: 1.05rem; margin-bottom: 0.6rem; color: var(--color-accent-dark);">Especificación del Paquete</h3>
+                    <ul style="list-style: none; padding: 0; font-size: 0.88rem; line-height: 1.8;">
+                        <li><strong>Solución:</strong> <code>{{ ssis.solucion }}</code></li>
+                        <li><strong>Paquete SSIS:</strong> <code>{{ ssis.paquete }}</code></li>
+                        <li><strong>Motor de Ejecución:</strong> SQL Server Integration Services Engine (DtsDebugHost)</li>
+                        <li><strong>Modo de Ejecución:</strong> Transaccional Idempotente con manejo de Staging y Rechazos</li>
+                    </ul>
+                </div>
+                <div class="panel">
+                    <h3 style="font-size: 1.05rem; margin-bottom: 0.6rem; color: var(--color-accent-dark);">Administradores de Conexión</h3>
+                    <ul style="list-style: none; padding: 0; font-size: 0.88rem; line-height: 1.8;">
+                        {% for c in ssis.administradores_conexion %}
+                        <li>
+                            <strong><code>{{ c.nombre }}</code>:</strong><br>
+                            <span class="text-muted" style="font-size: 0.82rem;">{{ c.tipo }} &mdash; {{ c.descripcion }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== 2. Flujo de Control (Control Flow) ===== -->
+        <div class="content-box">
+            <span class="section-eyebrow">02 / Orquestación del Pipeline</span>
+            <h2 class="section-title">Flujo de Control (Control Flow)</h2>
             <p class="section-subtitle">
-                Secuencia determinística de transformaciones ejecutadas por <code>data_service.py</code>:
+                Secuencia orquestada de tareas en el paquete <code>{{ ssis.paquete }}</code> para garantizar la carga limpia y reproducible:
+            </p>
+
+            <div class="pipeline-flow">
+                {% for t in ssis.control_flow_tasks %}
+                <div class="pipeline-step">
+                    <div class="pipeline-step__num">{{ t.orden }}</div>
+                    <div class="pipeline-step__content">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                            <h3 style="margin: 0; font-size: 1.05rem; color: var(--color-accent-dark);">{{ t.nombre }}</h3>
+                            <span class="badge badge--dark">{{ t.tipo }}</span>
+                        </div>
+                        <p style="font-size: 0.86rem; margin: 0.4rem 0;">
+                            {{ t.descripcion }}
+                        </p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- ===== 3. Flujo de Datos (Data Flow: DFT_02_Tratamiento_Calidad) ===== -->
+        <div class="content-box content-box--highlight">
+            <span class="section-eyebrow">03 / Transformaciones y Filtros</span>
+            <h2 class="section-title">Flujo de Datos (Data Flow: <code>DFT_02_Tratamiento_Calidad</code>)</h2>
+            <p>
+                Dentro de la tarea <strong><code>DFT_02_Tratamiento_Calidad</code></strong> se articulan los componentes nativos de SSIS
+                para transformar, imputar, normalizar y bifurcar los registros en dos destinos especializados:
+            </p>
+
+            <div class="table-container mt-1">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Componente SSIS</th>
+                            <th>Tipo de Transformación</th>
+                            <th>Rol y Lógica en el Tratamiento de Calidad</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for comp in ssis.data_flow_components %}
+                        <tr>
+                            <td>
+                                <strong><code>{{ comp.componente }}</code></strong>
+                            </td>
+                            <td>
+                                <span class="badge {{ 'badge--success' if 'Destination' in comp.tipo or 'Clean' in comp.componente else ('badge--warning' if 'Rechazos' in comp.componente else ('badge--primary' if 'Source' in comp.tipo else 'badge--info')) }}">
+                                    {{ comp.tipo }}
+                                </span>
+                            </td>
+                            <td style="font-size: 0.85rem;">
+                                {{ comp.rol }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Destinos Explicados -->
+            <div class="grid grid--2 mt-2">
+                <div class="card" style="border-left: 4px solid var(--color-success);">
+                    <h3 class="card__title text-accent">Destino Principal: <code>DEST_Fact_Clean</code></h3>
+                    <p class="card__text" style="font-size: 0.85rem;">
+                        Recibe los <strong>12.350 registros</strong> que superaron satisfactoriamente todas las reglas de calidad,
+                        validación referencial, cuadre contable y rangos plausibles. Esta tabla de hechos constituye la base certificada
+                        para la aplicación de algoritmos de Minería de Datos (clustering, regresión y reglas de asociación).
+                    </p>
+                </div>
+                <div class="card" style="border-left: 4px solid var(--color-warning);">
+                    <h3 class="card__title text-accent">Destino de Auditoría: <code>DEST_Rechazos</code></h3>
+                    <p class="card__text" style="font-size: 0.85rem;">
+                        Almacena los <strong>150 registros</strong> detectados como duplicados o anomalías críticas no recuperables.
+                        Garantiza la trazabilidad y la no pérdida de información, permitiendo auditar exactamente qué filas fueron
+                        segregadas y por qué motivo técnico.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== 4. Detalle de los 6 Pasos del Plan de Tratamiento ===== -->
+        <div class="content-box">
+            <span class="section-eyebrow">04 / Fases Operativas</span>
+            <h2 class="section-title">Correspondencia de las 6 Fases de Tratamiento con Componentes SSIS</h2>
+            <p class="section-subtitle">
+                Detalle metodológico de cada transformación aplicada sobre los problemas diagnosticados en la auditoría:
             </p>
 
             <div class="pipeline-flow">
@@ -31,13 +174,15 @@
                 <div class="pipeline-step">
                     <div class="pipeline-step__num">{{ s.paso }}</div>
                     <div class="pipeline-step__content">
-                        <div
-                            style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
-                            <h3>{{ s.nombre }}</h3>
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                            <h3 style="margin: 0; font-size: 1.05rem; color: var(--color-accent-dark);">{{ s.nombre }}</h3>
                             <span class="badge badge--dark">{{ s.problema_asociado }}</span>
                         </div>
+                        <p style="font-size: 0.84rem; margin: 0.3rem 0; color: var(--color-accent);">
+                            <strong>Componente SSIS:</strong> <code>{{ s.componente_ssis }}</code>
+                        </p>
                         <p style="font-size: 0.86rem; margin: 0.4rem 0;">
-                            <strong>Técnica:</strong> {{ s.tecnica_aplicada }}
+                            <strong>Técnica Aplicada:</strong> {{ s.tecnica_aplicada }}
                         </p>
                         <p style="font-size: 0.80rem; color: var(--color-text-muted); margin: 0;">
                             <strong>Justificación en Minería:</strong> {{ s.justificacion }}
@@ -48,36 +193,38 @@
             </div>
         </div>
 
-        <!-- Criterios de Imputación y Transformación -->
+        <!-- ===== 5. Criterios y Decisiones Metodológicas ===== -->
         <div class="content-box">
-            <span class="section-eyebrow">02 / Decisiones Metodológicas</span>
+            <span class="section-eyebrow">05 / Decisiones Metodológicas</span>
             <h2 class="section-title">Justificación Técnica de los Tratamientos Aplicados</h2>
-            <div class="grid grid--2">
+            <div class="grid grid--3">
                 <div class="card">
                     <h3 class="card__title text-accent">¿Por qué Imputación por Mediana Condicional?</h3>
                     <p class="card__text" style="font-size: 0.85rem;">
                         Las variables de <code>costos_operativos</code> y <code>horas_semanales</code> exhiben
-                        distribuciones asimétricas
-                        con sesgo a la derecha según el sector. Imputar con la media global inflaría artificialmente los
-                        costos de un repartidor
-                        o subestimaría los de un conductor de Uber. La <strong>mediana por categoría de
-                            servicio</strong> preserva la representatividad
-                        de cada subgrupo sin distorsionar la varianza.
+                        distribuciones asimétricas con sesgo a la derecha según la modalidad de trabajo. Imputar con la media global inflaría artificialmente los
+                        costos de un repartidor o subestimaría los de un conductor de plataforma. La <strong>mediana por categoría de
+                        servicio</strong> preserva la representatividad de cada subgrupo sin distorsionar la varianza.
                     </p>
                 </div>
                 <div class="card">
                     <h3 class="card__title text-accent">¿Por qué Winsorización en lugar de Eliminación?</h3>
                     <p class="card__text" style="font-size: 0.85rem;">
-                        Eliminar filas con jornadas extremas (> 96h) reduciría el tamaño muestral en segmentos
-                        vulnerables.
-                        El <strong>acotamiento acotado (Winsorizing)</strong> al rango legal plausible [5h, 84h] retiene
-                        la observación
-                        y corrige el error tipográfico de captura sin perder las demás características del individuo.
+                        Eliminar observaciones con jornadas extremas (> 96h) reduciría el tamaño muestral en segmentos
+                        vulnerables. El <strong>acotamiento acotado (Winsorizing)</strong> al rango legal plausible [5.0h, 84.0h] retiene
+                        el registro y corrige el error tipográfico de captura sin perder las demás dimensiones sociodemográficas del individuo.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3 class="card__title text-accent">¿Por qué Segregación en Tabla de Rechazos?</h3>
+                    <p class="card__text" style="font-size: 0.85rem;">
+                        En un pipeline ETL profesional, las filas con inconsistencias severas o duplicados no se eliminan físicamente
+                        a ciegas. El desvío condicional hacia <code>DEST_Rechazos</code> garantiza la <strong>trazabilidad total del dato</strong>,
+                        permitiendo documentar el porcentaje exacto de rechazo (1.20%) y auditar los registros excluidos.
                     </p>
                 </div>
             </div>
         </div>
-
 
     </div>
 </section>

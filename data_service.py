@@ -1202,33 +1202,123 @@ def get_root_cause_analysis():
         ]
     }
 
+def get_ssis_package_info():
+    """Retorna la especificación técnica de la solución y paquete SSIS."""
+    return {
+        'solucion': 'MercadoLaboral_SSIS',
+        'paquete': 'ETL_Tratamiento_GigEconomy.dtsx',
+        'administradores_conexion': [
+            {
+                'nombre': 'CNX_CSV_GigEconomy_Raw',
+                'tipo': 'Flat File Connection Manager (CSV UTF-8)',
+                'descripcion': 'Conector de extracción del archivo plano consolidado raw (12.500 registros con anomalías controladas).'
+            },
+            {
+                'nombre': 'CNX_SQL_MercadoLaboral',
+                'tipo': 'OLE DB Connection Manager (SQL Server / Azure SQL)',
+                'descripcion': 'Conexión a la base de datos relacional que aloja las tablas de Staging, Fact_GigEconomy_Clean y Log_Rechazos_Calidad.'
+            }
+        ],
+        'control_flow_tasks': [
+            {
+                'orden': 1,
+                'nombre': 'SQL_Limpiar_Staging',
+                'tipo': 'Execute SQL Task',
+                'icono': 'database',
+                'descripcion': 'Truncado preventivo (TRUNCATE TABLE Staging_Raw / Log_Rechazos) para garantizar idempotencia y ejecuciones reproducibles.'
+            },
+            {
+                'orden': 2,
+                'nombre': 'DFT_01_Cargar_Staging',
+                'tipo': 'Data Flow Task (Extracción & Carga Inicial)',
+                'icono': 'upload',
+                'descripcion': 'Ingesta masiva de los 12.500 registros crudos desde CNX_CSV_GigEconomy_Raw hacia la tabla intermedia Staging_GigEconomy_Raw.'
+            },
+            {
+                'orden': 3,
+                'nombre': 'DFT_02_Tratamiento_Calidad',
+                'tipo': 'Data Flow Task (Tratamiento & Calidad)',
+                'icono': 'cpu',
+                'descripcion': 'Pipeline de depuración profunda, ordenamiento, validación referencial, recálculos derivados y bifurcación condicional en Clean vs Rechazos.'
+            }
+        ],
+        'data_flow_components': [
+            {
+                'componente': 'SRC_Staging_Raw',
+                'tipo': 'OLE DB Source',
+                'rol': 'Extracción de registros desde la tabla de Staging en SQL Server.'
+            },
+            {
+                'componente': 'Sort',
+                'tipo': 'Sort Transformation',
+                'rol': 'Ordenamiento determinístico por id_registro y atributos clave para optimizar la detección de duplicados y búsquedas.'
+            },
+            {
+                'componente': 'Lookup',
+                'tipo': 'Lookup Transformation',
+                'rol': 'Validación referencial y enriquecimiento cruzado contra catálogos maestros de países (ISO-3), plataformas y categorías CIUO-08.'
+            },
+            {
+                'componente': 'Derived Column',
+                'tipo': 'Derived Column Transformation',
+                'rol': 'Aplicación de fórmulas determinísticas: recálculo neto (Bruto - Costos), tasa horaria USD, normalización de ciudades, imputación condicional y winsorización.'
+            },
+            {
+                'componente': 'Conditional Split',
+                'tipo': 'Conditional Split Transformation',
+                'rol': 'Bifurcación estricta basada en reglas de calidad: separa observaciones 100% conformes de aquellas con anomalías o duplicidad.'
+            },
+            {
+                'componente': 'DEST_Fact_Clean',
+                'tipo': 'OLE DB Destination (Fact_GigEconomy_Clean)',
+                'rol': 'Destino de los 12.350 registros limpios, 100% conformes y certificados para algoritmos de Minería de Datos.'
+            },
+            {
+                'componente': 'DEST_Rechazos',
+                'tipo': 'OLE DB Destination (Log_Rechazos_Calidad)',
+                'rol': 'Destino de auditoría y trazabilidad para los 150 registros duplicados / anomalías segregadas.'
+            }
+        ],
+        'metricas_ejecucion': {
+            'registros_staging': 12500,
+            'registros_clean': 12350,
+            'registros_rechazados': 150,
+            'tasa_efectividad_limpieza': '98.80%',
+            'codigo_salida': '0 (0x0 - DTS_SUCCESS)'
+        }
+    }
+
 def get_treatment_plan_steps():
-    """Retorna el detalle técnico de los 6 pasos del plan de tratamiento y limpieza."""
+    """Retorna el detalle técnico de los 6 pasos del plan de tratamiento articulados con los componentes SSIS."""
     return [
         {
             'paso': 1,
             'nombre': 'Desduplicación y Limpieza de Identificadores',
+            'componente_ssis': 'Sort + Conditional Split / Script Component',
             'problema_asociado': 'PRB-01 (Unicidad)',
-            'tecnica_aplicada': 'Eliminación determinística de duplicados basados en tupla completa de atributos y reindexación ordenada de claves primarias GIG-00001 a GIG-12350.',
+            'tecnica_aplicada': 'Eliminación determinística de 150 tuplas duplicadas mediante ordenamiento y filtrado de colisiones, reindexando claves unívocas GIG-00001 a GIG-12350.',
             'justificacion': 'Evita el sobreajuste y sesgo en algoritmos de clustering que se verían afectados por observaciones idénticas repetidas.'
         },
         {
             'paso': 2,
             'nombre': 'Estandarización y Homologación de Cadenas de Texto',
+            'componente_ssis': 'Lookup + Derived Column (Expresiones SSIS / UPPER / TRIM)',
             'problema_asociado': 'PRB-04 (Validez / Homologación)',
-            'tecnica_aplicada': 'Normalización ortográfica mediante diccionarios canónicos (ej. mapear {"bogota", "BOGOTA", "Bogotá D.C."} -> "Bogota D.C." / "Bogota"), remoción de espacios y corrección de tildes.',
+            'tecnica_aplicada': 'Normalización ortográfica mediante diccionarios canónicos de ciudades (mapeo de {"bogota", "BOGOTA", "Bogotá D.C."} -> "Bogota D.C."), remoción de espacios y corrección de tildes.',
             'justificacion': 'Permite agrupaciones geográficas consistentes en consultas SQL y análisis multidimensional sin fragmentar ciudades.'
         },
         {
             'paso': 3,
             'nombre': 'Reconciliación y Corrección Aritmética de Balances Financieros',
+            'componente_ssis': 'Derived Column (Expresión de Balance Aritmético)',
             'problema_asociado': 'PRB-03 (Exactitud)',
-            'tecnica_aplicada': 'Recálculo forzado determinístico: ingreso_neto_cop = ingreso_bruto_cop - costos_operativos_cop. Recálculo consistente de tarifa horaria en USD.',
+            'tecnica_aplicada': 'Recálculo forzado determinístico: ingreso_neto_cop = ingreso_bruto_cop - costos_operativos_cop. Recálculo consistente de tarifa horaria estandarizada en USD.',
             'justificacion': 'Garantiza precisión matemática del 100% en variables clave para modelos de regresión y análisis de retornos al trabajo.'
         },
         {
             'paso': 4,
             'nombre': 'Tratamiento de Valores Nulos mediante Imputación Justificada',
+            'componente_ssis': 'Lookup + Derived Column (Función ISNULL condicional)',
             'problema_asociado': 'PRB-02 y PRB-05 (Completitud)',
             'tecnica_aplicada': 'Para costos u horas faltantes, imputación por mediana condicional según categoría de servicio y plataforma. Para calificaciones en microtareas, asignación de la media del sector (4.50) con indicador categórico.',
             'justificacion': 'La imputación por mediana de grupo preserva la distribución empírica sin distorsionar la varianza con promedios globales ciegos.'
@@ -1236,6 +1326,7 @@ def get_treatment_plan_steps():
         {
             'paso': 5,
             'nombre': 'Tratamiento de Valores Atípicos (Outliers) y Validación de Rangos',
+            'componente_ssis': 'Derived Column + Conditional Split (Winsorizing & Bounds)',
             'problema_asociado': 'PRB-06 (Validez / Exactitud)',
             'tecnica_aplicada': 'Winsorización y acotamiento de límites: horas semanales acotadas al rango laboral plausible [5.0h, 84.0h]. Edades menores a 18 corregidas a 18 y mayores a 72 corregidas a 70.',
             'justificacion': 'Reduce la influencia de errores tipográficos en modelos basados en distancias (K-Means, KNN) manteniendo los registros válidos.'
@@ -1243,6 +1334,7 @@ def get_treatment_plan_steps():
         {
             'paso': 6,
             'nombre': 'Resolución de Inconsistencias Lógicas en Seguridad Social',
+            'componente_ssis': 'Derived Column (Reglas condicionales de negocio)',
             'problema_asociado': 'PRB-07 (Consistencia)',
             'tecnica_aplicada': 'Si el trabajador cotiza formalmente a pensión y ARL, se homologa su régimen de salud a "Regimen Contributivo (Cotizante)".',
             'justificacion': 'Cumple con el marco legal laboral colombiano y previene errores en matrices de asociación y reglas apriori.'
