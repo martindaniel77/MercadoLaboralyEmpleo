@@ -4,6 +4,14 @@ import data_service
 
 app = Flask(__name__)
 
+# Configuración del video de la Etapa 3.
+# Cuando tengas el enlace del video (YouTube/Drive/MP4), pégalo aquí y la
+# sección "Video demostrativo" lo embebe automáticamente. Ejemplos:
+#   ETAPA3_VIDEO_URL = "https://www.youtube.com/watch?v=XXXXXXXXXXX"
+#   ETAPA3_VIDEO_URL = "https://drive.google.com/file/d/FILE_ID/view"
+#   ETAPA3_VIDEO_URL = "/static/videos/demo_etapa3.mp4"
+ETAPA3_VIDEO_URL = os.environ.get('ETAPA3_VIDEO_URL', '')
+
 # Asegurar que el dataset inicial exista al arrancar
 data_service.ensure_dataset_exists()
 
@@ -125,6 +133,39 @@ def descargar_dataset():
         download_name='dataset_gig_economy_inicial_raw.csv',
         mimetype='text/csv'
     )
+
+
+# ============================================================
+# RUTAS DE LA ETAPA 3: ETL CON SSIS - TRATAMIENTO Y VIDEO
+# ============================================================
+
+@app.route('/etapa-3/reglas-tratamiento')
+def etapa3_reglas():
+    reglas = data_service.get_etapa3_reglas()
+    return render_template('etapa3_reglas.html', reglas=reglas)
+
+
+@app.route('/etapa-3/arquitectura-ssis')
+def etapa3_arquitectura():
+    arch = data_service.get_etapa3_arquitectura()
+    return render_template('etapa3_arquitectura.html', arch=arch)
+
+
+@app.route('/etapa-3/iteraciones')
+def etapa3_iteraciones():
+    data = data_service.get_etapa3_iteraciones()
+    return render_template('etapa3_iteraciones.html', data=data)
+
+
+@app.route('/etapa-3/comparacion-calidad')
+def etapa3_comparacion():
+    data = data_service.get_etapa3_comparacion()
+    return render_template('etapa3_comparacion.html', data=data)
+
+
+@app.route('/etapa-3/video-demostrativo')
+def etapa3_video():
+    return render_template('etapa3_video.html', video_url=ETAPA3_VIDEO_URL)
 
 
 @app.route('/favicon.ico')

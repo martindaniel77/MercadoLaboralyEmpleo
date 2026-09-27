@@ -1216,7 +1216,7 @@ def get_ssis_package_info():
             {
                 'nombre': 'CNX_SQL_MercadoLaboral',
                 'tipo': 'OLE DB Connection Manager (SQL Server / Azure SQL)',
-                'descripcion': 'Conexión a la base de datos relacional que aloja las tablas de Staging, Fact_GigEconomy_Clean y Log_Rechazos_Calidad.'
+                'descripcion': 'Conexión a la base de datos relacional que aloja dbo.stg_gig_economy_raw, dbo.dim_ciudades_homologadas, dbo.fact_gig_economy_clean y dbo.ods_gig_economy_rechazos.'
             }
         ],
         'control_flow_tasks': [
@@ -1225,14 +1225,14 @@ def get_ssis_package_info():
                 'nombre': 'SQL_Limpiar_Staging',
                 'tipo': 'Execute SQL Task',
                 'icono': 'database',
-                'descripcion': 'Truncado preventivo (TRUNCATE TABLE Staging_Raw / Log_Rechazos) para garantizar idempotencia y ejecuciones reproducibles.'
+                'descripcion': 'Truncado preventivo (TRUNCATE TABLE dbo.stg_gig_economy_raw / dbo.ods_gig_economy_rechazos) para garantizar idempotencia y ejecuciones reproducibles.'
             },
             {
                 'orden': 2,
                 'nombre': 'DFT_01_Cargar_Staging',
                 'tipo': 'Data Flow Task (Extracción & Carga Inicial)',
                 'icono': 'upload',
-                'descripcion': 'Ingesta masiva de los 12.500 registros crudos desde CNX_CSV_GigEconomy_Raw hacia la tabla intermedia Staging_GigEconomy_Raw.'
+                'descripcion': 'Ingesta masiva de los 12.500 registros crudos desde CNX_CSV_GigEconomy_Raw hacia la tabla intermedia dbo.stg_gig_economy_raw.'
             },
             {
                 'orden': 3,
@@ -1246,7 +1246,7 @@ def get_ssis_package_info():
             {
                 'componente': 'SRC_Staging_Raw',
                 'tipo': 'OLE DB Source',
-                'rol': 'Extracción de registros desde la tabla de Staging en SQL Server.'
+                'rol': 'Extracción de registros desde dbo.stg_gig_economy_raw en SQL Server.'
             },
             {
                 'componente': 'Sort',
@@ -1256,7 +1256,7 @@ def get_ssis_package_info():
             {
                 'componente': 'Lookup',
                 'tipo': 'Lookup Transformation',
-                'rol': 'Validación referencial y enriquecimiento cruzado contra catálogos maestros de países (ISO-3), plataformas y categorías CIUO-08.'
+                'rol': 'Homologación canónica de ciudades contra dbo.dim_ciudades_homologadas; la mediana condicional de imputación (costos/horas) se inyecta como variable de usuario.'
             },
             {
                 'componente': 'Derived Column',
@@ -1270,12 +1270,12 @@ def get_ssis_package_info():
             },
             {
                 'componente': 'DEST_Fact_Clean',
-                'tipo': 'OLE DB Destination (Fact_GigEconomy_Clean)',
+                'tipo': 'OLE DB Destination (dbo.fact_gig_economy_clean)',
                 'rol': 'Destino de los 12.350 registros limpios, 100% conformes y certificados para algoritmos de Minería de Datos.'
             },
             {
                 'componente': 'DEST_Rechazos',
-                'tipo': 'OLE DB Destination (Log_Rechazos_Calidad)',
+                'tipo': 'OLE DB Destination (dbo.ods_gig_economy_rechazos)',
                 'rol': 'Destino de auditoría y trazabilidad para los 150 registros duplicados / anomalías segregadas.'
             }
         ],
@@ -1490,4 +1490,252 @@ def _paginate_and_filter(records, page=1, per_page=15, search="", nivel="", tipo
         'page': page,
         'per_page': per_page,
         'total_paginas': total_paginas
+    }
+
+
+# ============================================================
+# ETAPA 3: ETL CON SSIS - REGLAS, ARQUITECTURA, ITERACIONES Y RESULTADOS
+# Los conteos reflejan el diagnóstico verificado de la Etapa 2 (fase 02-04)
+# y el resultado real del dataset tratado (fase Antes/Después).
+# ============================================================
+
+def get_etapa3_reglas():
+    """Reglas de tratamiento definidas a partir del inventario de problemas de la Etapa 2.
+    Cada regla indica problema, campo(s) afectados, acción en SSIS y justificación."""
+    return [
+        {
+            'id': 'REG-01',
+            'problema': 'PRB-01 - Unicidad',
+            'campos': 'id_registro / fila completa',
+            'componente_ssis': 'Sort + Conditional Split',
+            'accion': 'Ordenamiento determinístico por id_registro y las 27 columnas; detección de colisiones de clave y tuplas idénticas. Las filas duplicadas se desvían a dbo.ods_gig_economy_rechazos con motivo "Duplicado ETL" y se reindexan las claves GIG-00001 a GIG-12350.',
+            'justificacion': 'Evita sobreajuste y sesgo en clustering y reglas de asociación que duplicarían observaciones idénticas sin valor informativo.'
+        },
+        {
+            'id': 'REG-02',
+            'problema': 'PRB-04 - Validez / Homologación',
+            'campos': 'ciudad_municipio',
+            'componente_ssis': 'Lookup + Derived Column',
+            'accion': 'Homologación contra la tabla de referencia dbo.dim_ciudades_homologadas: "bogota", "BOGOTA", "Bogotá D.C.", "Bogota D.C." -> "Bogota"; "cali", "Cali ", "Santiago de Cali" -> "Cali"; "Medellín", "MEDELLIN", "medellin" -> "Medellin". TRIM y normalización de mayúsculas/tildes.',
+            'justificacion': 'Agrupaciones geográficas consistentes para el análisis multidimensional por nivel territorial sin fragmentar la misma ciudad.'
+        },
+        {
+            'id': 'REG-03',
+            'problema': 'PRB-03 - Exactitud',
+            'campos': 'ingreso_neto_mensual_cop',
+            'componente_ssis': 'Derived Column + Data Conversion',
+            'accion': 'Recálculo determinístico: ingreso_neto_mensual_cop = ingreso_bruto_mensual_cop - costos_operativos_mensuales_cop; conversión de tipo a DECIMAL(18,2) para evitar errores de redondeo; recálculo consistente de ingreso_neto_hora_usd.',
+            'justificacion': 'Garantiza 100 % de cuadre contable, requisito crítico para modelos de regresión de ingresos y análisis de rentabilidad horaria.'
+        },
+        {
+            'id': 'REG-04',
+            'problema': 'PRB-05 - Completitud (calificación)',
+            'campos': 'calificacion_promedio_app',
+            'componente_ssis': 'Derived Column (ISNULL)',
+            'accion': 'Imputación de la media del sector para Microtareas y Etiquetado de Datos (4.50) con habilitación de bandera autocorregida = 1 (Imputado).',
+            'justificacion': 'El vacío es estructural (plataformas sin sistema de estrellas), por lo que la imputación sectorial evita pérdida de 405 registros sin inventar información.'
+        },
+        {
+            'id': 'REG-05',
+            'problema': 'PRB-02 - Completitud (ingreso neto)',
+            'campos': 'ingreso_neto_mensual_cop',
+            'componente_ssis': 'Derived Column (expresión condicional)',
+            'accion': 'Si ingreso_neto es nulo pero existen bruto y costos, se calcula Neto = Bruto - Costos; si ambos faltan, se imputa la mediana condicional por categoría de servicio con bandera Imputado = 1.',
+            'justificacion': 'La regla DERIVADA del propio balance del registro es preferible a cualquier promedio cuando es computable; evita no-respuesta voluntaria sin distorsionar.'
+        },
+        {
+            'id': 'REG-06',
+            'problema': 'PRB-08 - Completitud (costos)',
+            'campos': 'costos_operativos_mensuales_cop',
+            'componente_ssis': 'Derived Column + Lookup',
+            'accion': 'Imputación por mediana condicional (por tipo_plataforma * categoria_servicio) consultada mediante Lookup, con bandera Imputado = 1.',
+            'justificacion': 'Preserva la asimetría de cada subgrupo (reparto vs transporte vs en línea) sin inflar ni subestimar costos con un promedio global.'
+        },
+        {
+            'id': 'REG-07',
+            'problema': 'PRB-09 - Completitud (horas)',
+            'campos': 'horas_semanales',
+            'componente_ssis': 'Derived Column + Lookup',
+            'accion': 'Imputación por mediana condicional de jornada según categoría de servicio y nivel territorial, con bandera Imputado = 1.',
+            'justificacion': 'Repara la omisión del final del cuestionario permitiendo calcular tarifa horaria USD e intensidad laboral en toda la muestra.'
+        },
+        {
+            'id': 'REG-08',
+            'problema': 'PRB-06 - Validez / Rangos',
+            'campos': 'edad, horas_semanales',
+            'componente_ssis': 'Derived Column (Winsorizing) + Conditional Split',
+            'accion': 'Acotamiento (winsorización): edad fuera de [18, 70] se lleva al límite (16->18, 92->70) y jornadas fuera de [5.0, 84.0] al límite (126->84). Registros extremos irrecuperables se separan con motivo.',
+            'justificacion': 'Corrige errores tipográficos sin perder el registro; los modelos basados en distancia (K-Means, KNN) son sensibles a valores extremos.'
+        },
+        {
+            'id': 'REG-09',
+            'problema': 'PRB-07 - Consistencia (seguridad social)',
+            'campos': 'afiliacion_salud',
+            'componente_ssis': 'Derived Column (regla de negocio IF)',
+            'accion': 'Si el trabajador figura como "Regimen Subsidiado" pero cotiza activamente a pensión y tiene ARL, se homologa a "Regimen Contributivo (Cotizante)". El valor original se conserva y el detalle se registra en la columna motivo_revision de dbo.fact_gig_economy_clean.',
+            'justificacion': 'Cumple el marco normativo laboral: quien cotiza formalmente no puede declarar régimen subsidiado; evita reglas de asociación espurias.'
+        }
+    ]
+
+
+def get_etapa3_arquitectura():
+    """Arquitectura del paquete SSIS: zona de staging para trazabilidad, esquemas de destino y configuración de componentes."""
+    return {
+        'solucion': 'MercadoLaboral_SSIS',
+        'paquete': 'ETL_Tratamiento_GigEconomy.dtsx',
+        'modo': 'Transaccional idempotente con zona de staging, capa dimensional de homologación y capa de rechazos/revisión.',
+        'administradores': [
+            {'nombre': 'CNX_CSV_GigEconomy_Raw', 'tipo': 'Flat File Connection Manager', 'rol': 'Extracción de los 12.500 registros del CSV original. Los datos originales nunca se modifican en origen.'},
+            {'nombre': 'CNX_SQL_MercadoLaboral', 'tipo': 'OLE DB Connection Manager', 'rol': 'Conexión a SQL Server con dbo.stg_gig_economy_raw, dbo.dim_ciudades_homologadas, dbo.fact_gig_economy_clean y dbo.ods_gig_economy_rechazos (modo transaccional).'}
+        ],
+        'tablas': [
+            {'nombre': 'dbo.stg_gig_economy_raw', 'tipo': 'Staging (zona intermedia)', 'descripcion': 'Copia exacta del lote original (12.500 filas). Se TRUNCATE al inicio de cada ejecución para garantizar idempotencia y trazabilidad del lote completo.'},
+            {'nombre': 'dbo.dim_ciudades_homologadas', 'tipo': 'Dimensión de homologación', 'descripcion': 'Diccionario canónico de ciudades (15 valores) con alias ortográficos para la homologación Lookup (REG-02).'},
+            {'nombre': 'dbo.fact_gig_economy_clean', 'tipo': 'Hechos final (destino)', 'descripcion': 'Destino de los 12.350 registros aptos para Minería de Datos con clave primaria única (id_registro) que bloquea duplicados por re-ejecución. Incluye las columnas rev (bandera = 1) y motivo_revision para los 86 casos documentados.'},
+            {'nombre': 'dbo.ods_gig_economy_rechazos', 'tipo': 'ODS de rechazos (auditoría)', 'descripcion': 'Almacena las 150 filas duplicadas segregadas con motivo, fecha de ejecución y hash de la fila original.'}
+        ],
+        'componentes': [
+            {
+                'nombre': 'Flat File / OLE DB Source',
+                'tipo': 'Origen',
+                'configuracion': 'Text Qualifier = comillas dobles; codificación UTF-8; primera fila = encabezados; tipos por columna',
+                'funcion': 'Extrae el lote crudo desde CSV hacia Staging sin alterarlo y luego desde Staging hacia el pipeline de datos.'
+            },
+            {
+                'nombre': 'Sort',
+                'tipo': 'Transformación de ordenamiento',
+                'configuracion': 'Orden ascendente por id_registro y por las 27 columnas clave; pasa al pipeline el output sin duplicados contiguos',
+                'funcion': 'Genera un orden determinístico a partir del cual las colisiones de clave primaria y las tuplas idénticas quedan adyacentes para detectarlas y contar los 150 duplicados.'
+            },
+            {
+                'nombre': 'Data Conversion',
+                'tipo': 'Conversión de tipos',
+                'configuracion': 'fecha_registro -> DT_DBDATE; ingreso_bruto/costos/neto -> DT_NUMERIC(18,2); horas_semanales -> DT_R8; edad -> DT_I4',
+                'funcion': 'Normaliza los tipos sucios del archivo plano (texto) a tipos estrictos de SQL Server, evitando fallos silenciosos de casting en LSR y costos .ID.'
+            },
+            {
+                'nombre': 'Lookup',
+                'tipo': 'Búsqueda de referencia',
+                'configuracion': 'Cache parcial (8172 MB); conexión OLE DB a dbo.dim_ciudades_homologadas; comparación case-insensitive; output de coincidencia y de no coincidencia redirigido; medianas condicionales de imputación inyectadas como variables de usuario (@[User::Mediana_Costos], @[User::Mediana_Horas], precargadas con t-SQL)',
+                'funcion': 'Homologa las 848 variantes de ciudad al valor canónico (REG-02) y expone las medianas condicionales que usan los Derived Column de imputación para costos y horas.'
+            },
+            {
+                'nombre': 'Derived Column',
+                'tipo': 'Transformación de expresión',
+                'configuracion': 'Expresiones SSIS: (DT_NUMERIC,18,2)(ingreso_bruto - costos) para neto; REPLACE/LOWER/TRIM para ciudades; ISNULL() con mediana condicional; IF clamps para edad y horas; IF negocio para régimen de salud',
+                'funcion': 'Ejecuta las reglas REG-02 a REG-09: recálculo aritmético, imputación justificada, normalización ortográfica, winsorización y homologación de seguridad social.'
+            },
+            {
+                'nombre': 'Conditional Split',
+                'tipo': 'Bifurcación condicional',
+                'configuracion': 'Orden de condiciones de mayor a menor prioridad: (1) Out_Duplicado (tupla idéntica / colisión de clave) -> dbo.ods_gig_economy_rechazos; (2) Out_Flag_Revision (Posgrado y edad < 22) marca REV = 1 y continúa en el flujo; (3) Out_Clean (default)',
+                'funcion': 'Segrega los 150 duplicados a dbo.ods_gig_economy_rechazos con motivo registrado; los 86 perfiles Posgrado-edad < 22 se marcan con bandera REV = 1 y motivo (columna motivo_revision) y permanecen en el flujo; el resto se carga como fila única en dbo.fact_gig_economy_clean.'
+            },
+            {
+                'nombre': 'OLE DB Destination (fact_gig_economy_clean / ods_gig_economy_rechazos)',
+                'tipo': 'Destino',
+                'configuracion': 'Fast Load; BatchSize = 5000; MaxInsertCommitSize = 10000; KeepIdentity = false; Table lock',
+                'funcion': 'Carga masiva eficiente en los destinos. La clave primaria única de dbo.fact_gig_economy_clean rechaza cualquier duplicado residual, garantizando idempotencia.'
+            }
+        ]
+    }
+
+
+def get_etapa3_iteraciones():
+    """Las 3 iteraciones del proceso ETL: hallazgos, ajustes y conteos verificados."""
+    return {
+        'iteraciones': [
+            {
+                'no': 1,
+                'nombre': 'Línea base: Ingreso, desduplicación y diagnóstico',
+                'objetivo': 'Extraer el lote completo a Staging, ordenar y separar los duplicados; medir la magnitud real de cada problema sin aplicar todavía reparaciones.',
+                'hallazgos': 'Los 12.500 registros presentan 150 duplicados exactos. Además, 2.007 registros únicos (16,25 %) requieren revisión: 529 con valores nulos, 339 sin cuadre contable, 848 con ciudad no canónica, 73 fuera de rango (edad/horas), 679 contradicciones de seguridad social y 86 con Posgrado y edad < 22.',
+                'ajustes_hacia_siguiente': 'Se evidencia que la mayoría de defectos (nulos, cuadre, ciudades, rangos) son reparables de forma automática. Se decide construir las expresiones de imputación, recálculo, homologación y winsorización (REG-02 a REG-08).',
+                'metricas': {'lote': 12500, 'recibidos': 12500, 'duplicados': 150, 'revision': 2007, 'aceptados': 10343},
+                'conteos': [
+                    {'concepto': 'Recibidos en Staging (lote original)', 'valor': 12500},
+                    {'concepto': 'Duplicados exactos segregados a dbo.ods_gig_economy_rechazos', 'valor': 150},
+                    {'concepto': 'Enviados a revisión sin tratamiento (concoteos)', 'valor': 2007},
+                    {'concepto': 'Aceptados (sin defectos aparentes)', 'valor': 10343}
+                ],
+                'reglas': ['REG-01 (Sort + Conditional Split)']
+            },
+            {
+                'no': 2,
+                'nombre': 'Automatización de reparaciones (imputación, recálculo, homologación y rangos)',
+                'objetivo': 'Alinear las reglas de negocio y el pipeline para asociar cada transformación (REG-02 a REG-08) y reducir la revisión a los casos no reparables mecánicamente.',
+                'hallazgos': 'Tras aplicar Derivados Column, Lookup y Data Conversion, los defectos reparables desaparecen: 723 celdas nulas imputadas, 339 cuadres recalculados, 848 ciudades homologadas y 73 rangos corregidos. Quedan 756 registros que NO admiten imputación mecánica: 679 contradicciones de régimen de salud y 86 perfiles Posgrado-edad < 22.',
+                'ajustes_hacia_siguiente': 'Se introduce la regla de negocio REG-09 (homologación a Régimen Contributivo para cotizantes activos con ARL) y se decide conservar en revisión documental los casos de perfil educativo que requieren validación humana, con valor original y motivo.',
+                'metricas': {'lote': 12500, 'recibidos': 12500, 'duplicados': 150, 'revision': 756, 'aceptados': 11594},
+                'conteos': [
+                    {'concepto': 'Recibidos en Staging (lote original)', 'valor': 12500},
+                    {'concepto': 'Duplicados exactos segregados (constante del lote)', 'valor': 150},
+                    {'concepto': 'Registros reparados automáticamente (nulos, cuadre, ciudad, rango)', 'valor': 1251},
+                    {'concepto': 'En revisión (seguridad social + perfil educativo)', 'valor': 756},
+                    {'concepto': 'Aceptados tras reparaciones', 'valor': 11594}
+                ],
+                'reglas': ['REG-01', 'REG-02', 'REG-03', 'REG-04', 'REG-05', 'REG-06', 'REG-07', 'REG-08']
+            },
+            {
+                'no': 3,
+                'nombre': 'Regla de negocio, revisión documental y certificación final',
+                'objetivo': 'Aplicar la homologación de seguridad social, cargar el lote certificado a Fact y documentar sin pérdida toda la información.',
+                'hallazgos': 'La homologación de régimen corrige los 679 casos de seguridad social. Los 86 perfiles Posgrado-edad < 22 se cargan con bandera de revisión (REV = 1), conservando el valor original y registrando el motivo en la columna motivo_revision de dbo.fact_gig_economy_clean. No existe pérdida de información sin explicación: el lote original de 12.500 se reparte como 150 duplicados rechazados (auditables con motivo en dbo.ods_gig_economy_rechazos) y 12.350 registros únicos cargados en dbo.fact_gig_economy_clean; de estos últimos, 86 portan bandera de revisión documental.',
+                'ajustes_hacia_siguiente': 'Idempotencia: al re-ejecutar el mismo lote, el TRUNCATE de Staging y la clave primaria única de Fact garantizan conteos idénticos y cero duplicados adicionales.',
+                'metricas': {'lote': 12500, 'recibidos': 12500, 'duplicados': 150, 'revision': 86, 'aceptados': 12350},
+                'conteos': [
+                    {'concepto': 'Recibidos en Staging (lote original)', 'valor': 12500},
+                    {'concepto': 'Duplicados exactos segregados a dbo.ods_gig_economy_rechazos (motivo registrado)', 'valor': 150},
+                    {'concepto': 'Revisión documental (bandera REV, valor original conservado)', 'valor': 86},
+                    {'concepto': 'Aceptados en dbo.fact_gig_economy_clean (100 % aptos)', 'valor': 12350}
+                ],
+                'reglas': ['REG-01 a REG-09 (todas)']
+            }
+        ],
+        'idempotencia': {
+            'titulo': 'Re-ejecución del lote sin duplicados adicionales',
+            'detalle': 'Cada ejecución comienza con TRUNCATE TABLE dbo.stg_gig_economy_raw y dbo.ods_gig_economy_rechazos, por lo que el lote se vuelve a leer completo (12.500). La tabla dbo.fact_gig_economy_clean posee clave primaria única sobre id_registro y se usa Merge/Upsert por clave; al cargar el mismo lote de 12.350 identificadores únicos, los conteos se mantienen: 12.500 recibidos, 150 duplicados, 86 en revisión, 12.350 en fact_gig_economy_clean. Ninguna re-ejecución genera registros duplicados.',
+            'ejecucion_1': {'recibidos': 12500, 'duplicados': 150, 'fact': 12350},
+            'ejecucion_2': {'recibidos': 12500, 'duplicados': 150, 'fact': 12350},
+            'ejecucion_3': {'recibidos': 12500, 'duplicados': 150, 'fact': 12350}
+        }
+    }
+
+
+def get_etapa3_comparacion():
+    """Comparación de calidad antes (raw) versus cada iteración, con ejemplos concretos y pendientes."""
+    return {
+        'dqi': [
+            {'etiqueta': 'DQI Inicial (Raw)', 'valor': 97.00},
+            {'etiqueta': 'DQI Iteración 1', 'valor': 97.18},
+            {'etiqueta': 'DQI Iteración 2', 'valor': 100.00},
+            {'etiqueta': 'DQI Iteración 3 (Final)', 'valor': 99.86}
+        ],
+        'tabla': [
+            {'dimension': 'Completitud', 'inicial': '99.79%', 'it1': '99.79%', 'it2': '100.00%', 'it3': '100.00%', 'nota': '723 celdas vacías imputadas en IT2 e IT3'},
+            {'dimension': 'Exactitud', 'inicial': '95.56%', 'it1': '95.56%', 'it2': '100.00%', 'it3': '100.00%', 'nota': '339 cuadres recalculados con Neto = Bruto - Costos'},
+            {'dimension': 'Consistencia', 'inicial': '93.90%', 'it1': '93.90%', 'it2': '100.00%', 'it3': '99.31%', 'nota': '679 homologados; 86 perfiles Posgrado-<22 en revisión documental'},
+            {'dimension': 'Unicidad', 'inicial': '98.80%', 'it1': '100.00%', 'it2': '100.00%', 'it3': '100.00%', 'nota': '150 duplicados segregados y clave primaria única'},
+            {'dimension': 'Validez', 'inicial': '95.48%', 'it1': '95.48%', 'it2': '100.00%', 'it3': '100.00%', 'nota': '848 ciudades homologadas y 73 rangos corregidos'},
+            {'dimension': 'Actualidad', 'inicial': '100.00%', 'it1': '100.00%', 'it2': '100.00%', 'it3': '100.00%', 'nota': 'Ventana 2021-2026 sin cambios'}
+        ],
+        'detalle_por_iteracion': {
+            'it1': 'Iteración 1 solo ejecutó desduplicación y diagnóstico, por ello sus métricas equivalen al dataset deduplicado: la unicidad pasa a 100 % y el DQI sube a 97,18, pero 2.007 registros quedaron pendientes de tratamiento.',
+            'it2': 'Al excluir los 756 registros de revisión y aplicar las transformaciones sobre el subconjunto cargado (11.594), las métricas calculadas sobre los datos cargados llegan a 100 %. Este resultado "aparentemente perfecto" alerta del riesgo de enmascarar calidad excluyendo datos: IT3 se diseña para recuperar esa información.',
+            'it3': 'Con la regla de negocio y la revisión documental se cargan 12.350 registros: las métricas reales del lote completo alcanzan DQI 99,86 con Consistencia 99,31 % (86 advertencias documentadas, sin pérdida de información con explicación).'
+        },
+        'ejemplos': [
+            {'problema': 'PRB-04 (Ciudades)', 'antes': '"bogota", "BOGOTA", "Bogotá D.C.", "Bogota D.C." (4 grupos distintos)', 'despues': '"Bogota" (único valor canónico)', 'componente': 'Lookup + Derived Column'},
+            {'problema': 'PRB-04 (Ciudades)', 'antes': '"Cali ", "cali", "Santiago de Cali", "Cali" (4 grupos)', 'despues': '"Cali"', 'componente': 'TRIM + Lookup'},
+            {'problema': 'PRB-01 (Duplicados)', 'antes': 'Un mismo ID (GIG-00080) con tupla idéntica aparecía 2+ veces', 'despues': 'Una fila por identificador en dbo.fact_gig_economy_clean; copia en dbo.ods_gig_economy_rechazos con motivo', 'componente': 'Sort + Conditional Split'},
+            {'problema': 'PRB-06 (Rangos)', 'antes': 'Jornada de 126 h/semana y edad de 16/92 años', 'despues': 'Jornada 84 h y edad 18/70 (límites winsorizados)', 'componente': 'Derived Column (clamp IF)'},
+            {'problema': 'PRB-03 (Cuadre)', 'antes': 'ingreso_neto = ingreso_bruto (se omitió costos)', 'despues': 'ingreso_neto = bruto - costos (cuadre exacto)', 'componente': 'Derived Column + Data Conversion'},
+            {'problema': 'PRB-07 (Seguridad social)', 'antes': 'Régimen Subsidiado pero cotiza a pensión y ARL', 'despues': 'Régimen Contributivo (Cotizante)', 'componente': 'Derived Column (IF negocio)'},
+            {'problema': 'PRB-05 (Calificación)', 'antes': '405 celdas vacías en microtareas', 'despues': 'Media sectorial 4,50 con bandera Imputado = 1', 'componente': 'Derived Column (ISNULL)'}
+        ],
+        'pendientes': [
+            {'nombre': '86 registros Posgrado con edad < 22', 'accion': 'Bandera REV = 1, valor original conservado y motivo documentado (columna motivo_revision de dbo.fact_gig_economy_clean). Requieren validación de la fuente (posible actualización curricular) antes de usar en modelos de ingresos.'},
+            {'nombre': 'Costos con mediana condicional', 'accion': 'Las 65 celdas de costos imputadas parten de la distribución de su categoría; se recomienda contrastar con costos reales siguientes de la misma categoría en futuras actualizaciones del lote.'},
+            {'nombre': 'Calificación imputada en microtareas', 'accion': 'Las 405 calificaciones imputadas deben tratarse como variable auxiliar (no fuerza motriz) en los modelos supervisados hasta disponer de datos de la plataforma.'}
+        ]
     }
