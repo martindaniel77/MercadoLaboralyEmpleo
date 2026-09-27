@@ -134,15 +134,30 @@ Para garantizar que ningún campo quedara sin revisar, se ejecutó una auditorí
 
 ---
 
-## 5. Plan de Tratamiento y Pipeline ETL de Limpieza
+## 5. Plan de Tratamiento y Pipeline ETL en SQL Server Integration Services (SSIS)
 
-### 5.1 Fases Operativas del Pipeline
-1. **Desduplicación Determinística:** Purgado de 150 tuplas idénticas y reindexación de IDs (`GIG-00001` a `GIG-12350`).
-2. **Estandarización y Homologación:** Mapeo a diccionario canónico de ciudades y remoción de inconsistencias ortográficas.
-3. **Reconciliación Contable Aritmética:** Forzado estricto $Ingreso\_Neto = Ingreso\_Bruto - Costos\_Operativos$ y recálculo consistente de tarifa horaria USD.
-4. **Imputación Condicional Justificada:** Asignación de la mediana condicional por categoría de servicio para costos y horas faltantes; asignación de media sectorial para microtareas.
-5. **Tratamiento de Outliers (Winsorizing):** Acotamiento de horas al rango plausible $[5.0h, 84.0h]$ y edades a $[18, 70]$.
-6. **Corrección de Consistencia Lógica:** Homologación a Régimen Contributivo para cotizantes activos a pensión y ARL.
+### 5.1 Arquitectura del Paquete SSIS (`MercadoLaboral_SSIS`)
+El plan de tratamiento se diseñó e implementó formalmente en **Microsoft SQL Server Integration Services (SSIS)** mediante el paquete **`ETL_Tratamiento_GigEconomy.dtsx`**, estructurado en dos capas de procesamiento:
+
+#### 1. Flujo de Control (Control Flow)
+- **`SQL_Limpiar_Staging` (Execute SQL Task):** Truncado preventivo de tablas intermedias y de auditoría (`TRUNCATE TABLE Staging_Raw`, `TRUNCATE TABLE Log_Rechazos`) para asegurar ejecuciones determinísticas e idempotentes.
+- **`DFT_01_Cargar_Staging` (Data Flow Task):** Extracción masiva desde el archivo plano raw (`CNX_CSV_GigEconomy_Raw` con 12.500 registros) y carga directa a la base de datos relacional SQL Server (`CNX_SQL_MercadoLaboral`).
+- **`DFT_02_Tratamiento_Calidad` (Data Flow Task):** Orquestación central de depuración, transformaciones matemáticas, imputaciones y bifurcación condicional.
+
+#### 2. Flujo de Datos (Data Flow: `DFT_02_Tratamiento_Calidad`)
+1. **`SRC_Staging_Raw` (OLE DB Source):** Extracción de microdatos crudos desde el área de Staging.
+2. **`Sort` (Sort Transformation):** Ordenamiento determinístico por claves y tuplas completas para detección y purga de colisiones.
+3. **`Lookup` (Lookup Transformation):** Validación referencial contra tablas maestras de países (`Dim_Pais`), plataformas y categorías ocupacionales CIUO-08.
+4. **`Derived Column` (Derived Column Transformation):**
+   - Corrección forzada del balance contable: $Ingreso\_Neto = Ingreso\_Bruto - Costos\_Operativos$.
+   - Normalización de cadenas y homologación de ciudades ("bogota", "BOGOTA" $\rightarrow$ "Bogota D.C.").
+   - Conversión estandarizada de tarifa horaria en USD: $(Ingreso\_Neto / Horas\_Mes) / Tasa\_Cambio$.
+   - Imputación condicional de nulos con medianas sectoriales y asignación de puntaje base en microtareas.
+   - Winsorización de jornadas $[5.0h, 84.0h]$ y edades activas $[18, 70]$.
+   - Homologación a Régimen Contributivo para cotizantes a pensión y ARL.
+5. **`Conditional Split` (Conditional Split Transformation):** Segregación estricta de registros:
+   - **Salida Conforme $\rightarrow$ `DEST_Fact_Clean`:** 12.350 registros limpios, 100% consistentes y certificados para Minería de Datos.
+   - **Salida No Conforme / Duplicados $\rightarrow$ `DEST_Rechazos`:** 150 registros segregados para auditoría de calidad y trazabilidad.
 
 ---
 
@@ -155,7 +170,7 @@ Para garantizar que ningún campo quedara sin revisar, se ejecutó una auditorí
 | **Completitud** | 99.79% | **100.00%** | **+0.21%** | 723 celdas vacías | **0** | **Excelente** |
 | **Exactitud** | 95.56% | **100.00%** | **+4.44%** | 555 (216 nulos + 339 contables) | **0** | **Excelente** |
 | **Consistencia** | 93.90% | **99.31%** | **+5.41%** | 763 conflictos lógicos | **85** (casos de Posgrado < 22 años) | **Excelente** |
-| **Unicidad** | 98.80% | **100.00%** | **+1.20%** | 150 duplicados | **0** | **Excelente** |
+| **Unicidad** | 98.80% | **100.00%** | **+1.20%** | 150 duplicados | **0** (enviados a Rechazos) | **Excelente** |
 | **Validez** | 95.48% | **100.00%** | **+4.52%** | 565 registros no válidos | **0** | **Excelente** |
 | **Actualidad** | 100.00% | **100.00%** | **0.00%** | 0 desactualizados | **0** | **Excelente** |
 | **DQI Global** | 97.00% | **99.86%** | **+2.86%** | Nivel aceptable | **Nivel Óptimo** | **Apto para Minería** |
@@ -164,6 +179,6 @@ Para garantizar que ningún campo quedara sin revisar, se ejecutó una auditorí
 
 ## 7. Conclusiones y Aptitud para Minería de Datos
 
-1. **Aptitud Algorítmica Garantizada:** El dataset tratado de **12.350 registros** alcanza un índice de calidad **DQI de 99.86%**, superando todos los umbrales mínimos exigidos.
-2. **Integridad Multidimensional:** Las variables económicas y operativas se encuentran 100% calibradas para la ejecución confiable de clustering, reglas de asociación y modelos supervisados en las etapas 3, 4 y 5.
-3. **Trazabilidad y Reproducibilidad:** El pipeline se ejecuta automáticamente desde el backend en Flask (`data_service.py`), permitiendo auditar y descargar tanto la versión cruda como la tratada desde la plataforma web.
+1. **Aptitud Algorítmica Garantizada:** La tabla de hechos limpia (`DEST_Fact_Clean`) con **12.350 registros** alcanza un índice de calidad **DQI de 99.86%**, superando todos los umbrales mínimos exigidos para la fase de modelado.
+2. **Trazabilidad Empresarial con SSIS:** La arquitectura segregada garantiza que ninguna observación sea destruida sin registro; las 150 filas duplicadas o anómalas reposan en `DEST_Rechazos` para auditorías metodológicas.
+3. **Integración con la Plataforma Web:** La aplicación Flask documenta interactivamente cada componente del paquete SSIS, permitiendo auditar y descargar tanto el conjunto crudo como el consolidado limpio.
