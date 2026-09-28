@@ -10,7 +10,7 @@ app = Flask(__name__)
 #   ETAPA3_VIDEO_URL = "https://www.youtube.com/watch?v=XXXXXXXXXXX"
 #   ETAPA3_VIDEO_URL = "https://drive.google.com/file/d/FILE_ID/view"
 #   ETAPA3_VIDEO_URL = "/static/videos/demo_etapa3.mp4"
-ETAPA3_VIDEO_URL = os.environ.get('ETAPA3_VIDEO_URL', '')
+ETAPA3_VIDEO_URL = os.environ.get('ETAPA3_VIDEO_URL', 'https://youtu.be/KBkUWh_jC9U')
 
 # Asegurar que el dataset inicial exista al arrancar
 data_service.ensure_dataset_exists()
@@ -131,6 +131,16 @@ def descargar_dataset():
         data_service.CSV_PATH,
         as_attachment=True,
         download_name='dataset_gig_economy_inicial_raw.csv',
+        mimetype='text/csv'
+    )
+
+
+@app.route('/descargar-dataset-tratado')
+def descargar_dataset_tratado():
+    return send_file(
+        data_service.CSV_TRATADO_PATH,
+        as_attachment=True,
+        download_name='dataset_gig_economy_tratado_limpio.csv',
         mimetype='text/csv'
     )
 
