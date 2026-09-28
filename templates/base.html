@@ -28,6 +28,7 @@
     {% set endpoint = request.endpoint or '' %}
     {% set is_etapa1 = endpoint in ['problema', 'preguntas', 'necesidades', 'fuentes', 'dataset', 'diccionario', 'calidad', 'limitaciones'] %}
     {% set is_etapa2 = endpoint.startswith('etapa2_') or request.path.startswith('/etapa-2/') %}
+    {% set is_etapa3 = endpoint.startswith('etapa3_') or request.path.startswith('/etapa-3/') %}
 
     <div class="app">
         <!-- ===== Sidebar / Índice de la bitácora ===== -->
@@ -85,12 +86,23 @@
                     </ul>
                 </details>
 
-                <!-- ETAPAS 3, 4 y 5 (pendientes) -->
-                <div class="stage stage--locked">
-                    <span class="stage__num">ETAPA 03</span>
-                    <span class="stage__sep">&mdash;</span>
-                    <span class="stage__title">Por definir</span>
-                </div>
+                <!-- ETAPA 3 -->
+                <details class="stage {{ 'stage--active' if is_etapa3 }}" {{ 'open' if is_etapa3 }}>
+                    <summary>
+                        <span class="stage__num">ETAPA 03</span>
+                        <span class="stage__sep">&mdash;</span>
+                        <span class="stage__title">ETL con SSIS y calidad</span>
+                    </summary>
+                    <ul class="stage__pages">
+                        <li><a href="{{ url_for('etapa3_reglas') }}" class="{{ 'active' if endpoint == 'etapa3_reglas' }}"><span class="stage__page-num">01</span> Reglas de tratamiento</a></li>
+                        <li><a href="{{ url_for('etapa3_arquitectura') }}" class="{{ 'active' if endpoint == 'etapa3_arquitectura' }}"><span class="stage__page-num">02</span> Arquitectura SSIS y staging</a></li>
+                        <li><a href="{{ url_for('etapa3_iteraciones') }}" class="{{ 'active' if endpoint == 'etapa3_iteraciones' }}"><span class="stage__page-num">03</span> Iteraciones y resultados</a></li>
+                        <li><a href="{{ url_for('etapa3_comparacion') }}" class="{{ 'active' if endpoint == 'etapa3_comparacion' }}"><span class="stage__page-num">04</span> Comparación de calidad</a></li>
+                        <li><a href="{{ url_for('etapa3_video') }}" class="{{ 'active' if endpoint == 'etapa3_video' }}"><span class="stage__page-num">05</span> Video demostrativo</a></li>
+                    </ul>
+                </details>
+
+                <!-- ETAPAS 4 y 5 (pendientes) -->
                 <div class="stage stage--locked">
                     <span class="stage__num">ETAPA 04</span>
                     <span class="stage__sep">&mdash;</span>
@@ -106,12 +118,12 @@
             <div class="sidebar__progress">
                 <div class="sidebar__progress-top">
                     <span class="sidebar__progress-label">Progreso</span>
-                    <strong class="sidebar__progress-count">1 / 5 etapas</strong>
+                    <strong class="sidebar__progress-count">2 / 5 etapas</strong>
                 </div>
                 <div class="progress-track" aria-hidden="true">
-                    <div class="progress-fill" style="width: 30%;"></div>
+                    <div class="progress-fill" style="width: 45%;"></div>
                 </div>
-                <span class="sidebar__progress-status">Etapa 1 terminada &middot; Etapa 2 en curso</span>
+                <span class="sidebar__progress-status">Etapas 1 y 2 terminadas &middot; Etapa 3 en curso</span>
             </div>
         </aside>
 

@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Reglas de Tratamiento ETL | Etapa 3{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <span class="section-eyebrow page-header__eyebrow">Etapa 3 &middot; ETL con SSIS</span>
+        <h1>Reglas de Tratamiento Definidas desde el Diagnóstico</h1>
+        <p>
+            Para cada problema identificado en la Etapa 2 se definió una regla explícita de tratamiento: el
+            <strong>campo afectado</strong>, la <strong>acción</strong> que ejecuta el paquete SSIS y su
+            <strong>justificación</strong> técnica.
+        </p>
+        <div class="page-header__rule"></div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <!-- ===== KPIs de cobertura ===== -->
+        <div class="stat-grid mb-2">
+            <div class="stat-card stat-card--accent">
+                <div class="stat-card__val">8 / 9</div>
+                <div class="stat-card__lbl">Problemas con regla de reparación</div>
+                <div class="stat-card__sub">Solo PRB-01 se segrega (no se repara)</div>
+            </div>
+            <div class="stat-card stat-card--accent">
+                <div class="stat-card__val">09</div>
+                <div class="stat-card__lbl">Reglas documentadas (REG-01 a REG-09)</div>
+                <div class="stat-card__sub">Problema por regla &middot; Campo y justificación</div>
+            </div>
+            <div class="stat-card stat-card--dark">
+                <div class="stat-card__val">6</div>
+                <div class="stat-card__lbl">Dimensiones de calidad cubiertas</div>
+                <div class="stat-card__sub">Completitud, Exactitud, Consistencia, Unicidad, Validez, Actualidad</div>
+            </div>
+        </div>
+
+        <!-- ===== Matriz de reglas ===== -->
+        <div class="content-box">
+            <span class="section-eyebrow">01 / Matriz de Reglas</span>
+            <h2 class="section-title">Regla &rarr; Campo &rarr; Acción &rarr; Justificación</h2>
+            <p class="section-subtitle">
+                Las reglas se derivan directamente de los hallazgos de la auditoría 27/27 y sus causas raíz (fase 04 de la Etapa 2).
+            </p>
+
+            <div class="pipeline-flow">
+                {% for r in reglas %}
+                <div class="pipeline-step">
+                    <div class="pipeline-step__num">{{ loop.index }}</div>
+                    <div class="pipeline-step__content">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                            <h3 style="margin: 0; font-size: 1.05rem; color: var(--color-accent-dark);">
+                                <code>{{ r.id }}</code> &middot; {{ r.problema }}
+                            </h3>
+                            <span class="badge badge--dark">{{ r.componente_ssis }}</span>
+                        </div>
+                        <p style="font-size: 0.82rem; margin: 0.4rem 0; color: var(--color-accent);">
+                            <strong>Campo(s) afectado(s):</strong> <code>{{ r.campos }}</code>
+                        </p>
+                        <p style="font-size: 0.86rem; margin: 0.4rem 0;">
+                            <strong>Acción SSIS:</strong> {{ r.accion }}
+                        </p>
+                        <p style="font-size: 0.80rem; color: var(--color-text-muted); margin: 0;">
+                            <strong>Justificación:</strong> {{ r.justificacion }}
+                        </p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- ===== Criterios de decisión ===== -->
+        <div class="content-box">
+            <span class="section-eyebrow">02 / Criterios de Decisión</span>
+            <h2 class="section-title">¿Reparar, imputar, segregar o documentar?</h2>
+            <div class="grid grid--3">
+                <div class="card">
+                    <h3 class="card__title text-accent">Reparación determinística</h3>
+                    <p class="card__text" style="font-size: 0.85rem;">
+                        Se aplica cuando existe una fórmula de negocio verificable: cuadre contable
+                        <code>Neto = Bruto - Costos</code> (REG-03), winsorización de rangos (REG-08) y homologación de
+                        régimen de salud (REG-09). No se pierde información: se corrige el valor.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3 class="card__title text-accent">Imputación justificada</h3>
+                    <p class="card__text" style="font-size: 0.85rem;">
+                        Solo para vacíos estructurales: con la mediana condicional por categoría se preserva la
+                        distribución de cada subgrupo (REG-04 a REG-07). Toda imputación habilita la bandera
+                        <code>Imputado = 1</code> para trazabilidad.
+                    </p>
+                </div>
+                <div class="card">
+                    <h3 class="card__title text-accent">Segregación con motivo</h3>
+                    <p class="card__text" style="font-size: 0.85rem;">
+                        Los duplicados ETL (150, REG-01) van a <code>dbo.ods_gig_economy_rechazos</code> y los casos que
+                        requieren validación humana (86, Posgrado &lt; 22) se cargan en <code>dbo.fact_gig_economy_clean</code>
+                        con bandera
+                        <code>REV = 1</code> conservando el valor original y su motivo. Cero pérdida sin explicación.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

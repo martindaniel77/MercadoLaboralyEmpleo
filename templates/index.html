@@ -239,6 +239,44 @@
             </div>
         </section>
 
+    <!-- ===== Índice de la Etapa 3 ===== -->
+        <section class="section">
+            <span class="section-eyebrow">05 / ETL con SSIS &amp; Calidad</span>
+            <h2 class="section-title">Índice Completo de la Etapa 3</h2>
+            <p class="section-subtitle">
+                Proceso ETL en SQL Server Integration Services: 3 iteraciones de tratamiento, zona de staging,
+                comparación de calidad e informe técnico con video demostrativo.
+            </p>
+
+            <div class="toc">
+                <a href="{{ url_for('etapa3_reglas') }}" class="toc__item">
+                    <span class="toc__n">1</span>
+                    <span class="toc__t">Reglas de tratamiento &mdash; Problema, campo afectado, acción SSIS y justificación (REG-01 a REG-09)</span>
+                    <span class="toc__a">Consultar &rarr;</span>
+                </a>
+                <a href="{{ url_for('etapa3_arquitectura') }}" class="toc__item">
+                    <span class="toc__n">2</span>
+                    <span class="toc__t">Arquitectura SSIS y staging &mdash; Paquete ETL, tablas y configuración de Derived Column, Lookup, Conditional Split, Sort y Data Conversion</span>
+                    <span class="toc__a">Consultar &rarr;</span>
+                </a>
+                <a href="{{ url_for('etapa3_iteraciones') }}" class="toc__item">
+                    <span class="toc__n">3</span>
+                    <span class="toc__t">Iteraciones y resultados &mdash; Tres ejecuciones con conteos de recibidos, aceptados, duplicados y revisión, e idempotencia verificada</span>
+                    <span class="toc__a">Consultar &rarr;</span>
+                </a>
+                <a href="{{ url_for('etapa3_comparacion') }}" class="toc__item">
+                    <span class="toc__n">4</span>
+                    <span class="toc__t">Comparación de calidad &mdash; DQI y 6 dimensiones antes/después, evidencia concreta y problemas pendientes</span>
+                    <span class="toc__a">Consultar &rarr;</span>
+                </a>
+                <a href="{{ url_for('etapa3_video') }}" class="toc__item">
+                    <span class="toc__n">5</span>
+                    <span class="toc__t">Video demostrativo &mdash; Reproducción del paquete SSIS publicada en la aplicación</span>
+                    <span class="toc__a">Consultar &rarr;</span>
+                </a>
+            </div>
+        </section>
+
     </div>
 
     <!-- ===== Columna secundaria ===== -->
@@ -290,14 +328,14 @@
         <div class="side-card">
             <span class="side-card__title">Estado de la bitácora</span>
             <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 0.7rem;">
-                <strong style="font-size: 0.95rem; color: var(--color-primary);">1 / 5 etapas</strong>
+                <strong style="font-size: 0.95rem; color: var(--color-primary);">2 / 5 etapas</strong>
             </div>
             <div class="progress-track" aria-hidden="true">
-                <div class="progress-fill" style="width: 30%;"></div>
+                <div class="progress-fill" style="width: 45%;"></div>
             </div>
             <p
                 style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted); margin: 0.7rem 0 0;">
-                Etapa 1 terminada &middot; Etapa 2 en curso
+                Etapas 1 y 2 terminadas &middot; Etapa 3 en curso
             </p>
         </div>
 
@@ -308,6 +346,7 @@
                 <li><a href="{{ url_for('fuentes') }}">Fuentes de información &rarr;</a></li>
                 <li><a href="{{ url_for('etapa2_dimensiones') }}">Dimensiones de calidad &rarr;</a></li>
                 <li><a href="{{ url_for('etapa2_inventario') }}">Inventario de problemas &rarr;</a></li>
+                <li><a href="{{ url_for('etapa3_iteraciones') }}">Iteraciones ETAPA 3 &rarr;</a></li>
             </ul>
         </div>
 

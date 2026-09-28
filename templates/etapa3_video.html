@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Video Demostrativo del ETL SSIS | Etapa 3{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <span class="section-eyebrow page-header__eyebrow">Etapa 3 &middot; ETL con SSIS</span>
+        <h1>Video Demostrativo del Tratamiento en SSIS</h1>
+        <p>
+            Demostración práctica del paquete <code>ETL_Tratamiento_GigEconomy.dtsx</code>: ejecución del flujo de
+            control, flujo de datos, componentes, tres iteraciones y verificación de idempotencia.
+        </p>
+        <div class="page-header__rule"></div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        {% set vid = video_url %}
+        {% set embed = '' %}
+        {% if vid %}
+            {% if 'youtu.be/' in vid %}
+                {% set embed = 'https://www.youtube.com/embed/' ~ vid.split('youtu.be/')[1].split('?')[0] %}
+            {% elif 'youtube.com/watch' in vid and 'v=' in vid %}
+                {% set embed = 'https://www.youtube.com/embed/' ~ vid.split('v=')[1].split('&')[0] %}
+            {% elif 'youtube.com/embed/' in vid %}
+                {% set embed = vid %}
+            {% elif 'drive.google.com/file/d/' in vid %}
+                {% set embed = 'https://drive.google.com/file/d/' ~ vid.split('/file/d/')[1].split('/')[0] ~ '/preview' %}
+            {% endif %}
+        {% endif %}
+
+        <!-- ===== Reproductor o placeholder ===== -->
+        <div class="content-box content-box--highlight">
+            <span class="section-eyebrow">01 / Reproducción</span>
+            <h2 class="section-title">Vídeo de demostración</h2>
+
+            {% if vid and ('youtube.com' in embed or 'drive.google.com' in embed) %}
+            <div style="position: relative; padding-top: 56.25%; border-radius: var(--radius-lg); overflow: hidden; background: #000;">
+                <iframe src="{{ embed }}" title="Video demostrativo Etapa 3 - ETL SSIS"
+                    style="position: absolute; inset: 0; width: 100%; height: 100%; border: 0;"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen></iframe>
+            </div>
+            {% elif vid %}
+            <video controls preload="metadata" style="width: 100%; border-radius: var(--radius-lg); background: #000;"
+                src="{{ vid }}"></video>
+            {% else %}
+            <div class="panel" style="text-align: center; padding: 3rem 2rem;">
+                <div style="font-size: 3rem; margin-bottom: 0.6rem; opacity: 0.5;">&#9654;&#65039;</div>
+                <h3 style="margin: 0 0 0.4rem;">Video pendiente de publicación</h3>
+                <p style="font-size: 0.88rem; max-width: 560px; margin: 0 auto;">
+                    Aún no se ha configurado el enlace del video. Cuando tengas el enlace compartible (YouTube, Google
+                    Drive o MP4), envíamelo y lo integraré en la aplicación. Basta con pegar el enlace en la constante
+                    <code>ETAPA3_VIDEO_URL</code> de <code>app.py</code>.
+                </p>
+            </div>
+            {% endif %}
+        </div>
+
+    </div>
+</section>
+{% endblock %}

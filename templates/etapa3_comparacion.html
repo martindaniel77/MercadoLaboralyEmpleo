@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Comparación de Calidad entre Iteraciones | Etapa 3{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <span class="section-eyebrow page-header__eyebrow">Etapa 3 &middot; ETL con SSIS</span>
+        <h1>Comparación de Calidad: Original vs Iteraciones</h1>
+        <p>
+            Evolución de las 6 dimensiones y del <strong>DQI</strong> desde el dataset original hasta la tercera
+            iteración, con ejemplos concretos, mejoras obtenidas y problemas pendientes.
+        </p>
+        <div class="page-header__rule"></div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <!-- ===== DQI por etapa ===== -->
+        <div class="stat-grid mb-2">
+            {% for d in data.dqi %}
+            <div class="stat-card stat-card--accent">
+                <div class="stat-card__val">{{ d.valor }}%</div>
+                <div class="stat-card__lbl">{{ d.etiqueta }}</div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- ===== Tabla dimensional ===== -->
+        <div class="content-box">
+            <span class="section-eyebrow">01 / Matriz comparativa</span>
+            <h2 class="section-title">Puntajes de las 6 dimensiones por fase</h2>
+            <div class="table-container mt-1">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Dimensión</th>
+                            <th>Inicial (Raw)</th>
+                            <th>Iteración 1</th>
+                            <th>Iteración 2</th>
+                            <th>Iteración 3 (Final)</th>
+                            <th>Nota de la mejora</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in data.tabla %}
+                        <tr>
+                            <td><strong>{{ row.dimension }}</strong></td>
+                            <td>{{ row.inicial }}</td>
+                            <td>{{ row.it1 }}</td>
+                            <td>{{ row.it2 }}</td>
+                            <td>
+                                <span class="badge {{ 'badge--success' if row.it3 == '100.00%' else 'badge--medium' }}">{{ row.it3 }}</span>
+                            </td>
+                            <td style="font-size: 0.80rem;">{{ row.nota }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ===== Lectura por iteración ===== -->
+        <div class="content-box">
+            <span class="section-eyebrow">02 / Interpretación de la mejora</span>
+            <h2 class="section-title">Cómo evoluciona la calidad en cada ejecución</h2>
+            <div class="grid grid--3">
+                <div class="card">
+                    <h3 class="card__title text-accent">Iteración 1 &mdash; Desduplicación</h3>
+                    <p class="card__text" style="font-size: 0.85rem;">{{ data.detalle_por_iteracion.it1 }}</p>
+                </div>
+                <div class="card">
+                    <h3 class="card__title text-accent">Iteración 2 &mdash; Reparación</h3>
+                    <p class="card__text" style="font-size: 0.85rem;">{{ data.detalle_por_iteracion.it2 }}</p>
+                </div>
+                <div class="card">
+                    <h3 class="card__title text-accent">Iteración 3 &mdash; Certificación</h3>
+                    <p class="card__text" style="font-size: 0.85rem;">{{ data.detalle_por_iteracion.it3 }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== Ejemplos concretos ===== -->
+        <div class="content-box content-box--highlight">
+            <span class="section-eyebrow">03 / Evidencia ante &rarr; después</span>
+            <h2 class="section-title">Ejemplos concretos de corrección</h2>
+            <div class="table-container mt-1">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Problema</th>
+                            <th>Antes (valor original)</th>
+                            <th>Después (valor tratado)</th>
+                            <th>Componente</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for e in data.ejemplos %}
+                        <tr>
+                            <td><span class="badge badge--dark">{{ e.problema }}</span></td>
+                            <td style="font-size: 0.82rem;"><code>{{ e.antes }}</code></td>
+                            <td style="font-size: 0.82rem;"><strong>{{ e.despues }}</strong></td>
+                            <td><span class="badge badge--success">{{ e.componente }}</span></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ===== Pendientes ===== -->
+        <div class="content-box">
+            <span class="section-eyebrow">04 / Problemas pendientes</span>
+            <h2 class="section-title">Asuntos no clausurados y su tratamiento</h2>
+            <div class="pipeline-flow">
+                {% for p in data.pendientes %}
+                <div class="pipeline-step">
+                    <div class="pipeline-step__num">{{ loop.index }}</div>
+                    <div class="pipeline-step__content">
+                        <h3 style="margin: 0; font-size: 1.02rem; color: var(--color-accent-dark);">{{ p.nombre }}</h3>
+                        <p style="font-size: 0.85rem; margin: 0.3rem 0 0;">{{ p.accion }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

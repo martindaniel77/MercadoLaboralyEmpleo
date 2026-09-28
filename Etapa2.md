@@ -140,14 +140,14 @@ Para garantizar que ningún campo quedara sin revisar, se ejecutó una auditorí
 El plan de tratamiento se diseñó e implementó formalmente en **Microsoft SQL Server Integration Services (SSIS)** mediante el paquete **`ETL_Tratamiento_GigEconomy.dtsx`**, estructurado en dos capas de procesamiento:
 
 #### 1. Flujo de Control (Control Flow)
-- **`SQL_Limpiar_Staging` (Execute SQL Task):** Truncado preventivo de tablas intermedias y de auditoría (`TRUNCATE TABLE Staging_Raw`, `TRUNCATE TABLE Log_Rechazos`) para asegurar ejecuciones determinísticas e idempotentes.
+- **`SQL_Limpiar_Staging` (Execute SQL Task):** Truncado preventivo de tablas intermedias y de auditoría (`TRUNCATE TABLE dbo.stg_gig_economy_raw`, `TRUNCATE TABLE dbo.ods_gig_economy_rechazos`) para asegurar ejecuciones determinísticas e idempotentes.
 - **`DFT_01_Cargar_Staging` (Data Flow Task):** Extracción masiva desde el archivo plano raw (`CNX_CSV_GigEconomy_Raw` con 12.500 registros) y carga directa a la base de datos relacional SQL Server (`CNX_SQL_MercadoLaboral`).
 - **`DFT_02_Tratamiento_Calidad` (Data Flow Task):** Orquestación central de depuración, transformaciones matemáticas, imputaciones y bifurcación condicional.
 
 #### 2. Flujo de Datos (Data Flow: `DFT_02_Tratamiento_Calidad`)
 1. **`SRC_Staging_Raw` (OLE DB Source):** Extracción de microdatos crudos desde el área de Staging.
 2. **`Sort` (Sort Transformation):** Ordenamiento determinístico por claves y tuplas completas para detección y purga de colisiones.
-3. **`Lookup` (Lookup Transformation):** Validación referencial contra tablas maestras de países (`Dim_Pais`), plataformas y categorías ocupacionales CIUO-08.
+3. **`Lookup` (Lookup Transformation):** Homologación canónica de ciudades contra la tabla maestra `dbo.dim_ciudades_homologadas`; la mediana condicional de imputación (costos/horas) se inyecta como variable de usuario.
 4. **`Derived Column` (Derived Column Transformation):**
    - Corrección forzada del balance contable: $Ingreso\_Neto = Ingreso\_Bruto - Costos\_Operativos$.
    - Normalización de cadenas y homologación de ciudades ("bogota", "BOGOTA" $\rightarrow$ "Bogota D.C.").
@@ -156,8 +156,8 @@ El plan de tratamiento se diseñó e implementó formalmente en **Microsoft SQL 
    - Winsorización de jornadas $[5.0h, 84.0h]$ y edades activas $[18, 70]$.
    - Homologación a Régimen Contributivo para cotizantes a pensión y ARL.
 5. **`Conditional Split` (Conditional Split Transformation):** Segregación estricta de registros:
-   - **Salida Conforme $\rightarrow$ `DEST_Fact_Clean`:** 12.350 registros limpios, 100% consistentes y certificados para Minería de Datos.
-   - **Salida No Conforme / Duplicados $\rightarrow$ `DEST_Rechazos`:** 150 registros segregados para auditoría de calidad y trazabilidad.
+   - **Salida Conforme $\rightarrow$ `dbo.fact_gig_economy_clean`:** 12.350 registros limpios, 100% consistentes y certificados para Minería de Datos.
+   - **Salida No Conforme / Duplicados $\rightarrow$ `dbo.ods_gig_economy_rechazos`:** 150 registros segregados para auditoría de calidad y trazabilidad.
 
 ---
 
@@ -179,6 +179,6 @@ El plan de tratamiento se diseñó e implementó formalmente en **Microsoft SQL 
 
 ## 7. Conclusiones y Aptitud para Minería de Datos
 
-1. **Aptitud Algorítmica Garantizada:** La tabla de hechos limpia (`DEST_Fact_Clean`) con **12.350 registros** alcanza un índice de calidad **DQI de 99.86%**, superando todos los umbrales mínimos exigidos para la fase de modelado.
-2. **Trazabilidad Empresarial con SSIS:** La arquitectura segregada garantiza que ninguna observación sea destruida sin registro; las 150 filas duplicadas o anómalas reposan en `DEST_Rechazos` para auditorías metodológicas.
+1. **Aptitud Algorítmica Garantizada:** La tabla de hechos limpia (`dbo.fact_gig_economy_clean`) con **12.350 registros** alcanza un índice de calidad **DQI de 99.86%**, superando todos los umbrales mínimos exigidos para la fase de modelado.
+2. **Trazabilidad Empresarial con SSIS:** La arquitectura segregada garantiza que ninguna observación sea destruida sin registro; las 150 filas duplicadas o anómalas reposan en `dbo.ods_gig_economy_rechazos` para auditorías metodológicas.
 3. **Integración con la Plataforma Web:** La aplicación Flask documenta interactivamente cada componente del paquete SSIS, permitiendo auditar y descargar tanto el conjunto crudo como el consolidado limpio.

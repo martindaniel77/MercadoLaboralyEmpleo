@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}Iteraciones del Tratamiento ETL | Etapa 3{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <span class="section-eyebrow page-header__eyebrow">Etapa 3 &middot; ETL con SSIS</span>
+        <h1>Tres Iteraciones del Tratamiento en SSIS</h1>
+        <p>
+            Cada iteración del paquete documenta sus <strong>reglas aplicadas</strong>, los <strong>ajustes</strong>
+            justificados por los hallazgos de la iteración anterior y los conteos de registros
+            <strong>recibidos, aceptados, duplicados y enviados a revisión</strong>.
+        </p>
+        <div class="page-header__rule"></div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        {% for it in data.iteraciones %}
+        <!-- ===== Iteración {{ it.no }} ===== -->
+        <div class="content-box {{ 'content-box--highlight' if it.no == 3 }}">
+            <span class="section-eyebrow">Iteración {{ it.no }}</span>
+            <h2 class="section-title">{{ it.nombre }}</h2>
+            <p class="section-subtitle"><strong>Objetivo:</strong> {{ it.objetivo }}</p>
+
+            <!-- Conteos -->
+            <div class="stat-grid mb-2">
+                <div class="stat-card stat-card--accent">
+                    <div class="stat-card__val">{{ it.metricas.recibidos }}</div>
+                    <div class="stat-card__lbl">Recibidos del lote</div>
+                    <div class="stat-card__sub">Staging &middot; sin modificar</div>
+                </div>
+                <div class="stat-card stat-card--accent">
+                    <div class="stat-card__val">{{ it.metricas.aceptados }}</div>
+                    <div class="stat-card__lbl">Aceptados en Fact</div>
+                    <div class="stat-card__sub">{{ 'Lote certificado' if it.no == 3 else 'Subconjunto cargado' }}</div>
+                </div>
+                <div class="stat-card stat-card--dark">
+                    <div class="stat-card__val">{{ it.metricas.duplicados }}</div>
+                    <div class="stat-card__lbl">Duplicados</div>
+                    <div class="stat-card__sub">Segregados &middot; ods_gig_economy_rechazos</div>
+                </div>
+                <div class="stat-card stat-card--dark">
+                    <div class="stat-card__val">{{ it.metricas.revision }}</div>
+                    <div class="stat-card__lbl">En revisión</div>
+                    <div class="stat-card__sub">{{ 'Documentada (REV=1)' if it.no == 3 else 'Pendiente de tratamiento' }}</div>
+                </div>
+            </div>
+
+            <!-- Fila de detalle -->
+            <div class="grid grid--2">
+                <div class="panel">
+                    <h3 style="font-size: 0.95rem; margin-bottom: 0.4rem; color: var(--color-accent-dark);">Hallazgos de la iteración</h3>
+                    <p style="font-size: 0.85rem; margin: 0;">{{ it.hallazgos }}</p>
+                </div>
+                <div class="panel">
+                    <h3 style="font-size: 0.95rem; margin-bottom: 0.4rem; color: var(--color-accent-dark);">Ajustes para la siguiente iteración</h3>
+                    <p style="font-size: 0.85rem; margin: 0;">{{ it.ajustes_hacia_siguiente }}</p>
+                </div>
+            </div>
+
+            <div class="grid grid--2 mt-2">
+                <div class="panel">
+                    <h3 style="font-size: 0.95rem; margin-bottom: 0.4rem; color: var(--color-accent-dark);">Desglose de conteos</h3>
+                    <table class="data-table" style="font-size: 0.80rem;">
+                        <thead>
+                            <tr><th>Concepto</th><th style="text-align: right;">Registros</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for c in it.conteos %}
+                            <tr>
+                                <td>{{ c.concepto }}</td>
+                                <td style="text-align: right;"><strong>{{ c.valor }}</strong></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="panel">
+                    <h3 style="font-size: 0.95rem; margin-bottom: 0.4rem; color: var(--color-accent-dark);">Reglas aplicadas</h3>
+                    <ul style="list-style: none; padding: 0; font-size: 0.85rem; line-height: 1.9; margin: 0;">
+                        {% for r in it.reglas %}
+                        <li><span class="badge badge--success">{{ r }}</span></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+        <!-- ===== Idempotencia ===== -->
+        <div class="content-box">
+            <span class="section-eyebrow">04 / Verificación de Idempotencia</span>
+            <h2 class="section-title">{{ data.idempotencia.titulo }}</h2>
+            <p style="font-size: 0.88rem;">{{ data.idempotencia.detalle }}</p>
+
+            <div class="stat-grid mb-2">
+                <div class="stat-card stat-card--accent">
+                    <div class="stat-card__val">{{ data.idempotencia.ejecucion_1.recibidos }}</div>
+                    <div class="stat-card__lbl">Ejecución 1 &middot; Recibidos</div>
+                    <div class="stat-card__sub">Fact: {{ data.idempotencia.ejecucion_1.fact }} &middot; Dup: {{ data.idempotencia.ejecucion_1.duplicados }}</div>
+                </div>
+                <div class="stat-card stat-card--accent">
+                    <div class="stat-card__val">{{ data.idempotencia.ejecucion_2.recibidos }}</div>
+                    <div class="stat-card__lbl">Ejecución 2 &middot; Recibidos</div>
+                    <div class="stat-card__sub">Fact: {{ data.idempotencia.ejecucion_2.fact }} &middot; Dup: {{ data.idempotencia.ejecucion_2.duplicados }}</div>
+                </div>
+                <div class="stat-card stat-card--dark">
+                    <div class="stat-card__val">{{ data.idempotencia.ejecucion_3.recibidos }}</div>
+                    <div class="stat-card__lbl">Ejecución 3 &middot; Recibidos</div>
+                    <div class="stat-card__sub">Fact: {{ data.idempotencia.ejecucion_3.fact }} &middot; Dup: {{ data.idempotencia.ejecucion_3.duplicados }}</div>
+                </div>
+                <div class="stat-card stat-card--dark">
+                    <div class="stat-card__val">0</div>
+                    <div class="stat-card__lbl">Duplicados adicionales</div>
+                    <div class="stat-card__sub">Clave primaria única en fact_gig_economy_clean &middot; TRUNCATE de stg_gig_economy_raw</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

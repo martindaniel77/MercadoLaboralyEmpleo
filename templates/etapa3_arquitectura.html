@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}Arquitectura del Paquete SSIS | Etapa 3{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <span class="section-eyebrow page-header__eyebrow">Etapa 3 &middot; ETL con SSIS</span>
+        <h1>Arquitectura del Paquete SSIS y Zona de Staging</h1>
+        <p>
+            Extraer, transformar y cargar los datos conservando el lote original intacto en una
+            <strong>zona de staging</strong> para garantizar trazabilidad y re-ejecución sin pérdida.
+        </p>
+        <div class="page-header__rule"></div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <!-- ===== Ficha técnica ===== -->
+        <div class="content-box">
+            <span class="section-eyebrow">01 / Paquete</span>
+            <h2 class="section-title">Especificación de la Solución ETL</h2>
+            <div class="grid grid--2">
+                <div class="panel">
+                    <ul style="list-style: none; padding: 0; font-size: 0.88rem; line-height: 1.9;">
+                        <li><strong>Solución:</strong> <code>{{ arch.solucion }}</code></li>
+                        <li><strong>Paquete SSIS:</strong> <code>{{ arch.paquete }}</code></li>
+                        <li><strong>Modo:</strong> {{ arch.modo }}</li>
+                        <li><strong>Motor:</strong> SQL Server Integration Services (SSDT / Visual Studio)</li>
+                    </ul>
+                </div>
+                <div class="panel">
+                    <h3 style="font-size: 0.95rem; margin-bottom: 0.4rem; color: var(--color-accent-dark);">Administradores de Conexión</h3>
+                    <ul style="list-style: none; padding: 0; font-size: 0.86rem; line-height: 1.7;">
+                        {% for a in arch.administradores %}
+                        <li>
+                            <strong><code>{{ a.nombre }}</code></strong> &mdash; {{ a.tipo }}<br>
+                            <span class="text-muted" style="font-size: 0.80rem;">{{ a.rol }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== Tablas (Staging y destinos) ===== -->
+        <div class="content-box">
+            <span class="section-eyebrow">02 / Esquema de almacenamiento</span>
+            <h2 class="section-title">Tablas de Staging, Destino, Dimensión y Auditoría</h2>
+            <div class="table-container mt-1">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Tabla</th>
+                            <th>Tipo</th>
+                            <th>Función en el ETL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for t in arch.tablas %}
+                        <tr>
+                            <td><strong><code>{{ t.nombre }}</code></strong></td>
+                            <td><span class="badge badge--dark">{{ t.tipo }}</span></td>
+                            <td style="font-size: 0.85rem;">{{ t.descripcion }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ===== Componentes del Data Flow ===== -->
+        <div class="content-box content-box--highlight">
+            <span class="section-eyebrow">03 / Componentes del Data Flow</span>
+            <h2 class="section-title">Configuración y Función de cada Transformación</h2>
+            <p>
+                El pipeline del flujo de datos articula los componentes nativos de SSIS solicitados:
+                <strong>Derived Column</strong>, <strong>Data Conversion</strong>, <strong>Lookup</strong>,
+                <strong>Conditional Split</strong> y <strong>Sort</strong>.
+            </p>
+
+            <div class="pipeline-flow">
+                {% for c in arch.componentes %}
+                <div class="pipeline-step">
+                    <div class="pipeline-step__num">{{ loop.index }}</div>
+                    <div class="pipeline-step__content">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                            <h3 style="margin: 0; font-size: 1.05rem; color: var(--color-accent-dark);">{{ c.nombre }}</h3>
+                            <span class="badge badge--dark">{{ c.tipo }}</span>
+                        </div>
+                        <p style="font-size: 0.78rem; margin: 0.4rem 0; color: var(--color-primary);">
+                            <strong>Configuración:</strong> <code>{{ c.configuracion }}</code>
+                        </p>
+                        <p style="font-size: 0.86rem; margin: 0;">
+                            <strong>Función:</strong> {{ c.funcion }}
+                        </p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- ===== Diagrama conceptual ===== -->
+        <div class="content-box">
+            <span class="section-eyebrow">04 / Flujo conceptual</span>
+            <h2 class="section-title">De la zona de staging a los destinos especializados</h2>
+            <div class="pipeline-flow">
+                {% set pasos = [
+                    ('1', 'CNX_CSV_GigEconomy_Raw', 'Lectura del CSV original (lote intacto, nunca se modifica)'),
+                    ('2', 'SQL_Limpiar_Staging', 'TRUNCATE de dbo.stg_gig_economy_raw y dbo.ods_gig_economy_rechazos para re-ejecución idempotente'),
+                    ('3', 'DFT_01_Cargar_Staging', 'Ingesta masiva de los 12.500 registros hacia dbo.stg_gig_economy_raw'),
+                    ('4', 'DFT_02_Tratamiento_Calidad', 'Sort + Data Conversion + Lookup + Derived Column + Conditional Split'),
+                    ('5', 'Destinos', 'dbo.fact_gig_economy_clean (12.350) / dbo.ods_gig_economy_rechazos (150) (86 con bandera REV)')] %}
+                {% for n, t, d in pasos %}
+                <div class="pipeline-step">
+                    <div class="pipeline-step__num">{{ n }}</div>
+                    <div class="pipeline-step__content">
+                        <h3 style="margin: 0; font-size: 1.02rem; color: var(--color-accent-dark);"><code>{{ t }}</code></h3>
+                        <p style="font-size: 0.84rem; margin: 0.3rem 0 0;">{{ d }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endblock %}
