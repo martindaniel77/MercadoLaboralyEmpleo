@@ -14,6 +14,7 @@ import datetime
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(BASE_DIR, 'data')
 CSV_PATH = os.path.join(DATA_DIR, 'dataset_gig_economy.csv')
+CSV_TRATADO_PATH = os.path.join(DATA_DIR, 'dataset_gig_economy_tratado.csv')
 
 
 # Requisitos de calidad esperados según problema y usuarios objetivo

@@ -127,6 +127,31 @@
             </div>
         </div>
 
+    <!-- ===== Descarga del dataset tratado ===== -->
+        <div class="content-box content-box--highlight">
+            <span class="section-eyebrow">05 / Dataset resultante</span>
+            <h2 class="section-title">Descargar el CSV tratado</h2>
+            <div class="content-box__header">
+                <div>
+                    <p class="text-muted" style="font-size: 0.90rem; margin: 0 0 0.2rem;">
+                        Archivo <strong>12.350 registros</strong> resultante de la tercera iteración del ETL SSIS:
+                        sin duplicados, sin nulos, con cuadre contable exacto, ciudades homologadas y los casos de
+                        revisión documental señalizados. Listo para la fase de Minería de Datos.
+                    </p>
+                    <p style="font-size: 0.85rem; margin: 0.4rem 0 0;">
+                        <span class="badge badge--success">Completitud 100%</span>
+                        <span class="badge badge--success">Exactitud 100%</span>
+                        <span class="badge badge--success">Unicidad 100%</span>
+                        <span class="badge badge--success">Validez 100%</span>
+                        <span class="badge badge--medium">Consistencia 99.31%</span>
+                    </p>
+                </div>
+                <a href="{{ url_for('descargar_dataset_tratado') }}" class="btn btn--primary">
+                    Descargar CSV Tratado (12.350 Filas)
+                </a>
+            </div>
+        </div>
+
     </div>
 </section>
 {% endblock %}
