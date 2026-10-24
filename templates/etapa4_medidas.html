@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}Medidas DAX, Limitaciones y Decisiones | Etapa 4{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <span class="section-eyebrow page-header__eyebrow">Etapa 4 &middot; Minería de Datos</span>
+        <h1>Medidas DAX, Limitaciones y Decisiones de Negocio</h1>
+        <p>
+            Catálogo formal de expresiones de cálculo DAX, evaluación metodológica de limitaciones por tablero y 
+            propuestas de política pública y decisiones estratégicas sustentadas en los datos.
+        </p>
+        <div class="page-header__rule"></div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <!-- 1. DICCIONARIO DE MEDIDAS DAX -->
+        <div class="content-box">
+            <span class="section-eyebrow">01 / Modelado Analítico</span>
+            <h2 class="section-title">Diccionario de Expresiones DAX</h2>
+            <p style="font-size: 0.88rem; color: var(--color-text-muted); margin-bottom: 1rem;">
+                Las doce medidas fueron construidas para responder dinámicamente a la selección de segmentadores, 
+                garantizando denominadores explícitos mediante <code>DIVIDE</code> y preservando la integridad del modelo dimensional:
+            </p>
+
+            <div class="table-container">
+                <table class="data-table" style="font-size: 0.84rem;">
+                    <thead>
+                        <tr>
+                            <th style="width: 22%;">Medida</th>
+                            <th>Fórmula DAX</th>
+                            <th style="width: 16%;">Naturaleza</th>
+                            <th style="width: 26%;">Uso en los Tableros</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for d in data.medidas_dax %}
+                        <tr>
+                            <td><strong>{{ d.nombre }}</strong></td>
+                            <td><code>{{ d.formula }}</code></td>
+                            <td><span class="badge" style="font-size: 0.72rem;">{{ d.tipo }}</span></td>
+                            <td>{{ d.uso }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 2. LIMITACIONES POR TABLERO -->
+        <div class="content-box">
+            <span class="section-eyebrow">02 / Evaluación Crítica</span>
+            <h2 class="section-title">Limitaciones Metodológicas Identificadas por Tablero</h2>
+            
+            <div class="grid grid--2" style="gap: 1.2rem;">
+                {% for tab in data.tableros %}
+                <div class="panel" style="border-left: 4px solid var(--color-border); background: var(--color-surface);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                        <strong style="font-size: 0.90rem; color: var(--color-accent-dark);">
+                            Tablero {{ tab.numero }}: {{ tab.titulo }}
+                        </strong>
+                        <span class="badge" style="font-size: 0.70rem;">Limitación</span>
+                    </div>
+                    <p style="margin: 0; font-size: 0.85rem; line-height: 1.6; color: var(--color-text);">
+                        {{ tab.limitacion }}
+                    </p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- 3. DECISIONES SUSTENTADAS EN LOS DATOS -->
+        <div class="content-box">
+            <span class="section-eyebrow">03 / Transferencia y Aplicación</span>
+            <h2 class="section-title">Decisiones Estratégicas Sustentadas en los Hallazgos</h2>
+            
+            <div class="grid grid--2" style="gap: 1.2rem;">
+                {% for tab in data.tableros %}
+                <div class="panel" style="border-left: 4px solid var(--color-accent); background: var(--color-surface);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                        <strong style="font-size: 0.90rem; color: var(--color-accent-dark);">
+                            Decisión {{ tab.numero }}: {{ tab.titulo }}
+                        </strong>
+                        <span class="badge" style="background: var(--color-accent); color: white; font-size: 0.70rem;">Propuesta</span>
+                    </div>
+                    <p style="margin: 0; font-size: 0.85rem; line-height: 1.6; color: var(--color-text);">
+                        {{ tab.decision }}
+                    </p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- 4. GUÍA DE REPRODUCCIÓN PBIX -->
+        <div class="content-box">
+            <span class="section-eyebrow">04 / Reproducibilidad</span>
+            <h2 class="section-title">Instrucciones de Actualización y Reproducción</h2>
+            
+            <div class="panel">
+                <ol style="margin: 0; padding-left: 1.2rem; font-size: 0.88rem; line-height: 1.8;">
+                    {% for inst in data.instrucciones_pbix %}
+                    <li>{{ inst }}</li>
+                    {% endfor %}
+                </ol>
+            </div>
+
+            <!-- Navegación de cierre -->
+            <div style="margin-top: 2rem; padding-top: 1.2rem; border-top: 1px solid var(--color-border); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.8rem;">
+                <a href="{{ url_for('etapa4_conocimientos') }}" class="btn btn--outline">
+                    &larr; Volver a Conocimientos Evidentes
+                </a>
+                <a href="{{ url_for('etapa4_informe') }}" class="btn btn--primary">
+                    Ir al Informe Interactivo Power BI &rarr;
+                </a>
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

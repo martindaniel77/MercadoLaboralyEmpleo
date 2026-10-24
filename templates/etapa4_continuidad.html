@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block title %}Continuidad y Unidad de Análisis | Etapa 4{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <span class="section-eyebrow page-header__eyebrow">Etapa 4 &middot; Minería de Datos</span>
+        <h1>Continuidad del Proyecto y Unidad de Análisis</h1>
+        <p>
+            Fundamentación metodológica, especificación del universo muestral depurado (<strong>12.350 registros</strong>), 
+            definición formal de la unidad de análisis y balance de los tratamientos previos de calidad de datos.
+        </p>
+        <div class="page-header__rule"></div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <!-- 1. UNIDAD DE ANÁLISIS -->
+        <div class="content-box">
+            <span class="section-eyebrow">01 / Marco Conceptual</span>
+            <h2 class="section-title">Definición de la Unidad de Análisis</h2>
+            
+            <div class="panel" style="background: var(--color-surface); border-left: 4px solid var(--color-accent); margin-bottom: 1.5rem;">
+                <h3 style="margin: 0 0 0.5rem 0; font-size: 1.05rem; color: var(--color-accent-dark);">
+                    El trabajador individual independiente de plataformas digitales
+                </h3>
+                <p style="margin: 0; font-size: 0.92rem; line-height: 1.7;">
+                    En consonancia con las pautas metodológicas de la Organización Internacional del Trabajo (OIT) y Fedesarrollo, 
+                    la unidad de análisis corresponde a la <strong>persona natural</strong> que ejecuta actividades económicas de carácter 
+                    independiente mediante la intermediación de aplicaciones móviles o entornos en la nube durante el período 
+                    <strong>2021 a 2026</strong>.
+                </p>
+                <p style="margin: 0.6rem 0 0 0; font-size: 0.88rem; color: var(--color-text-muted); line-height: 1.6;">
+                    Cada fila de datos no representa un viaje individual ni un pedido aislado, sino un <strong>perfil consolidado de trabajo</strong> 
+                    que integra variables sociodemográficas, dedicación horaria semanal, finanzas operativas (ingresos brutos, costos de bolsillo e ingreso neto), 
+                    afiliación a seguridad social y calificación algorítmica.
+                </p>
+            </div>
+
+            <!-- Resumen numérico -->
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <span class="stat-card__val">{{ data.continuidad.registros_totales }}</span>
+                    <span class="stat-card__lbl">Registros analizados</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-card__val">{{ data.continuidad.variables_totales }}</span>
+                    <span class="stat-card__lbl">Variables estructuradas</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-card__val">{{ data.continuidad.periodo }}</span>
+                    <span class="stat-card__lbl">Ventana de estudio</span>
+                </div>
+                <div class="stat-card stat-card--accent">
+                    <span class="stat-card__val">3 Escalas</span>
+                    <span class="stat-card__lbl">Global &middot; Nacional &middot; Regional</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. TRATAMIENTOS PREVIOS Y TRAZABILIDAD -->
+        <div class="content-box">
+            <span class="section-eyebrow">02 / Trazabilidad</span>
+            <h2 class="section-title">Tratamientos Previos de Calidad de Datos (SSIS ETL)</h2>
+            <p style="font-size: 0.90rem; color: var(--color-text-muted); margin-bottom: 1.2rem;">
+                Para garantizar la confiabilidad del descubrimiento de conocimiento, el dataset crudo fue procesado 
+                en SQL Server Integration Services mediante un paquete estructurado en tres iteraciones sucesivas:
+            </p>
+
+            <div class="table-container">
+                <table class="data-table" style="font-size: 0.86rem;">
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">Tratamiento Aplicado</th>
+                            <th style="width: 20%;">Componente SSIS</th>
+                            <th>Justificación y Efecto en la Calidad</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for t in data.continuidad.tratamientos_aplicados %}
+                        <tr>
+                            <td><strong>{{ t.nombre }}</strong></td>
+                            <td><code>SSIS Task</code></td>
+                            <td>{{ t.detalle }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 3. PROBLEMAS RESIDUALES Y ACCESOS A DATOS -->
+        <div class="content-box">
+            <span class="section-eyebrow">03 / Advertencias Metodológicas</span>
+            <h2 class="section-title">Calidad Residual y Descarga de Archivos</h2>
+
+            <div class="grid grid--2" style="gap: 1.5rem;">
+                <div class="panel">
+                    <h3 style="font-size: 0.95rem; margin-top: 0; color: var(--color-accent-dark);">
+                        Aspectos de Calidad Residual Documentados
+                    </h3>
+                    <ul style="padding-left: 1.2rem; font-size: 0.86rem; line-height: 1.7; margin: 0;">
+                        {% for p in data.continuidad.problemas_residuales %}
+                        <li><strong>{{ p.problema }}:</strong> {{ p.impacto }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="panel" style="display: flex; flex-direction: column; justify-content: center; gap: 1rem;">
+                    <div>
+                        <h3 style="font-size: 0.95rem; margin-top: 0; color: var(--color-accent-dark);">
+                            Archivos Fuente del Proyecto
+                        </h3>
+                        <p style="font-size: 0.84rem; color: var(--color-text-muted); margin: 0 0 0.8rem 0;">
+                            Puedes descargar los insumos directamente para auditar las transformaciones o abrir el informe en Power BI Desktop:
+                        </p>
+                    </div>
+
+                    <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
+                        <a href="{{ url_for('descargar_dataset_tratado') }}" class="btn btn--sm btn--primary">
+                            Descargar Dataset Tratado CSV (12.350 registros)
+                        </a>
+                        <a href="{{ url_for('descargar_powerbi') }}" class="btn btn--sm btn--secondary">
+                            Descargar Archivo Power BI (.PBIX)
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navegación hacia la siguiente subpágina -->
+            <div style="margin-top: 2rem; padding-top: 1.2rem; border-top: 1px solid var(--color-border); display: flex; justify-content: flex-end;">
+                <a href="{{ url_for('etapa4_informe') }}" class="btn btn--primary">
+                    Continuar al Informe Interactivo Power BI &rarr;
+                </a>
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

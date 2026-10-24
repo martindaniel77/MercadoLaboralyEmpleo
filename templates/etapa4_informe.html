@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Informe Interactivo Power BI | Etapa 4{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <span class="section-eyebrow page-header__eyebrow">Etapa 4 &middot; Minería de Datos</span>
+        <h1>Informe Interactivo en Power BI</h1>
+        <p>
+            Tableros analíticos dinámicos conectados a la fuente de datos tratada. 
+            Permiten explorar la composición demográfica, comparaciones territoriales, tendencias anuales y análisis multivariado.
+        </p>
+        <div class="page-header__rule"></div>
+    </div>
+</section>
+
+<section class="section" style="padding-top: 0.5rem;">
+    <div class="container">
+
+        <!-- VISOR PRINCIPAL POWER BI -->
+        <div class="content-box content-box--highlight" style="padding: 1.2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.8rem; margin-bottom: 1rem;">
+                <div>
+                    <span class="badge" style="background: var(--color-accent); color: white; margin-bottom: 0.3rem;">POWER BI SERVICE</span>
+                    <h2 class="section-title" style="margin: 0; font-size: 1.25rem;">Tableros de Descubrimiento de Conocimiento Evidente</h2>
+                </div>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    {% if powerbi_url %}
+                    <a href="{{ powerbi_url }}" target="_blank" rel="noopener noreferrer" class="btn btn--sm btn--primary">
+                        Abrir en Power BI Service (Pantalla completa)
+                    </a>
+                    {% endif %}
+                    <a href="{{ url_for('descargar_powerbi') }}" class="btn btn--sm btn--outline">
+                        Descargar archivo .PBIX
+                    </a>
+                </div>
+            </div>
+
+            {% if powerbi_url %}
+            <!-- Contenedor optimizado de visualización -->
+            <div style="position: relative; width: 100%; height: 75vh; min-height: 560px; border-radius: var(--radius-lg); overflow: hidden; background: #0f172a; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+                <iframe src="{{ powerbi_url }}" title="Informe Power BI - Mercado Laboral Gig Economy"
+                    style="position: absolute; inset: 0; width: 100%; height: 100%; border: 0;"
+                    allowfullscreen="true"></iframe>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.7rem; font-size: 0.82rem; color: var(--color-text-muted); flex-wrap: wrap; gap: 0.5rem;">
+                <span>Navega entre las 4 páginas utilizando las pestañas inferiores del visor de Power BI.</span>
+                <span>Filtros dinámicos interactivos disponibles en cada página.</span>
+            </div>
+            {% else %}
+            <div class="panel" style="text-align: center; padding: 3rem 1.5rem; background: var(--color-surface); border: 2px dashed var(--color-border);">
+                <h3 style="margin: 0 0 0.5rem 0;">Informe pendiente de enlace público</h3>
+                <p style="font-size: 0.90rem; max-width: 600px; margin: 0 auto 1.2rem auto; color: var(--color-text-muted);">
+                    El archivo <code>Tableros_GigEconomy_Etapa4.pbix</code> se encuentra disponible para descarga directa y apertura en Power BI Desktop.
+                </p>
+                <a href="{{ url_for('descargar_powerbi') }}" class="btn btn--primary">
+                    Descargar Tableros_GigEconomy_Etapa4.pbix
+                </a>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- GUÍA DE CONTENIDO DE LAS CUATRO PÁGINAS DEL REPORTE -->
+        <div class="content-box">
+            <span class="section-eyebrow">Estructura del Informe</span>
+            <h2 class="section-title">Contenido de las 4 Páginas del Tablero</h2>
+            
+            <div class="grid grid--2" style="gap: 1.2rem;">
+                {% for tab in data.tableros %}
+                <div class="panel" style="border-top: 3px solid var(--color-accent);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                        <strong style="font-size: 0.98rem; color: var(--color-accent-dark);">
+                            Página {{ tab.numero }}: {{ tab.titulo }}
+                        </strong>
+                        <span class="badge" style="font-size: 0.72rem;">Tablero {{ tab.numero }}</span>
+                    </div>
+                    <p style="font-size: 0.85rem; color: var(--color-text); margin: 0 0 0.6rem 0;">
+                        <strong>Pregunta:</strong> <em>{{ tab.pregunta }}</em>
+                    </p>
+                    <p style="font-size: 0.80rem; color: var(--color-text-muted); margin: 0;">
+                        <strong>Segmentadores interactivos:</strong> {{ tab.segmentadores | join(', ') }}
+                    </p>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Navegación entre subpáginas -->
+            <div style="margin-top: 2rem; padding-top: 1.2rem; border-top: 1px solid var(--color-border); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.8rem;">
+                <a href="{{ url_for('etapa4_continuidad') }}" class="btn btn--outline">
+                    &larr; Continuidad y unidad de análisis
+                </a>
+                <a href="{{ url_for('etapa4_conocimientos') }}" class="btn btn--primary">
+                    Ver los 12 Conocimientos Evidentes &rarr;
+                </a>
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

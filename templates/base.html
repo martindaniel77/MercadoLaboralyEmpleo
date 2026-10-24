@@ -29,6 +29,7 @@
     {% set is_etapa1 = endpoint in ['problema', 'preguntas', 'necesidades', 'fuentes', 'dataset', 'diccionario', 'calidad', 'limitaciones'] %}
     {% set is_etapa2 = endpoint.startswith('etapa2_') or request.path.startswith('/etapa-2/') %}
     {% set is_etapa3 = endpoint.startswith('etapa3_') or request.path.startswith('/etapa-3/') %}
+    {% set is_etapa4 = endpoint.startswith('etapa4_') or request.path.startswith('/etapa-4/') %}
 
     <div class="app">
         <!-- ===== Sidebar / Índice de la bitácora ===== -->
@@ -102,12 +103,22 @@
                     </ul>
                 </details>
 
-                <!-- ETAPAS 4 y 5 (pendientes) -->
-                <div class="stage stage--locked">
-                    <span class="stage__num">ETAPA 04</span>
-                    <span class="stage__sep">&mdash;</span>
-                    <span class="stage__title">Por definir</span>
-                </div>
+                <!-- ETAPA 4 -->
+                <details class="stage {{ 'stage--active' if is_etapa4 }}" {{ 'open' if is_etapa4 }}>
+                    <summary>
+                        <span class="stage__num">ETAPA 04</span>
+                        <span class="stage__sep">&mdash;</span>
+                        <span class="stage__title">Conocimiento evidente</span>
+                    </summary>
+                    <ul class="stage__pages">
+                        <li><a href="{{ url_for('etapa4_continuidad') }}" class="{{ 'active' if endpoint in ['etapa4_continuidad', 'etapa4_conocimiento'] }}"><span class="stage__page-num">01</span> Continuidad y unidad de análisis</a></li>
+                        <li><a href="{{ url_for('etapa4_informe') }}" class="{{ 'active' if endpoint == 'etapa4_informe' }}"><span class="stage__page-num">02</span> Informe interactivo Power BI</a></li>
+                        <li><a href="{{ url_for('etapa4_conocimientos') }}" class="{{ 'active' if endpoint == 'etapa4_conocimientos' }}"><span class="stage__page-num">03</span> Conocimientos evidentes</a></li>
+                        <li><a href="{{ url_for('etapa4_medidas') }}" class="{{ 'active' if endpoint == 'etapa4_medidas' }}"><span class="stage__page-num">04</span> Medidas DAX y decisiones</a></li>
+                    </ul>
+                </details>
+
+                <!-- ETAPA 5 (pendiente) -->
                 <div class="stage stage--locked">
                     <span class="stage__num">ETAPA 05</span>
                     <span class="stage__sep">&mdash;</span>
@@ -118,12 +129,12 @@
             <div class="sidebar__progress">
                 <div class="sidebar__progress-top">
                     <span class="sidebar__progress-label">Progreso</span>
-                    <strong class="sidebar__progress-count">2 / 5 etapas</strong>
+                    <strong class="sidebar__progress-count">3 / 5 etapas</strong>
                 </div>
                 <div class="progress-track" aria-hidden="true">
-                    <div class="progress-fill" style="width: 45%;"></div>
+                    <div class="progress-fill" style="width: 70%;"></div>
                 </div>
-                <span class="sidebar__progress-status">Etapas 1 y 2 terminadas &middot; Etapa 3 en curso</span>
+                <span class="sidebar__progress-status">Etapas 1, 2 y 3 terminadas &middot; Etapa 4 en curso</span>
             </div>
         </aside>
 

@@ -1740,3 +1740,378 @@ def get_etapa3_comparacion():
             {'nombre': 'Calificación imputada en microtareas', 'accion': 'Las 405 calificaciones imputadas deben tratarse como variable auxiliar (no fuerza motriz) en los modelos supervisados hasta disponer de datos de la plataforma.'}
         ]
     }
+
+
+# ============================================================
+# ETAPA 4: DESCUBRIMIENTO DE CONOCIMIENTO EVIDENTE (POWER BI)
+# ============================================================
+
+def get_etapa4_data():
+    """Retorna la especificación completa de la Etapa 4: Continuidad, 4 tableros, 12 KPIs DAX,
+    12 visualizaciones con interpretaciones, 12 conocimientos evidentes estructurados (8 campos),
+    limitaciones, decisiones de negocio e instrucciones técnicas."""
+    return {
+        'continuidad': {
+            'tema': 'Gig Economy y Transformación del Mercado Laboral (Escalas Global, Nacional y Regional)',
+            'poblacion': 'Trabajadores independientes de plataformas digitales de servicios físicos y trabajo en línea.',
+            'dataset_nombre': 'dataset_gig_economy_tratado.csv',
+            'registros_totales': 12350,
+            'variables_totales': 27,
+            'periodo': '2021 - 2026',
+            'unidad_analisis': 'El trabajador individual independiente de plataformas digitales (persona natural que presta servicios de transporte, reparto, desarrollo TI, diseño o microtareas a través de aplicaciones móviles o portales web).',
+            'tratamientos_aplicados': [
+                {'nombre': 'Deduplicación (Sort en SSIS)', 'detalle': 'Eliminación física de 150 registros duplicados basándose en id_registro, garantizando Unicidad del 100%.'},
+                {'nombre': 'Homologación de Ciudades (Lookup)', 'detalle': 'Normalización de variantes tipográficas ("bogota", "BOGOTA", "Bogota D.C.", "Cali ") hacia 26 nombres canónicos mediante catálogo.'},
+                {'nombre': 'Exactitud Contable (Derived Column)', 'detalle': 'Recálculo estricto de Ingreso Neto = Ingreso Bruto - Costos Operativos para el 100% de los registros.'},
+                {'nombre': 'Imputación Controlada de Nulos', 'detalle': 'Imputación con media/mediana sectorial de horas semanales (40.0 h) y calificación app (4.50 estrellas) para mantener integridad en modelos.'},
+                {'nombre': 'Tipado y Casteo Estricto', 'detalle': 'Conversión de strings de staging a enteros (INT), decimales de precisión (DECIMAL) y fechas estándar ISO (DATE).'}
+            ],
+            'problemas_residuales': [
+                {'problema': '86 perfiles con Posgrado y edad < 22 años', 'impacto': 'Baja distorsión en agregados, pero documentados para revisión manual antes de segmentaciones académicas.'},
+                {'problema': '405 calificaciones imputadas en microtareas', 'impacto': 'Tratadas como variable auxiliar, ya que plataformas como MTurk no emplean estrellas de cliente.'},
+                {'problema': 'Corte parcial del año 2026 (enero - junio)', 'impacto': 'Requiere cautela al comparar totales anuales brutos sin anualizar la serie.'}
+            ]
+        },
+        'tableros': [
+            {
+                'id': 'tablero-1',
+                'numero': 1,
+                'titulo': 'Composición y Distribución de la Población',
+                'pregunta': '¿Cómo está compuesta la población de trabajadores de plataformas digitales según tipo de plataforma, categoría de servicio, género y nivel educativo?',
+                'variables': [
+                    {'nombre': 'tipo_plataforma', 'tipo': 'Categórica Nominal', 'descripcion': 'Plataforma física basada en ubicación vs. En línea basada en la nube.'},
+                    {'nombre': 'categoria_servicio', 'tipo': 'Categórica Nominal', 'descripcion': 'Ramo de actividad: Transporte, Reparto, TI, Diseño, Microtareas, etc.'},
+                    {'nombre': 'genero', 'tipo': 'Categórica Nominal', 'descripcion': 'Identidad de género (Masculino, Femenino, No binario).'},
+                    {'nombre': 'nivel_educativo', 'tipo': 'Categórica Ordinal', 'descripcion': 'Escolaridad: Primaria, Secundaria, Técnico, Universitario, Posgrado.'},
+                    {'nombre': 'calificacion_promedio_app', 'tipo': 'Numérica Continua', 'descripcion': 'Puntuación algorítmica otorgada por clientes (1.00 a 5.00 estrellas).'}
+                ],
+                'indicadores': [
+                    {'nombre': 'Total Trabajadores Analizados', 'valor': '12.350', 'dax': 'Total Trabajadores = COUNTROWS(\'dataset_gig_economy_tratado\')', 'descripcion': 'Universo de registros limpios disponibles.'},
+                    {'nombre': '% Plataforma Física', 'valor': '68.2%', 'dax': '% Plataforma Física = DIVIDE(COUNTROWS(FILTER(\'dataset_gig_economy_tratado\', [tipo_plataforma] = "Fisica / Basada en Ubicacion")), [Total Trabajadores]) * 100', 'descripcion': 'Porcentaje de trabajadores en movilidad y reparto.'},
+                    {'nombre': 'Calificación Promedio App', 'valor': '4.52 / 5.00', 'dax': 'Calificación Promedio = AVERAGE(\'dataset_gig_economy_tratado\'[calificacion_promedio_app])', 'descripcion': 'Puntaje medio de reputación algorítmica.'}
+                ],
+                'visualizaciones': [
+                    {
+                        'tipo': 'Gráfico Circular (Donut)',
+                        'titulo': 'Distribución por Tipo de Plataforma',
+                        'campos': 'Leyenda: tipo_plataforma | Valores: Total Trabajadores',
+                        'interpretacion': 'El 68,2% de la población opera en plataformas físicas basadas en ubicación (transporte de pasajeros y domicilios), mientras que el 31,8% se desempeña en plataformas virtuales en la nube. Esto confirma que en economías emergentes la economía colaborativa responde principalmente a necesidades de movilidad urbana y logística de última milla.'
+                    },
+                    {
+                        'tipo': 'Barras Agrupadas Horizontales',
+                        'titulo': 'Nivel Educativo por Género',
+                        'campos': 'Eje Y: nivel_educativo | Eje X: Total Trabajadores | Leyenda: genero',
+                        'interpretacion': 'Secundaria/Bachillerato concentra más del 40% del total general, con amplia mayoría masculina (relacionada al transporte y reparto). El nivel universitario supera el 30% con mayor participación femenina proporcional en trabajo freelance digital. Posgrado representa menos del 3%, limitado a consultoría TI.'
+                    },
+                    {
+                        'tipo': 'Columnas Verticales Ordenadas',
+                        'titulo': 'Trabajadores por Categoría de Servicio',
+                        'campos': 'Eje X: categoria_servicio | Eje Y: Total Trabajadores',
+                        'interpretacion': 'Transporte de Pasajeros y Reparto/Domicilios concentran más del 55% del mercado laboral por app. En el ámbito digital, Desarrollo de Software y Diseño Multimedia lideran el segmento calificado, mientras Microtareas representa el nicho más precario y atomizado.'
+                    }
+                ],
+                'segmentadores': ['País (Filtro por nación)', 'Nivel Territorial (Global, Nacional, Regional)'],
+                'conocimientos': [
+                    {
+                        'id': 'K1.1',
+                        'titulo': 'Predominio estructural del trabajo físico presencial',
+                        'pregunta': '¿Qué modalidad de plataforma absorbe el mayor volumen de mano de obra?',
+                        'variables': 'tipo_plataforma, Total Trabajadores',
+                        'procedimiento': 'Conteo agrupado por tipo_plataforma y cálculo porcentual respecto al total consolidado (12.350).',
+                        'evidencia': 'Tarjeta KPI 68.2% vs. 31.8% en gráfico circular V1.',
+                        'hallazgo': 'Más de dos tercios (8.423 de 12.350) de los trabajadores operan en plataformas de localización física presencial.',
+                        'interpretacion': 'La inserción a la Gig Economy en América Latina es primordialmente de choque frente al desempleo formal urbano mediante transporte y delivery.',
+                        'utilidad': 'Permite a los ministerios de trabajo orientar inspecciones viales y planes de formalización laboral hacia las apps de movilidad.',
+                        'limitacion': 'No identifica si el trabajador alterna simultáneamente entre plataformas físicas y virtuales en una misma semana.'
+                    },
+                    {
+                        'id': 'K1.2',
+                        'titulo': 'Segmentación educativa según la naturaleza del servicio',
+                        'pregunta': '¿Difiere el nivel educativo entre quienes operan en plataformas físicas vs. virtuales?',
+                        'variables': 'nivel_educativo, tipo_plataforma, Total Trabajadores',
+                        'procedimiento': 'Tabulación cruzada de nivel educativo discriminado por el modelo de plataforma.',
+                        'evidencia': 'Gráfico de barras V2 cruzado con matriz de perfiles.',
+                        'hallazgo': 'El 82% de trabajadores con primaria y secundaria están en plataformas físicas, mientras que el 71% de posgrados y universitarios operan en plataformas en línea.',
+                        'interpretacion': 'Existe una polarización donde el capital humano determina el acceso a empleos virtuales calificados o a tareas físicas rutinarias.',
+                        'utilidad': 'Priorizar becas de certificación tecnológica a repartidores con secundaria que busquen transición hacia teletrabajo calificado.',
+                        'limitacion': 'Tener un título universitario no garantiza empleo en su área de estudio; muchos profesionales manejan Uber por subempleo.'
+                    },
+                    {
+                        'id': 'K1.3',
+                        'titulo': 'Segregación horizontal de género por tipo de actividad',
+                        'pregunta': '¿Cómo se distribuye la participación femenina en las distintas categorías de plataforma?',
+                        'variables': 'genero, categoria_servicio, Total Trabajadores',
+                        'procedimiento': 'Distribución porcentual por género en cada una de las 7 ramas de actividad.',
+                        'evidencia': 'Gráficos V2 y V3 combinados.',
+                        'hallazgo': 'En Transporte y Reparto la participación masculina supera el 78%; en cambio, en Diseño y Servicios del Hogar las mujeres alcanzan entre 38% y 48%.',
+                        'interpretacion': 'Factores como la seguridad ciudadana nocturna en las calles desalientan a las mujeres en transporte, volcándose al trabajo digital o doméstico.',
+                        'utilidad': 'Diseñar protocolos de seguridad, paradas seguras y botones de pánico específicos para conductoras y repartidoras.',
+                        'limitacion': 'El dataset no desglosa turnos horarios diurnos/nocturnos para contrastar el factor riesgo.'
+                    }
+                ],
+                'limitacion': 'El dataset consolida mediciones de múltiples encuestas armonizadas pero transversales, impidiendo observar la trayectoria longitudinal de una misma persona en el tiempo.',
+                'decision': 'Focalizar las campañas institucionales de salud ocupacional y registro obligatorio en las asociaciones de repartidores y conductores, que concentran el 68% de la fuerza laboral más expuesta.'
+            },
+            {
+                'id': 'tablero-2',
+                'numero': 2,
+                'titulo': 'Comparación de Grupos y Territorios',
+                'pregunta': '¿Existen diferencias significativas en los ingresos, tarifas por hora y condiciones laborales entre países, géneros y modelos de plataforma?',
+                'variables': [
+                    {'nombre': 'pais', 'tipo': 'Categórica Nominal', 'descripcion': 'País de operación (Colombia, Brasil, México, España, USA, etc.).'},
+                    {'nombre': 'ingreso_neto_hora_usd', 'tipo': 'Numérica Continua', 'descripcion': 'Tarifa horaria estandarizada en USD para comparación internacional.'},
+                    {'nombre': 'ingreso_neto_mensual_cop', 'tipo': 'Numérica Continua', 'descripcion': 'Ingreso neto mensual en moneda nacional.'},
+                    {'nombre': 'genero', 'tipo': 'Categórica Nominal', 'descripcion': 'Género para análisis de equidad salarial.'},
+                    {'nombre': 'afiliacion_pension', 'tipo': 'Categórica Binaria', 'descripcion': 'Cotiza activamente vs. No cotiza.'},
+                    {'nombre': 'cuenta_con_arl', 'tipo': 'Categórica Binaria', 'descripcion': 'Cobertura frente a riesgos de accidentes laborales.'}
+                ],
+                'indicadores': [
+                    {'nombre': 'Ingreso Neto Mensual Promedio', 'valor': '$2.385.400 COP', 'dax': 'Ingreso Neto Promedio COP = AVERAGE(\'dataset_gig_economy_tratado\'[ingreso_neto_mensual_cop])', 'descripcion': 'Remuneración de bolsillo mensual promedio.'},
+                    {'nombre': 'Tarifa Neta Promedio USD/hora', 'valor': '$7.45 USD/h', 'dax': 'Ingreso Neto Promedio USD = AVERAGE(\'dataset_gig_economy_tratado\'[ingreso_neto_hora_usd])', 'descripcion': 'Valor promedio internacional por hora activa.'},
+                    {'nombre': '% Sin Ninguna Protección Social', 'valor': '56.4%', 'dax': '% Sin Protección Social = DIVIDE(COUNTROWS(FILTER(\'dataset_gig_economy_tratado\', [afiliacion_pension] = "No cotiza" && [cuenta_con_arl] = "No (Sin cobertura ARL)")), [Total Trabajadores]) * 100', 'descripcion': 'Trabajadores sin pensión ni ARL.'}
+                ],
+                'visualizaciones': [
+                    {
+                        'tipo': 'Barras Horizontales Descendentes',
+                        'titulo': 'Tarifa Neta Promedio por Hora (USD) por País',
+                        'campos': 'Eje Y: pais | Eje X: Ingreso Neto Promedio USD',
+                        'interpretacion': 'Estados Unidos ($21.8 USD/h) y España ($16.4 USD/h) encabezan las tarifas por hora. En Latinoamérica, Brasil ($6.8 USD/h) y México ($5.9 USD/h) superan a Colombia ($3.2 USD/h), mientras India registra la menor tarifa ($2.4 USD/h), demostrando que la retribución de la app depende de la economía local.'
+                    },
+                    {
+                        'tipo': 'Columnas Agrupadas por Género y Modelo',
+                        'titulo': 'Ingreso Neto Promedio COP por Género y Plataforma',
+                        'campos': 'Eje X: genero | Eje Y: Ingreso Neto Promedio COP | Leyenda: tipo_plataforma',
+                        'interpretacion': 'En plataformas físicas los hombres perciben en promedio 18% más ingreso mensual neto que las mujeres, diferencia motivada por mayor jornada semanal en transporte. En plataformas en línea la brecha de género disminuye al 9%, mostrando que el entorno digital reduce asimetrías de género.'
+                    },
+                    {
+                        'tipo': 'Barras 100% Apiladas por País',
+                        'titulo': 'Cobertura Pensional por País (%)',
+                        'campos': 'Eje Y: pais | Valores: Total Trabajadores | Leyenda: afiliacion_pension',
+                        'interpretacion': 'Colombia, India y Brasil registran más del 70% de desprotección pensional en trabajadores de app. En contraste, España presenta más del 65% de cotizantes gracias al marco de la Ley Rider, lo cual evidencia la eficacia de regulaciones laborales específicas.'
+                    }
+                ],
+                'segmentadores': ['Tipo de Plataforma (Física / Virtual)', 'Categoría de Servicio'],
+                'conocimientos': [
+                    {
+                        'id': 'K2.1',
+                        'titulo': 'Brecha geográfica Norte-Sur de hasta 7x en tarifas horarias',
+                        'pregunta': '¿Qué tan disperso es el ingreso por hora entre regiones globales?',
+                        'variables': 'pais, ingreso_neto_hora_usd',
+                        'procedimiento': 'Agrupación geográfica y cálculo de media aritmética de tarifa horaria en USD.',
+                        'evidencia': 'Gráfico V1: USA ($21.8) frente a Colombia ($3.2).',
+                        'hallazgo': 'Un trabajador en EE.UU. percibe en promedio casi 7 veces más por hora que un par en Colombia por tareas equivalentes.',
+                        'interpretacion': 'La Gig Economy no es un mercado plano internacional; los ingresos están anclados a la moneda y costo de vida del país donde se presta el servicio físico.',
+                        'utilidad': 'Establecer pisos tarifarios mínimos indexados al salario mínimo local para evitar precarización extrema en Colombia.',
+                        'limitacion': 'La comparación usa tasa representativa de mercado sin ajustar por Paridad de Poder Adquisitivo (PPA).'
+                    },
+                    {
+                        'id': 'K2.2',
+                        'titulo': 'Reducción de la brecha salarial de género en entornos digitales',
+                        'pregunta': '¿Es menor la brecha salarial por género en trabajo remoto que en plataformas físicas?',
+                        'variables': 'genero, tipo_plataforma, ingreso_neto_mensual_cop',
+                        'procedimiento': 'Comparación de medias condicionales de ingreso neto cruzando género y modalidad.',
+                        'evidencia': 'Gráfico V2: Brecha del 18% en Física vs. 9% en En Línea.',
+                        'hallazgo': 'El trabajo digital en plataformas remotas reduce la brecha salarial de género a la mitad frente al trabajo en vía pública.',
+                        'interpretacion': 'La contratación por portafolio y entregables disminuye sesgos de género presenciales, aunque persisten asimetrías de tiempo disponible para el trabajo.',
+                        'utilidad': 'Incentivar programas de empleabilidad digital femenina para mitigar brechas históricas de remuneración.',
+                        'limitacion': 'No se cuenta con control econométrico por horas dedicadas al cuidado del hogar no remunerado.'
+                    },
+                    {
+                        'id': 'K2.3',
+                        'titulo': 'Desprotección pensional crítica en Colombia frente a referentes regulados',
+                        'pregunta': '¿Cuál es el estado de cotización a la vejez en Colombia comparado con España?',
+                        'variables': 'pais, afiliacion_pension, Total Trabajadores',
+                        'procedimiento': 'Cálculo de proporciones de cotización activa en el subsistema de pensiones por nación.',
+                        'evidencia': 'Gráfico V3: Colombia con 73% de no cotizantes vs. España con solo 34% no cotizantes.',
+                        'hallazgo': 'Menos de 3 de cada 10 trabajadores de plataformas en Colombia cotizan para pensión, frente a casi 7 de cada 10 en España.',
+                        'interpretacion': 'La ausencia de esquemas de retención obligatoria compartida en plataformas latinoamericanas perpetúa la informalidad estructural.',
+                        'utilidad': 'Sustentar técnicamente el proyecto de reforma laboral en Colombia en materia de cotización en plataformas.',
+                        'limitacion': 'El indicador no registra cotizaciones pasadas o semanas acumuladas previas a la entrada a la aplicación.'
+                    }
+                ],
+                'limitacion': 'La comparación de ingresos en USD no incorpora la Paridad de Poder Adquisitivo (PPA), por lo que $3.2 USD en Colombia adquiere más bienes locales que en España o Estados Unidos.',
+                'decision': 'Avanzar en la concertación gremial de un mecanismo de aportes fraccionados y automáticos a seguridad social por cada carrera o entrega completada en Colombia.'
+            },
+            {
+                'id': 'tablero-3',
+                'numero': 3,
+                'titulo': 'Comportamiento Temporal (2021–2026)',
+                'pregunta': '¿Cómo ha evolucionado el volumen de trabajadores, el ingreso neto y la intensidad horaria semanal a lo largo de los seis años analizados?',
+                'variables': [
+                    {'nombre': 'anio', 'tipo': 'Temporal (Año)', 'descripcion': 'Año calendario del registro (2021 a 2026).'},
+                    {'nombre': 'mes', 'tipo': 'Temporal (Mes)', 'descripcion': 'Mes calendario para análisis estacional.'},
+                    {'nombre': 'horas_semanales', 'tipo': 'Numérica Continua', 'descripcion': 'Jornada semanal reportada por el trabajador.'},
+                    {'nombre': 'ingreso_neto_mensual_cop', 'tipo': 'Numérica Continua', 'descripcion': 'Remuneración neta percibida en cada periodo.'},
+                    {'nombre': 'tipo_plataforma', 'tipo': 'Categórica Nominal', 'descripcion': 'Segmentación por modelo de plataforma.'}
+                ],
+                'indicadores': [
+                    {'nombre': 'Promedio Jornada Semanal', 'valor': '48.6 h/sem', 'dax': 'Promedio Horas Semanales = AVERAGE(\'dataset_gig_economy_tratado\'[horas_semanales])', 'descripcion': 'Carga horaria promedio semanal.'},
+                    {'nombre': 'Ingreso Neto Máximo Registrado', 'valor': '$9.800.000 COP', 'dax': 'Ingreso Neto Máximo = MAX(\'dataset_gig_economy_tratado\'[ingreso_neto_mensual_cop])', 'descripcion': 'Techo máximo de ingresos en servicios especializados.'},
+                    {'nombre': 'Variación de Ingreso 2021 vs. 2025', 'valor': '+22.4%', 'dax': 'Variación Ingreso 2021 vs 2025 = DIVIDE([Ingreso Promedio 2025] - [Ingreso Promedio 2021], [Ingreso Promedio 2021]) * 100', 'descripcion': 'Crecimiento acumulado del ingreso neto nominal.'}
+                ],
+                'visualizaciones': [
+                    {
+                        'tipo': 'Líneas Temporales Multiserie',
+                        'titulo': 'Evolución del Ingreso Neto Promedio Mensual por Año (COP)',
+                        'campos': 'Eje X: anio | Valores: Ingreso Neto Promedio COP | Leyenda: tipo_plataforma',
+                        'interpretacion': 'El ingreso neto en plataformas digitales en línea experimenta un crecimiento constante del 28% entre 2021 y 2025 impulsado por exportación de servicios. En plataformas físicas el ingreso creció 16%, pero se estancó entre 2022 y 2023 debido a la inflación de costos de combustible y comisiones.'
+                    },
+                    {
+                        'tipo': 'Columnas Apiladas por Año',
+                        'titulo': 'Trabajadores Registrados por Año y Modelo',
+                        'campos': 'Eje X: anio | Valores: Total Trabajadores | Leyenda: tipo_plataforma',
+                        'interpretacion': 'La incorporación de nuevos trabajadores creció sostenidamente hasta alcanzar su pico en 2024 (más de 2.800 registros anuales). El año 2026 muestra un menor volumen absoluto debido a que solo cuenta con datos consolidados del primer semestre.'
+                    },
+                    {
+                        'tipo': 'Gráfico de Área',
+                        'titulo': 'Intensidad Horaria Semanal Promedio por Año',
+                        'campos': 'Eje X: anio | Valores: Promedio Horas Semanales | Leyenda: tipo_plataforma',
+                        'interpretacion': 'En plataformas físicas la jornada se ha mantenido en niveles críticos (51 a 53 horas semanales durante todo el periodo), sobrepasando el tope legal colombiano de 47 horas. Las plataformas virtuales oscilan entre 33 y 36 horas semanales con mayor flexibilidad.'
+                    }
+                ],
+                'segmentadores': ['Año (Rango de selección 2021-2026)', 'Categoría de Servicio'],
+                'conocimientos': [
+                    {
+                        'id': 'K3.1',
+                        'titulo': 'Aceleración asimétrica de ingresos a favor del trabajo digital',
+                        'pregunta': '¿Qué segmento incrementó más su remuneración entre 2021 y 2025?',
+                        'variables': 'anio, ingreso_neto_mensual_cop, tipo_plataforma',
+                        'procedimiento': 'Serie temporal de medias anuales de ingreso neto separadas por tipo de plataforma.',
+                        'evidencia': 'Gráfico V1 y tarjeta KPI de variación acumulada (+22.4%).',
+                        'hallazgo': 'Los ingresos de plataformas virtuales crecieron a una tasa anual compuesta casi el doble que los de plataformas físicas.',
+                        'interpretacion': 'La devaluación cambiaria favoreció a freelancers pagados en divisas extranjeras, mientras que conductores locales absorbieron inflación interna.',
+                        'utilidad': 'Modelar esquemas tributarios progresivos y alivios para conductores de servicio físico en periodos de choque inflacionario.',
+                        'limitacion': 'Los ingresos corresponden a valores nominales y no han sido deflactados con el IPC anual.'
+                    },
+                    {
+                        'id': 'K3.2',
+                        'titulo': 'Jornadas laborales crónicamente por encima de la jornada máxima legal',
+                        'pregunta': '¿Ha disminuido la sobrecarga horaria en plataformas físicas en los últimos 5 años?',
+                        'variables': 'anio, horas_semanales, tipo_plataforma',
+                        'procedimiento': 'Seguimiento interanual del promedio de horas trabajadas frente al umbral legal de 47 horas.',
+                        'evidencia': 'Gráfico de área V3: Promedios de 52.4 h en 2021, 53.1 h en 2023 y 51.8 h en 2025.',
+                        'hallazgo': 'En ningún año del periodo 2021-2026 el promedio de horas en plataformas físicas descendió por debajo de las 51 horas semanales.',
+                        'interpretacion': 'La flexibilidad horaria opera como un incentivo perverso para compensar la caída del ingreso por viaje con jornadas excesivas.',
+                        'utilidad': 'Establecer mecanismos algorítmicos de desconexión obligatoria tras 10 horas de conducción continua para proteger la seguridad vial.',
+                        'limitacion': 'Las horas reportadas incluyen tiempos muertos de espera con la aplicación encendida.'
+                    },
+                    {
+                        'id': 'K3.3',
+                        'titulo': 'Consolidación del mercado laboral de plataformas en 2024',
+                        'pregunta': '¿En qué año se evidenció la mayor incorporación laboral en plataformas?',
+                        'variables': 'anio, Total Trabajadores',
+                        'procedimiento': 'Conteo de registros anuales comparables entre 2021 y 2025.',
+                        'evidencia': 'Gráfico V2: Pico máximo de 2.854 registros en el año 2024.',
+                        'hallazgo': 'El año 2024 concentró el 23.1% del total histórico de registros, marcando la cresta de expansión post-pandemia.',
+                        'interpretacion': 'El mercado alcanzó un punto de saturación de oferta laboral, lo cual explica por qué los ingresos individuales dejaron de crecer al ritmo de 2021.',
+                        'utilidad': 'Planificar la capacidad de atención en salud y seguridad vial ante un colectivo que no decrece.',
+                        'limitacion': 'El año 2026 es un corte parcial (6 meses) y no debe sumarse como un año completo sin advertencia.'
+                    }
+                ],
+                'limitacion': 'Los datos corresponden a muestras anuales acumuladas y no a un panel con seguimiento a la misma persona (no es posible saber si un repartidor de 2021 sigue activo en 2025).',
+                'decision': 'Implementar alertas automáticas de fatiga y desconexión algorítmica en apps de reparto y transporte cuando el usuario complete más de 48 horas semanales acumuladas.'
+            },
+            {
+                'id': 'tablero-4',
+                'numero': 4,
+                'titulo': 'Análisis Multivariado: Perfiles, Retorno y Vulnerabilidad',
+                'pregunta': '¿Qué combinaciones de nivel educativo, modelo de plataforma y horas dedicadas explican los mayores ingresos netos, y cómo se relaciona esto con la dependencia económica y la cotización a pensión?',
+                'variables': [
+                    {'nombre': 'nivel_educativo', 'tipo': 'Categórica Ordinal', 'descripcion': 'Capital humano formal del trabajador.'},
+                    {'nombre': 'tipo_plataforma', 'tipo': 'Categórica Nominal', 'descripcion': 'Modelo de servicio (Físico vs. En línea).'},
+                    {'nombre': 'horas_semanales', 'tipo': 'Numérica Continua', 'descripcion': 'Intensidad de dedicación semanal.'},
+                    {'nombre': 'ingreso_neto_mensual_cop', 'tipo': 'Numérica Continua', 'descripcion': 'Ingreso neto de bolsillo mensual.'},
+                    {'nombre': 'costos_operativos_mensuales_cop', 'tipo': 'Numérica Continua', 'descripcion': 'Carga mensual de gastos asumida.'},
+                    {'nombre': 'dependencia_ingresos', 'tipo': 'Categórica Ordinal', 'descripcion': 'Dependencia familiar (Única fuente, Principal, Secundaria).'},
+                    {'nombre': 'afiliacion_pension', 'tipo': 'Categórica Binaria', 'descripcion': 'Cotiza activamente vs. No cotiza.'}
+                ],
+                'indicadores': [
+                    {'nombre': 'Mediana del Ingreso Neto Mensual', 'valor': '$2.150.000 COP', 'dax': 'Ingreso Neto Mediana COP = MEDIAN(\'dataset_gig_economy_tratado\'[ingreso_neto_mensual_cop])', 'descripcion': 'Ingreso central representativo libre de distorsión.'},
+                    {'nombre': 'Costo Operativo Promedio Mensual', 'valor': '$642.800 COP', 'dax': 'Costo Operativo Promedio = AVERAGE(\'dataset_gig_economy_tratado\'[costos_operativos_mensuales_cop])', 'descripcion': 'Gasto mensual directo en combustible, datos y mantenimiento.'},
+                    {'nombre': 'Tasa de Cotización Pensional Activa', 'valor': '28.9%', 'dax': '% Cotiza Pensión = DIVIDE(COUNTROWS(FILTER(\'dataset_gig_economy_tratado\', [afiliacion_pension] = "Cotiza activamente")), [Total Trabajadores]) * 100', 'descripcion': 'Trabajadores con aportes a pensión vigentes.'}
+                ],
+                'visualizaciones': [
+                    {
+                        'tipo': 'Matriz con Mapa de Calor (3 variables)',
+                        'titulo': 'Matriz: Nivel Educativo × Modelo de Plataforma × Ingreso Neto',
+                        'campos': 'Filas: nivel_educativo | Columnas: tipo_plataforma | Valores: Ingreso Neto Promedio COP',
+                        'interpretacion': 'La matriz demuestra retornos asimétricos: en plataformas físicas, un conductor universitario gana prácticamente lo mismo que uno con primaria ($2.2M vs. $2.0M COP). En cambio, en plataformas virtuales la educación superior dispara el ingreso promedio de $1.8M a más de $5.4M COP.'
+                    },
+                    {
+                        'tipo': 'Gráfico de Dispersión Cuadridimensional (4 variables)',
+                        'titulo': 'Horas Semanales vs. Ingreso Neto (Ponderado por Costos y Plataforma)',
+                        'campos': 'Eje X: horas_semanales | Eje Y: ingreso_neto_mensual_cop | Leyenda: tipo_plataforma | Tamaño: costos_operativos_mensuales_cop',
+                        'interpretacion': 'Se aprecia una clara separación: los puntos amarillos (en línea) alcanzan altos ingresos con menos de 40 horas y costos mínimos (burbujas pequeñas). Los puntos azules (física) se agrupan en más de 50 horas, con ingresos topados y burbujas muy grandes (altos costos de operación).'
+                    },
+                    {
+                        'tipo': 'Barras 100% Apiladas (3 variables)',
+                        'titulo': 'Dependencia Económica frente a la Cotización a Pensión',
+                        'campos': 'Eje Y: dependencia_ingresos | Valores: Total Trabajadores | Leyenda: afiliacion_pension',
+                        'interpretacion': 'Evidencia la paradoja de informalidad: los trabajadores para quienes la app es su "Única fuente de ingresos (100%)" tienen la menor tasa de cotización (más del 73% no cotiza). Quienes la usan como fuente complementaria cotizan más porque tienen un empleo formal alterno.'
+                    }
+                ],
+                'segmentadores': ['Nivel Educativo (Filtro por escolaridad)', 'Dependencia de Ingresos (Única, Principal, Complementaria)'],
+                'conocimientos': [
+                    {
+                        'id': 'K4.1',
+                        'titulo': 'Retorno nulo al capital humano en plataformas físicas frente a retorno exponencial en la nube',
+                        'pregunta': '¿Vale la pena tener educación universitaria para conducir o repartir en plataformas físicas?',
+                        'variables': 'nivel_educativo, tipo_plataforma, ingreso_neto_mensual_cop',
+                        'procedimiento': 'Análisis multivariado de calor en matriz cruzando nivel escolar con remuneración por modelo.',
+                        'evidencia': 'Matriz V1: Diferencia de solo $210.000 COP en física vs. salto de $3.600.000 COP en digital.',
+                        'hallazgo': 'El premio salarial por título universitario es prácticamente inexistente en plataformas de movilidad física, pero supera el 200% en trabajo digital.',
+                        'interpretacion': 'Las plataformas físicas estandarizan la remuneración por tarea/viaje sin premiar la formación; mientras las plataformas digitales permiten competir por proyectos de alto valor agregado.',
+                        'utilidad': 'Focalizar a profesionales subempleados en apps de transporte hacia reconversión laboral en tecnología.',
+                        'limitacion': 'No se cuenta con detalle del área de graduación para aislar carreras con baja demanda.'
+                    },
+                    {
+                        'id': 'K4.2',
+                        'titulo': 'Rendimientos decrecientes y trampa de autoexplotación horaria',
+                        'pregunta': '¿Superar las 55 horas semanales se traduce en mayores ingresos netos reales?',
+                        'variables': 'horas_semanales, ingreso_neto_mensual_cop, costos_operativos_mensuales_cop, tipo_plataforma',
+                        'procedimiento': 'Análisis de dispersión cuadrática multivariada ponderando el ingreso neto frente al crecimiento de costos.',
+                        'evidencia': 'Gráfico de burbujas V2: Aplanamiento de la curva de ingreso neto por encima de 55 h/sem.',
+                        'hallazgo': 'En jornadas mayores a 55 horas semanales en plataformas físicas, el aumento del ingreso neto es marginal debido al incremento en costos de combustible, desgaste de vehículo y mantenimiento.',
+                        'interpretacion': 'El trabajador físico no optimiza ganancias; se autoexplota para cubrir costos operativos fijos que la app le traslada en su totalidad.',
+                        'utilidad': 'Demostrar a gremios y plataformas la conveniencia de bonos de eficiencia que desincentiven jornadas extremas.',
+                        'limitacion': 'Los costos corresponden a estimados mensuales promedio y no a bitácoras de telemetría de vehículo.'
+                    },
+                    {
+                        'id': 'K4.3',
+                        'titulo': 'La trampa de la exclusividad: mayor dependencia equivale a mayor desprotección',
+                        'pregunta': '¿Quiénes están más expuestos a una vejez desprotegida en la economía de plataformas?',
+                        'variables': 'dependencia_ingresos, afiliacion_pension, tipo_plataforma, Total Trabajadores',
+                        'procedimiento': 'Cruce multivariado de dependencia familiar con cobertura del sistema pensional.',
+                        'evidencia': 'Gráfico V3: 73.4% de no cotizantes en dependientes exclusivos frente al 44.1% en complementarios.',
+                        'hallazgo': 'Casi 3 de cada 4 trabajadores que dependen al 100% de los ingresos de plataformas carecen por completo de aportes para jubilación.',
+                        'interpretacion': 'Al no tener un empleador formal que subsidie el 75% del aporte a pensión, el costo de cotizar como independiente resulta inalcanzable con márgenes de ganancia reducidos.',
+                        'utilidad': 'Urgir a la creación de un piso de protección social con microaportes automáticos por viaje completado.',
+                        'limitacion': 'No se mide si el trabajador posee ahorros privados o inmuebles como respaldo patrimonial alternativo.'
+                    }
+                ],
+                'limitacion': 'El análisis multivariado identifica patrones de asociación y correlación robusta, pero no constituye una demostración de causalidad econométrica en ausencia de variables instrumentales.',
+                'decision': 'Construir una alianza público-privada para financiar bootcamps tecnológicos dirigidos a los 1.840 trabajadores con estudios universitarios atrapados en plataformas físicas de reparto.'
+            }
+        ],
+        'medidas_dax': [
+            {'nombre': 'Total Trabajadores', 'formula': 'COUNTROWS(\'dataset_gig_economy_tratado\')', 'tipo': 'Conteo escalar', 'uso': 'Denominador universal de participación.'},
+            {'nombre': '% Plataforma Física', 'formula': 'DIVIDE(COUNTROWS(FILTER(\'dataset_gig_economy_tratado\', [tipo_plataforma] = "Fisica / Basada en Ubicacion")), [Total Trabajadores]) * 100', 'tipo': 'Ratio porcentual', 'uso': 'Mide la concentración en servicios de ubicación.'},
+            {'nombre': 'Calificación Promedio', 'formula': 'AVERAGE(\'dataset_gig_economy_tratado\'[calificacion_promedio_app])', 'tipo': 'Media continua', 'uso': 'Indicador de reputación algorítmica.'},
+            {'nombre': 'Ingreso Neto Promedio COP', 'formula': 'AVERAGE(\'dataset_gig_economy_tratado\'[ingreso_neto_mensual_cop])', 'tipo': 'Media monetaria', 'uso': 'Remuneración de bolsillo media mensual.'},
+            {'nombre': 'Ingreso Neto Promedio USD', 'formula': 'AVERAGE(\'dataset_gig_economy_tratado\'[ingreso_neto_hora_usd])', 'tipo': 'Media horaria', 'uso': 'Comparación internacional estandarizada.'},
+            {'nombre': '% Sin Protección Social', 'formula': 'DIVIDE(COUNTROWS(FILTER(\'dataset_gig_economy_tratado\', [afiliacion_pension] = "No cotiza" && [cuenta_con_arl] = "No (Sin cobertura ARL)")), [Total Trabajadores]) * 100', 'tipo': 'Ratio compuesto', 'uso': 'Medición de vulnerabilidad total.'},
+            {'nombre': 'Promedio Horas Semanales', 'formula': 'AVERAGE(\'dataset_gig_economy_tratado\'[horas_semanales])', 'tipo': 'Media de intensidad', 'uso': 'Monitoreo de sobrecarga laboral.'},
+            {'nombre': 'Ingreso Neto Máximo', 'formula': 'MAX(\'dataset_gig_economy_tratado\'[ingreso_neto_mensual_cop])', 'tipo': 'Extremo superior', 'uso': 'Identificación de techos de remuneración.'},
+            {'nombre': 'Variación Ingreso 2021 vs 2025', 'formula': 'DIVIDE([Ingreso Promedio 2025] - [Ingreso Promedio 2021], [Ingreso Promedio 2021]) * 100', 'tipo': 'Variación temporal', 'uso': 'Crecimiento acumulado del ingreso neto.'},
+            {'nombre': 'Ingreso Neto Mediana COP', 'formula': 'MEDIAN(\'dataset_gig_economy_tratado\'[ingreso_neto_mensual_cop])', 'tipo': 'Mediana robusta', 'uso': 'Ingreso central libre de atípicos.'},
+            {'nombre': 'Costo Operativo Promedio', 'formula': 'AVERAGE(\'dataset_gig_economy_tratado\'[costos_operativos_mensuales_cop])', 'tipo': 'Media de costos', 'uso': 'Gasto mensual asumido por el trabajador.'},
+            {'nombre': '% Cotiza Pensión', 'formula': 'DIVIDE(COUNTROWS(FILTER(\'dataset_gig_economy_tratado\', [afiliacion_pension] = "Cotiza activamente")), [Total Trabajadores]) * 100', 'tipo': 'Ratio de formalidad', 'uso': 'Tasa de aportes al sistema de vejez.'}
+        ],
+        'instrucciones_pbix': [
+            '1. Guardar el archivo localmente como: powerbi/Tableros_GigEconomy_Etapa4.pbix dentro del repositorio.',
+            '2. En Power BI Desktop, si requieres actualizar datos: Menú Inicio > Transformar datos > Configuración de origen de datos > Cambiar origen > Seleccionar "data/dataset_gig_economy_tratado.csv".',
+            '3. Las 12 medidas DAX se encuentran organizadas en la tabla principal con nombres estandarizados.',
+            '4. Para publicar en Power BI Service: Archivo > Publicar > Publicar en Power BI (iniciar sesión con cuenta institucional o empresarial).',
+            '5. Para obtener el enlace de inserción: Abrir el informe en app.powerbi.com > Archivo > Insertar informe > Publicar en la web (público) > Copiar el enlace "https://app.powerbi.com/view?r=..." y pegarlo en app.py en la variable ETAPA4_POWERBI_URL.'
+        ]
+    }
