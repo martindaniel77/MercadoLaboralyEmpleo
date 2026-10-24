@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+
+{% block title %}Conocimientos Evidentes | Etapa 4{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <span class="section-eyebrow page-header__eyebrow">Etapa 4 &middot; Minería de Datos</span>
+        <h1>Catálogo de Conocimientos Evidentes</h1>
+        <p>
+            Documentación exhaustiva de los <strong>doce conocimientos evidentes</strong> derivados de los tableros analíticos, 
+            con su formulación de pregunta, variables, procedimiento, evidencia empírica, hallazgo cuantitativo, interpretación, 
+            utilidad decisional y limitaciones específicas.
+        </p>
+        <div class="page-header__rule"></div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <div class="content-box">
+            <span class="section-eyebrow">Metodología de Extracción</span>
+            <h2 class="section-title">Análisis Exploratorio y Descubrimiento Evidente</h2>
+            <p style="font-size: 0.90rem; color: var(--color-text-muted); margin-bottom: 1.2rem;">
+                Selecciona una de las cuatro páginas temáticas para revisar sus variables, visualizaciones técnicas y las tres fichas estructuradas de conocimiento evidente:
+            </p>
+
+            <!-- Pestañas de navegación -->
+            <div class="board-tabs" style="display: flex; gap: 0.5rem; border-bottom: 2px solid var(--color-border); margin-bottom: 1.5rem; overflow-x: auto; padding-bottom: 0.2rem;">
+                {% for tab in data.tableros %}
+                <button class="board-tab-btn {{ 'active' if loop.first }}" data-target="{{ tab.id }}"
+                    style="padding: 0.6rem 1rem; border: none; background: transparent; font-size: 0.88rem; font-weight: 600; cursor: pointer; border-radius: var(--radius-sm) var(--radius-sm) 0 0; border-bottom: 3px solid {{ 'var(--color-accent)' if loop.first else 'transparent' }}; color: {{ 'var(--color-accent-dark)' if loop.first else 'var(--color-text-muted)' }}; white-space: nowrap;">
+                    Página {{ tab.numero }}: {{ tab.titulo }}
+                </button>
+                {% endfor %}
+            </div>
+
+            <!-- Contenido modular por tablero -->
+            {% for tab in data.tableros %}
+            <div class="board-content" id="{{ tab.id }}" style="{{ 'display: block;' if loop.first else 'display: none;' }}">
+                
+                <!-- Encabezado del Tablero -->
+                <div class="panel" style="background: var(--color-surface); border-left: 4px solid var(--color-accent); margin-bottom: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.5rem;">
+                        <span class="badge" style="background: var(--color-accent-dark); color: white;">TABLERO {{ tab.numero }} DE 4</span>
+                        <span style="font-size: 0.80rem; color: var(--color-text-muted);">Segmentadores: {{ tab.segmentadores | join(' &middot; ') }}</span>
+                    </div>
+                    <h3 style="margin: 0.5rem 0 0.3rem 0; font-size: 1.15rem; color: var(--color-accent-dark);">
+                        {{ tab.titulo }}
+                    </h3>
+                    <p style="margin: 0; font-size: 0.92rem; line-height: 1.6; color: var(--color-text);">
+                        <strong>Pregunta de análisis:</strong> <em>{{ tab.pregunta }}</em>
+                    </p>
+                </div>
+
+                <!-- Tres Indicadores Clave -->
+                <div style="margin-bottom: 1.5rem;">
+                    <h4 style="font-size: 0.88rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted); margin-bottom: 0.6rem;">
+                        Indicadores de Referencia
+                    </h4>
+                    <div class="stat-grid">
+                        {% for kpi in tab.indicadores %}
+                        <div class="stat-card">
+                            <span class="stat-card__val" style="font-size: 1.5rem;">{{ kpi.valor }}</span>
+                            <strong style="display: block; font-size: 0.86rem; margin: 0.2rem 0; color: var(--color-accent-dark);">
+                                {{ kpi.nombre }}
+                            </strong>
+                            <span style="font-size: 0.78rem; color: var(--color-text-muted);">
+                                {{ kpi.descripcion }}
+                            </span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Tres Visualizaciones y sus Interpretaciones -->
+                <div style="margin-bottom: 1.8rem;">
+                    <h4 style="font-size: 0.88rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted); margin-bottom: 0.6rem;">
+                        Visualizaciones Técnicas del Tablero
+                    </h4>
+                    <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+                        {% for vis in tab.visualizaciones %}
+                        <div class="panel" style="border: 1px solid var(--color-border); background: var(--color-surface);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.4rem;">
+                                <strong style="font-size: 0.92rem; color: var(--color-accent-dark);">
+                                    Visualización {{ loop.index }}: {{ vis.titulo }}
+                                </strong>
+                                <span class="badge" style="font-size: 0.72rem;">{{ vis.tipo }}</span>
+                            </div>
+                            <p style="font-size: 0.78rem; color: var(--color-text-muted); margin: 0 0 0.4rem 0;">
+                                <strong>Campos mapeados:</strong> <code>{{ vis.campos }}</code>
+                            </p>
+                            <p style="font-size: 0.86rem; line-height: 1.6; margin: 0; background: rgba(0,0,0,0.02); padding: 0.6rem; border-radius: var(--radius-sm);">
+                                <strong>Interpretación:</strong> {{ vis.interpretacion }}
+                            </p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Tres Fichas de Conocimientos Evidentes -->
+                <div style="margin-bottom: 1rem;">
+                    <h4 style="font-size: 0.88rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted); margin-bottom: 0.6rem;">
+                        Fichas Técnicas de Conocimiento Evidente (8 Atributos Obligatorios)
+                    </h4>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 1.2rem;">
+                        {% for k in tab.conocimientos %}
+                        <div class="panel" style="background: var(--color-surface); border: 1px solid var(--color-border); box-shadow: 0 2px 5px rgba(0,0,0,0.03);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; border-bottom: 1px solid var(--color-border); padding-bottom: 0.4rem;">
+                                <span class="badge" style="background: var(--color-accent); color: white; font-weight: 700;">{{ k.id }}</span>
+                                <strong style="font-size: 0.95rem; color: var(--color-accent-dark); flex: 1; margin-left: 0.6rem;">
+                                    {{ k.titulo }}
+                                </strong>
+                            </div>
+                            
+                            <div class="table-container">
+                                <table class="data-table" style="font-size: 0.83rem; line-height: 1.5;">
+                                    <tbody>
+                                        <tr>
+                                            <td style="width: 140px; font-weight: 600; color: var(--color-accent-dark);">1. Pregunta:</td>
+                                            <td>{{ k.pregunta }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight: 600; color: var(--color-accent-dark);">2. Variables:</td>
+                                            <td><code>{{ k.variables }}</code></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight: 600; color: var(--color-accent-dark);">3. Procedimiento:</td>
+                                            <td>{{ k.procedimiento }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight: 600; color: var(--color-accent-dark);">4. Evidencia:</td>
+                                            <td><strong>{{ k.evidencia }}</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight: 600; color: var(--color-accent-dark);">5. Hallazgo:</td>
+                                            <td><span style="background: rgba(232,168,56,0.15); padding: 2px 6px; border-radius: 3px; font-weight: 500;">{{ k.hallazgo }}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight: 600; color: var(--color-accent-dark);">6. Interpretación:</td>
+                                            <td>{{ k.interpretacion }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight: 600; color: var(--color-accent-dark);">7. Utilidad:</td>
+                                            <td>{{ k.utilidad }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="font-weight: 600; color: var(--color-accent-dark);">8. Limitación:</td>
+                                            <td style="color: var(--color-text-muted);"><em>{{ k.limitacion }}</em></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+            </div>
+            {% endfor %}
+
+            <!-- Navegación entre subpáginas -->
+            <div style="margin-top: 2rem; padding-top: 1.2rem; border-top: 1px solid var(--color-border); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.8rem;">
+                <a href="{{ url_for('etapa4_informe') }}" class="btn btn--outline">
+                    &larr; Ver Informe Interactivo Power BI
+                </a>
+                <a href="{{ url_for('etapa4_medidas') }}" class="btn btn--primary">
+                    Consultar Medidas DAX y Decisiones &rarr;
+                </a>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const tabBtns = document.querySelectorAll('.board-tab-btn');
+    const contents = document.querySelectorAll('.board-content');
+
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', function () {
+            const targetId = this.getAttribute('data-target');
+
+            tabBtns.forEach(b => {
+                b.style.borderBottom = '3px solid transparent';
+                b.style.color = 'var(--color-text-muted)';
+            });
+
+            this.style.borderBottom = '3px solid var(--color-accent)';
+            this.style.color = 'var(--color-accent-dark)';
+
+            contents.forEach(c => {
+                c.style.display = (c.id === targetId) ? 'block' : 'none';
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

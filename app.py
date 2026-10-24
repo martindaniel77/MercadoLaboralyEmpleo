@@ -1,4 +1,4 @@
-import os
+﻿import os
 from flask import Flask, render_template, request, jsonify, send_file
 import data_service
 
@@ -11,6 +11,9 @@ app = Flask(__name__)
 #   ETAPA3_VIDEO_URL = "https://drive.google.com/file/d/FILE_ID/view"
 #   ETAPA3_VIDEO_URL = "/static/videos/demo_etapa3.mp4"
 ETAPA3_VIDEO_URL = os.environ.get('ETAPA3_VIDEO_URL', 'https://youtu.be/KBkUWh_jC9U')
+
+# Configuración del informe de Power BI de la Etapa 4.
+ETAPA4_POWERBI_URL = os.environ.get('ETAPA4_POWERBI_URL', 'https://app.powerbi.com/view?r=eyJrIjoiNzllZDZiNWItOGVkMC00MTE5LTk5MDEtNzlkYzcxZTFjMzdlIiwidCI6IjA3ZGE2N2EwLTFmNDMtNGU4Yy05NzdmLTVmODhiNjQ3MGVlNiIsImMiOjR9')
 
 # Asegurar que el dataset inicial exista al arrancar
 data_service.ensure_dataset_exists()
@@ -178,6 +181,51 @@ def etapa3_video():
     return render_template('etapa3_video.html', video_url=ETAPA3_VIDEO_URL)
 
 
+# ============================================================
+# RUTAS DE LA ETAPA 4: CONOCIMIENTO EVIDENTE (POWER BI)
+# ============================================================
+
+@app.route('/etapa-4/continuidad')
+@app.route('/etapa-4/conocimiento-evidente', endpoint='etapa4_conocimiento')
+def etapa4_continuidad():
+    data = data_service.get_etapa4_data()
+    return render_template('etapa4_continuidad.html', data=data)
+
+
+@app.route('/etapa-4/informe-powerbi')
+def etapa4_informe():
+    data = data_service.get_etapa4_data()
+    return render_template('etapa4_informe.html', data=data, powerbi_url=ETAPA4_POWERBI_URL)
+
+
+@app.route('/etapa-4/conocimientos-evidentes')
+def etapa4_conocimientos():
+    data = data_service.get_etapa4_data()
+    return render_template('etapa4_conocimientos.html', data=data)
+
+
+@app.route('/etapa-4/medidas-decisiones')
+def etapa4_medidas():
+    data = data_service.get_etapa4_data()
+    return render_template('etapa4_medidas.html', data=data)
+
+
+@app.route('/descargar-powerbi')
+def descargar_powerbi():
+    pbix_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'powerbi', 'Tableros_GigEconomy_Etapa4.pbix')
+    if os.path.exists(pbix_path):
+        return send_file(
+            pbix_path,
+            as_attachment=True,
+            download_name='Tableros_GigEconomy_Etapa4.pbix',
+            mimetype='application/octet-stream'
+        )
+    return jsonify({
+        'error': 'El archivo PBIX no ha sido cargado todavía en la carpeta powerbi/ del proyecto.',
+        'instruccion': 'Guarda tu archivo de Power BI en: powerbi/Tableros_GigEconomy_Etapa4.pbix'
+    }), 404
+
+
 @app.route('/favicon.ico')
 def favicon():
     return app.send_static_file('favicon.ico')
@@ -185,4 +233,5 @@ def favicon():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
