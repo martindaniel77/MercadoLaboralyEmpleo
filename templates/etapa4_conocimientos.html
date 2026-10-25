@@ -27,11 +27,11 @@
             </p>
 
             <!-- Pestañas de navegación -->
-            <div class="board-tabs" style="display: flex; gap: 0.5rem; border-bottom: 2px solid var(--color-border); margin-bottom: 1.5rem; overflow-x: auto; padding-bottom: 0.2rem;">
+            <div class="board-tabs">
                 {% for tab in data.tableros %}
-                <button class="board-tab-btn {{ 'active' if loop.first }}" data-target="{{ tab.id }}"
-                    style="padding: 0.6rem 1rem; border: none; background: transparent; font-size: 0.88rem; font-weight: 600; cursor: pointer; border-radius: var(--radius-sm) var(--radius-sm) 0 0; border-bottom: 3px solid {{ 'var(--color-accent)' if loop.first else 'transparent' }}; color: {{ 'var(--color-accent-dark)' if loop.first else 'var(--color-text-muted)' }}; white-space: nowrap;">
-                    Página {{ tab.numero }}: {{ tab.titulo }}
+                <button class="board-tab-btn {{ 'active' if loop.first }}" data-target="{{ tab.id }}" type="button">
+                    <span class="board-tab-btn__badge">Página {{ tab.numero }}</span>
+                    <span class="board-tab-btn__text">{{ tab.titulo }}</span>
                 </button>
                 {% endfor %}
             </div>
@@ -184,13 +184,8 @@ document.addEventListener('DOMContentLoaded', function () {
         btn.addEventListener('click', function () {
             const targetId = this.getAttribute('data-target');
 
-            tabBtns.forEach(b => {
-                b.style.borderBottom = '3px solid transparent';
-                b.style.color = 'var(--color-text-muted)';
-            });
-
-            this.style.borderBottom = '3px solid var(--color-accent)';
-            this.style.color = 'var(--color-accent-dark)';
+            tabBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
 
             contents.forEach(c => {
                 c.style.display = (c.id === targetId) ? 'block' : 'none';
