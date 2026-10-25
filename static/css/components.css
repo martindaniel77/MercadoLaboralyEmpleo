@@ -1521,3 +1521,84 @@
     }
 }
 
+
+
+/* ===== Pestañas de Tableros (Etapa 4 - Conocimientos Evidentes) ===== */
+.board-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    padding: 0.45rem;
+    background: rgba(237, 189, 76, 0.08);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    margin-bottom: 1.8rem;
+}
+
+.board-tab-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.6rem 1.15rem;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: var(--color-surface);
+    color: var(--color-text);
+    font-family: var(--font-mono);
+    font-size: 0.84rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: var(--shadow-sm);
+    text-align: left;
+    white-space: nowrap;
+}
+
+.board-tab-btn:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent-dark);
+    background: rgba(237, 189, 76, 0.12);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.board-tab-btn.active {
+    background: linear-gradient(135deg, var(--color-accent), var(--color-accent-dark));
+    color: var(--color-white);
+    border-color: transparent;
+    box-shadow: 0 4px 14px rgba(201, 151, 46, 0.35);
+    font-weight: 700;
+    transform: translateY(-2px);
+}
+
+.board-tab-btn__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.18rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    background: rgba(237, 189, 76, 0.2);
+    color: var(--color-accent-dark);
+    transition: all 0.25s ease;
+}
+
+.board-tab-btn.active .board-tab-btn__badge {
+    background: rgba(255, 255, 255, 0.28);
+    color: var(--color-white);
+}
+
+.board-tab-btn:hover:not(.active) .board-tab-btn__badge {
+    background: rgba(237, 189, 76, 0.35);
+    color: var(--color-primary-dark);
+}
+
+@media (max-width: 768px) {
+    .board-tab-btn {
+        width: 100%;
+        justify-content: flex-start;
+        white-space: normal;
+    }
+}
