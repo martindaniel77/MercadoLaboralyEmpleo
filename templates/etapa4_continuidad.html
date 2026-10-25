@@ -42,21 +42,21 @@
 
             <!-- Resumen numérico -->
             <div class="stat-grid">
-                <div class="stat-card">
-                    <span class="stat-card__val">{{ data.continuidad.registros_totales }}</span>
-                    <span class="stat-card__lbl">Registros analizados</span>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-card__val">{{ data.continuidad.variables_totales }}</span>
-                    <span class="stat-card__lbl">Variables estructuradas</span>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-card__val">{{ data.continuidad.periodo }}</span>
-                    <span class="stat-card__lbl">Ventana de estudio</span>
+                <div class="stat-card stat-card--accent">
+                    <div class="stat-card__val">{{ "{:,}".format(data.continuidad.registros_totales).replace(',', '.') }} Registros</div>
+                    <div class="stat-card__lbl">Analizados</div>
                 </div>
                 <div class="stat-card stat-card--accent">
-                    <span class="stat-card__val">3 Escalas</span>
-                    <span class="stat-card__lbl">Global &middot; Nacional &middot; Regional</span>
+                    <div class="stat-card__val">{{ data.continuidad.variables_totales }} Variables</div>
+                    <div class="stat-card__lbl">Estructuradas</div>
+                </div>
+                <div class="stat-card stat-card--accent">
+                    <div class="stat-card__val">{{ data.continuidad.periodo }}</div>
+                    <div class="stat-card__lbl">Ventana de estudio</div>
+                </div>
+                <div class="stat-card stat-card--accent">
+                    <div class="stat-card__val">3 Escalas</div>
+                    <div class="stat-card__lbl">Global &middot; Nacional &middot; Regional</div>
                 </div>
             </div>
         </div>
