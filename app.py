@@ -210,6 +210,45 @@ def etapa4_medidas():
     return render_template('etapa4_medidas.html', data=data)
 
 
+# ============================================================
+# RUTAS DE LA ETAPA 5: ANÁLISIS MULTIDIMENSIONAL
+# ============================================================
+
+@app.route('/etapa-5/proposito')
+def etapa5_proposito():
+    return render_template('etapa5_proposito.html')
+
+
+@app.route('/etapa-5/relacion-conocimiento-evidente')
+def etapa5_relacion():
+    return render_template('etapa5_relacion.html')
+
+
+@app.route('/etapa-5/modelo-estrella')
+def etapa5_modelo_estrella():
+    return render_template('etapa5_modelo_estrella.html')
+
+
+@app.route('/etapa-5/dimensiones-medidas-jerarquias')
+def etapa5_dimensiones():
+    return render_template('etapa5_dimensiones.html')
+
+
+@app.route('/etapa-5/vistas-interactivas')
+def etapa5_vistas():
+    return render_template('etapa5_vistas.html')
+
+
+@app.route('/etapa-5/operaciones-multidimensionales')
+def etapa5_operaciones():
+    return render_template('etapa5_operaciones.html')
+
+
+@app.route('/etapa-5/conclusiones')
+def etapa5_conclusiones():
+    return render_template('etapa5_conclusiones.html')
+
+
 @app.route('/descargar-powerbi')
 def descargar_powerbi():
     pbix_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'powerbi', 'Tableros_GigEconomy_Etapa4.pbix')
