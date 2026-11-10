@@ -8,7 +8,8 @@
         <span class="section-eyebrow page-header__eyebrow">Etapa 5 &middot; Análisis Multidimensional</span>
         <h1>Propósito de la Etapa</h1>
         <p>
-            Objetivo general de la etapa de análisis multidimensional dentro del proyecto de Minería de Datos.
+            Construcción e implementación de un modelo multidimensional en esquema estrella para trascender el análisis
+            descriptivo previo y explorar de forma interactiva el conjunto de datos tratado de la Gig Economy.
         </p>
         <div class="page-header__rule"></div>
     </div>
@@ -16,13 +17,83 @@
 
 <section class="section">
     <div class="container">
+
+        <!-- 1. OBJETIVO GENERAL -->
         <div class="content-box">
-            <span class="section-eyebrow">01 / Propósito de la Etapa</span>
-            <h2 class="section-title">Propósito de la Etapa</h2>
-            <div class="panel" style="text-align: center; padding: 3rem 2rem; border: 2px dashed var(--color-border);">
-                <p style="margin: 0; color: var(--color-text-muted);">Contenido pendiente de diligenciar.</p>
+            <span class="section-eyebrow">01 / Objetivo General de la Sección</span>
+            <h2 class="section-title">Objetivo General de la Sección</h2>
+            <div class="panel" style="background: var(--color-surface); border-left: 4px solid var(--color-accent);">
+                <p style="margin: 0; font-size: 0.92rem; line-height: 1.7;">
+                    El propósito fundamental de esta etapa es trascender el análisis bivariado y descriptivo de la etapa
+                    anterior mediante la construcción e implementación de un modelo multidimensional en esquema estrella
+                    (<code>fact_gig_economy</code>), permitiendo explorar de forma interactiva y profunda el conjunto de
+                    datos tratado de la Gig Economy (<strong>12.350</strong> registros limpios).
+                </p>
             </div>
         </div>
+
+        <!-- 2. JUSTIFICACIÓN Y TRANSICIÓN -->
+        <div class="content-box">
+            <span class="section-eyebrow">02 / Justificación y Transición</span>
+            <h2 class="section-title">Justificación y Transición desde el Conocimiento Evidente</h2>
+
+            <div class="grid grid--2" style="gap: 1.5rem;">
+                <div class="panel" style="border-left: 4px solid var(--color-border); background: var(--color-surface);">
+                    <h3 style="margin: 0 0 0.5rem 0; font-size: 1rem; color: var(--color-accent-dark);">Limitación previa</h3>
+                    <p style="margin: 0; font-size: 0.88rem; line-height: 1.7; color: var(--color-text);">
+                        En la Etapa 4 se identificaron tendencias generales y patrones macro (como el predominio del
+                        trabajo físico, los rendimientos asimétricos del capital humano y la sobrecarga horaria en los
+                        tableros analíticos de composición, comparación de grupos, evolución temporal y análisis
+                        multivariado).
+                    </p>
+                </div>
+                <div class="panel" style="border-left: 4px solid var(--color-accent); background: var(--color-surface);">
+                    <h3 style="margin: 0 0 0.5rem 0; font-size: 1rem; color: var(--color-accent-dark);">Salto analítico</h3>
+                    <p style="margin: 0; font-size: 0.88rem; line-height: 1.7; color: var(--color-text);">
+                        La Etapa 5 responde a la necesidad de profundizar en dichos conocimientos mediante el cruce
+                        simultáneo de múltiples dimensiones (geografía, tiempo, tipo de plataforma y perfil
+                        sociodemográfico) y la exploración de distintos niveles de detalle, permitiendo interconectar las
+                        perspectivas globales, nacionales y regionales del mercado laboral.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. ALCANCE OPERATIVO E INTERACTIVO -->
+        <div class="content-box">
+            <span class="section-eyebrow">03 / Alcance Operativo e Interactivo</span>
+            <h2 class="section-title">Alcance Operativo e Interactivo en Flask</h2>
+            <p style="font-size: 0.88rem; color: var(--color-text-muted); margin-bottom: 1.2rem;">
+                Esta sección se integra como un nuevo módulo interactivo dentro de la aplicación Flask
+                (<code>/analisis-multidimensional</code>), el cual provee:
+            </p>
+
+            <div class="grid grid--3">
+                <div class="card card--dark">
+                    <h3 class="card__title">Consultas OLAP dinámicas</h3>
+                    <p class="card__text">
+                        Implementación y ejecución en tiempo real de operaciones de Drill-down, Roll-up, Slice, Dice y
+                        Pivot.
+                    </p>
+                </div>
+                <div class="card card--dark">
+                    <h3 class="card__title">Vistas de análisis estructuradas</h3>
+                    <p class="card__text">
+                        Cuatro apartados específicos que integran indicadores clave (KPIs), visualizaciones interactivas,
+                        matrices multidimensionales de doble entrada y filtros cruzados basados en dimensiones reales.
+                    </p>
+                </div>
+                <div class="card card--dark">
+                    <h3 class="card__title">Generación de conocimiento accionable</h3>
+                    <p class="card__text">
+                        Descubrimiento de ocho conocimientos multidimensionales rigurosos respaldados por cifras
+                        verificables, orientados a la formulación de decisiones públicas y sectoriales fundamentadas en
+                        datos.
+                    </p>
+                </div>
+            </div>
+        </div>
+
     </div>
 </section>
 {% endblock %}

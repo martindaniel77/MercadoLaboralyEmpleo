@@ -1,15 +1,10 @@
 ﻿import os
 from flask import Flask, render_template, request, jsonify, send_file
 import data_service
+from database import db, URI_DB
 
 app = Flask(__name__)
 
-# Configuración del video de la Etapa 3.
-# Cuando tengas el enlace del video (YouTube/Drive/MP4), pégalo aquí y la
-# sección "Video demostrativo" lo embebe automáticamente. Ejemplos:
-#   ETAPA3_VIDEO_URL = "https://www.youtube.com/watch?v=XXXXXXXXXXX"
-#   ETAPA3_VIDEO_URL = "https://drive.google.com/file/d/FILE_ID/view"
-#   ETAPA3_VIDEO_URL = "/static/videos/demo_etapa3.mp4"
 ETAPA3_VIDEO_URL = os.environ.get('ETAPA3_VIDEO_URL', 'https://youtu.be/KBkUWh_jC9U')
 
 # Configuración del informe de Power BI de la Etapa 4.
@@ -17,6 +12,10 @@ ETAPA4_POWERBI_URL = os.environ.get('ETAPA4_POWERBI_URL', 'https://app.powerbi.c
 
 # Asegurar que el dataset inicial exista al arrancar
 data_service.ensure_dataset_exists()
+
+# Configuración de la conexión a PostgreSQL (DBeaver / Local)
+app.config['SQLALCHEMY_DATABASE_URI'] = URI_DB
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 @app.route('/')
 def home():
@@ -271,6 +270,8 @@ def favicon():
 
 
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)
 
 
