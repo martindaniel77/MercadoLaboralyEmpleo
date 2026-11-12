@@ -28,10 +28,6 @@ ETAPA4_POWERBI_URL = os.environ.get('ETAPA4_POWERBI_URL', 'https://app.powerbi.c
 # Asegurar que el dataset inicial exista al arrancar
 data_service.ensure_dataset_exists()
 
-# Configuración de la conexión a PostgreSQL (DBeaver / Local)
-app.config['SQLALCHEMY_DATABASE_URI'] = URI_DB
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
 @app.route('/')
 def home():
     summary = data_service.get_dataset_summary()
