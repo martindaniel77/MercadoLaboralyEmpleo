@@ -183,13 +183,10 @@
 
             <figure style="margin: 0;">
                 <div class="panel"
-                    style="text-align: center; padding: 4rem 2rem; border: 2px dashed var(--color-border); background: var(--color-surface);">
-                    <p style="margin: 0 0 0.5rem 0; color: var(--color-text-muted); font-size: 0.92rem; font-weight: 600;">
-                        Espacio reservado para la imagen del diagrama del modelo estrella
-                    </p>
-                    <p style="margin: 0; color: var(--color-text-muted); font-size: 0.82rem;">
-                        Colocar la imagen en: <code>static/img/modelo_estrella.png</code>
-                    </p>
+                    style="text-align: center; padding: 1.5rem; border: 2px solid var(--color-border); background: var(--color-surface);">
+                    <img src="{{ url_for('static', filename='img/modelo_estrella.png') }}"
+                        alt="Diagrama del modelo estrella del Data Warehouse gig_economy_db"
+                        style="max-width: 100%; height: auto; display: block; margin: 0 auto; border-radius: 8px;">
                 </div>
                 <figcaption style="margin-top: 0.7rem; font-size: 0.82rem; color: var(--color-text-muted); text-align: center;">
                     Figura 1. Representación esquemática del diagrama estrella del modelo multidimensional.
