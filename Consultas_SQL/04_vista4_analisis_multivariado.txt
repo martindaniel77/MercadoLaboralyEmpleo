@@ -1,6 +1,5 @@
-================================================================================
 VISTA 4 — ANÁLISIS MULTIVARIADO: PERFILES, RETORNO Y VULNERABILIDAD
-================================================================================
+
 Pregunta: ¿Qué combinaciones de nivel educativo, modelo de plataforma y horas
 dedicadas explican los mayores ingresos netos, y cómo se relaciona esto con la
 dependencia económica y la cotización a pensión?
@@ -11,9 +10,8 @@ Dimensiones: dim_trabajador (nivel_educativo, dependencia_ingresos,
 Medidas:     AVG(ingreso_neto_mensual_cop), AVG(ingreso_neto_hora_usd),
              proporción de cotización a pensión.
 
---------------------------------------------------------------------------------
 1. INDICADORES GLOBALES (KPIs)
---------------------------------------------------------------------------------
+
 SELECT ROUND(AVG(f.ingreso_neto_mensual_cop)::numeric, 0)             AS ingreso_neto_promedio_cop,
        COUNT(DISTINCT f.id_trabajador) FILTER (
            WHERE t.afiliacion_pension = 'Cotiza activamente')         AS cotizan,
@@ -23,12 +21,8 @@ SELECT ROUND(AVG(f.ingreso_neto_mensual_cop)::numeric, 0)             AS ingreso
              COUNT(DISTINCT f.id_trabajador), 1)                      AS pct_cotizan
 FROM fact_gig_economy f
 JOIN dim_trabajador t ON t.id_trabajador = f.id_trabajador;
--- Esperado: $4.287.438 COP · 4.352 cotizan (35,2%).
 
-
---------------------------------------------------------------------------------
 2. INGRESO NETO PROMEDIO POR NIVEL EDUCATIVO x MODELO DE PLATAFORMA
---------------------------------------------------------------------------------
 SELECT t.nivel_educativo,
        p.tipo_plataforma,
        ROUND(AVG(f.ingreso_neto_mensual_cop)::numeric, 0) AS ingreso_promedio_cop,
@@ -39,26 +33,16 @@ JOIN dim_trabajador t ON t.id_trabajador = f.id_trabajador
 JOIN dim_plataforma p ON p.id_plataforma = f.id_plataforma
 GROUP BY t.nivel_educativo, p.tipo_plataforma
 ORDER BY t.nivel_educativo, p.tipo_plataforma;
--- Esperado: dentro de cada modalidad el ingreso es plano
---           (en línea ~7,1–7,5 M · física ~2,7–2,8 M) sin gradiente educativo.
 
-
---------------------------------------------------------------------------------
 3. INGRESO NETO PROMEDIO POR NIVEL EDUCATIVO (agregado, para ver el gradiente)
---------------------------------------------------------------------------------
 SELECT t.nivel_educativo,
        ROUND(AVG(f.ingreso_neto_mensual_cop)::numeric, 0) AS ingreso_promedio_cop
 FROM fact_gig_economy f
 JOIN dim_trabajador t ON t.id_trabajador = f.id_trabajador
 GROUP BY t.nivel_educativo
 ORDER BY ingreso_promedio_cop DESC;
--- Esperado: Posgrado 6.545.561 · Universitario 5.680.575 · Técnico 4.385.256 ·
---           Secundaria 3.391.971 · Primaria 3.058.687 (gradiente agregado de 2,1x).
 
-
---------------------------------------------------------------------------------
 4. ROLL-UP: INGRESO NETO PROMEDIO POR GRUPO FORMATIVO
---------------------------------------------------------------------------------
 SELECT CASE
            WHEN t.nivel_educativo IN ('Primaria', 'Secundaria / Bachillerato') THEN 'Basica'
            WHEN t.nivel_educativo = 'Tecnico / Tecnologo'                     THEN 'Tecnica'
@@ -70,12 +54,9 @@ FROM fact_gig_economy f
 JOIN dim_trabajador t ON t.id_trabajador = f.id_trabajador
 GROUP BY grupo_formativo
 ORDER BY ingreso_promedio_cop;
--- Esperado: Básica 3.353.852 · Técnica 4.385.256 · Superior 5.813.368 COP.
 
 
---------------------------------------------------------------------------------
 5. TARIFA USD/H POR BANDA DE JORNADA SEMANAL (rendimientos decrecientes)
---------------------------------------------------------------------------------
 SELECT CASE
            WHEN f.horas_semanales < 30 THEN '< 30 h'
            WHEN f.horas_semanales < 40 THEN '30-40 h'
@@ -91,12 +72,8 @@ FROM fact_gig_economy f
 JOIN dim_plataforma p ON p.id_plataforma = f.id_plataforma
 GROUP BY banda_jornada, p.tipo_plataforma
 ORDER BY MIN(f.horas_semanales), p.tipo_plataforma;
--- Esperado: en física la tarifa cae de 4,31 USD/h (<30 h) a 2,82 USD/h (>56 h).
 
-
---------------------------------------------------------------------------------
 6. COTIZACIÓN A PENSIÓN SEGÚN DEPENDENCIA ECONÓMICA
---------------------------------------------------------------------------------
 SELECT t.dependencia_ingresos,
        COUNT(DISTINCT f.id_trabajador) AS total,
        COUNT(DISTINCT f.id_trabajador) FILTER (
@@ -108,12 +85,8 @@ FROM fact_gig_economy f
 JOIN dim_trabajador t ON t.id_trabajador = f.id_trabajador
 GROUP BY t.dependencia_ingresos
 ORDER BY pct_cotizan DESC;
--- Esperado: Complementaria 40,7% · Principal 36,2% · Única fuente 32,6%.
 
-
---------------------------------------------------------------------------------
 7. DESPROTECCIÓN DE LOS DEPENDIENTES EXCLUSIVOS POR MODELO DE PLATAFORMA
---------------------------------------------------------------------------------
 SELECT p.tipo_plataforma,
        COUNT(DISTINCT f.id_trabajador) FILTER (
            WHERE t.dependencia_ingresos = 'Unica fuente de ingresos (100%)') AS dependientes_unicos,
@@ -129,13 +102,8 @@ FROM fact_gig_economy f
 JOIN dim_trabajador t ON t.id_trabajador = f.id_trabajador
 JOIN dim_plataforma p ON p.id_plataforma = f.id_plataforma
 GROUP BY p.tipo_plataforma;
--- Esperado: Física 4.879 dependientes exclusivos, 73,4% no cotiza ·
---           En línea 1.445, 47,4% no cotiza.
 
-
---------------------------------------------------------------------------------
 8. MATRIZ: NIVEL EDUCATIVO x MODELO DE PLATAFORMA (medida = ingreso neto COP)
---------------------------------------------------------------------------------
 SELECT t.nivel_educativo,
        ROUND(AVG(f.ingreso_neto_mensual_cop) FILTER (
              WHERE p.tipo_plataforma = 'Fisica / Basada en Ubicacion')::numeric, 0) AS fisica_cop,

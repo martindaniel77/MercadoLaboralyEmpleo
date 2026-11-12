@@ -1,6 +1,5 @@
-================================================================================
 VISTA 1 — COMPOSICIÓN Y DISTRIBUCIÓN DE LA POBLACIÓN
-================================================================================
+
 Pregunta: ¿Cómo está compuesta la población de trabajadores de plataformas
 digitales según tipo de plataforma, categoría de servicio, género y nivel
 educativo?
@@ -9,17 +8,12 @@ Dimensiones: dim_plataforma (tipo_plataforma, categoria_servicio)
              dim_trabajador (genero, nivel_educativo)
 Medida:      Total de trabajadores = COUNT(DISTINCT id_trabajador)
 
---------------------------------------------------------------------------------
 1. TOTAL DE TRABAJADORES (universo)
---------------------------------------------------------------------------------
+
 SELECT COUNT(DISTINCT f.id_trabajador) AS total_trabajadores
 FROM fact_gig_economy f;
--- Esperado: 12.350.
 
-
---------------------------------------------------------------------------------
 2. COMPOSICIÓN POR TIPO DE PLATAFORMA
---------------------------------------------------------------------------------
 SELECT p.tipo_plataforma,
        COUNT(DISTINCT f.id_trabajador)                                          AS trabajadores,
        ROUND(100.0 * COUNT(DISTINCT f.id_trabajador) /
@@ -28,12 +22,9 @@ FROM fact_gig_economy f
 JOIN dim_plataforma p ON p.id_plataforma = f.id_plataforma
 GROUP BY p.tipo_plataforma
 ORDER BY trabajadores DESC;
--- Esperado: Física 8.127 (65,8%) · En línea 4.223 (34,2%).
 
-
---------------------------------------------------------------------------------
 3. COMPOSICIÓN POR CATEGORÍA DE SERVICIO (color por tipo de plataforma)
---------------------------------------------------------------------------------
+
 SELECT p.categoria_servicio,
        p.tipo_plataforma,
        COUNT(DISTINCT f.id_trabajador) AS trabajadores
@@ -41,39 +32,24 @@ FROM fact_gig_economy f
 JOIN dim_plataforma p ON p.id_plataforma = f.id_plataforma
 GROUP BY p.categoria_servicio, p.tipo_plataforma
 ORDER BY trabajadores DESC;
--- Esperado: Transporte 3.893 (Física) · Reparto 3.700 (Física) ·
---           Desarrollo TI 1.635 (En línea) · Diseño 1.137 · Microtareas 915 ·
---           Servicios Profesionales 536 · Servicios del Hogar 534.
 
-
---------------------------------------------------------------------------------
 4. COMPOSICIÓN POR GÉNERO
---------------------------------------------------------------------------------
 SELECT t.genero,
        COUNT(DISTINCT f.id_trabajador) AS trabajadores
 FROM fact_gig_economy f
 JOIN dim_trabajador t ON t.id_trabajador = f.id_trabajador
 GROUP BY t.genero
 ORDER BY trabajadores DESC;
--- Esperado: Masculino 8.823 · Femenino 3.235 · No binario / Otro 292.
 
-
---------------------------------------------------------------------------------
 5. COMPOSICIÓN POR NIVEL EDUCATIVO
---------------------------------------------------------------------------------
 SELECT t.nivel_educativo,
        COUNT(DISTINCT f.id_trabajador) AS trabajadores
 FROM fact_gig_economy f
 JOIN dim_trabajador t ON t.id_trabajador = f.id_trabajador
 GROUP BY t.nivel_educativo
 ORDER BY trabajadores DESC;
--- Esperado: Secundaria 5.095 · Técnico 3.288 · Universitario 2.801 ·
---           Primaria 658 · Posgrado 508.
 
-
---------------------------------------------------------------------------------
 6. MATRIZ: NIVEL EDUCATIVO x TIPO DE PLATAFORMA (medida = trabajadores)
---------------------------------------------------------------------------------
 SELECT t.nivel_educativo,
        SUM(CASE WHEN p.tipo_plataforma = 'Fisica / Basada en Ubicacion'
                 THEN 1 ELSE 0 END) AS fisica,
@@ -87,9 +63,7 @@ GROUP BY t.nivel_educativo
 ORDER BY total DESC;
 
 
---------------------------------------------------------------------------------
 7. ÍNDICE DE FEMINIZACIÓN POR MODALIDAD (KPI 3 de la Vista 1)
---------------------------------------------------------------------------------
 SELECT p.tipo_plataforma,
        COUNT(DISTINCT f.id_trabajador) FILTER (WHERE t.genero = 'Femenino')    AS mujeres,
        COUNT(DISTINCT f.id_trabajador)                                         AS total,
@@ -99,12 +73,8 @@ FROM fact_gig_economy f
 JOIN dim_trabajador t ON t.id_trabajador = f.id_trabajador
 JOIN dim_plataforma p ON p.id_plataforma = f.id_plataforma
 GROUP BY p.tipo_plataforma;
--- Esperado: Física 20,0% · En línea 38,0%.
 
-
---------------------------------------------------------------------------------
 8. SEGREGACIÓN DE GÉNERO POR CATEGORÍA DE SERVICIO
---------------------------------------------------------------------------------
 SELECT p.categoria_servicio,
        COUNT(DISTINCT f.id_trabajador) FILTER (WHERE t.genero = 'Femenino')    AS mujeres,
        COUNT(DISTINCT f.id_trabajador)                                         AS total,
@@ -115,4 +85,3 @@ JOIN dim_trabajador t ON t.id_trabajador = f.id_trabajador
 JOIN dim_plataforma p ON p.id_plataforma = f.id_plataforma
 GROUP BY p.categoria_servicio
 ORDER BY pct_femenino DESC;
--- Esperado: participación femenina del 19,7% (Reparto) al 39,0% (Servicios Profesionales).

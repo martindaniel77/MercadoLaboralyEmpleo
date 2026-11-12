@@ -2,11 +2,15 @@
 from flask import Flask, render_template, request, jsonify, send_file
 import data_service
 import analytics_service
-from database import db, URI_DB, init_db
+from database import db, init_db
 from models import DimTiempo, DimGeografia, DimPlataforma, DimTrabajador, FactGigEconomy
 
 app = Flask(__name__)
 
+init_db(app)
+with app.app_context():
+        db.create_all()
+        print("¡Tablas conectadas exitosamente con PostgreSQL!")
 
 @app.template_filter('miles')
 def miles_filter(value):
@@ -246,44 +250,7 @@ def etapa5_dimensiones():
 
 @app.route('/etapa-5/vistas-interactivas')
 def etapa5_vistas():
-    vistas = [
-        {
-            'numero': 1,
-            'titulo': 'Composición y Distribución',
-            'pregunta': '¿Cómo está compuesta la población de trabajadores según tipo, categoría, género y educación?',
-            'dimensiones': 'dim_plataforma · dim_trabajador · dim_geografia',
-            'operaciones': 'Drill-down / Roll-up / Slice / Dice / Pivot',
-            'estado': 'disponible',
-            'url': 'etapa5_vista1',
-        },
-        {
-            'numero': 2,
-            'titulo': 'Comparación de Grupos y Territorios',
-            'pregunta': 'Diferencias de ingreso, tarifa horaria y protección social entre grupos.',
-            'dimensiones': 'dim_geografia · dim_trabajador · dim_plataforma',
-            'operaciones': 'Drill-down / Roll-up / Slice / Dice / Pivot',
-            'estado': 'disponible',
-            'url': 'etapa5_vista2',
-        },
-        {
-            'numero': 3,
-            'titulo': 'Comportamiento Temporal',
-            'pregunta': 'Evolución del volumen, ingreso e intensidad horaria a lo largo del periodo.',
-            'dimensiones': 'dim_tiempo · dim_plataforma · dim_geografia',
-            'operaciones': 'Drill-down / Roll-up / Slice / Dice / Pivot',
-            'estado': 'disponible',
-            'url': 'etapa5_vista3',
-        },
-        {
-            'numero': 4,
-            'titulo': 'Perfiles, Retorno y Vulnerabilidad',
-            'pregunta': 'Combinaciones que explican mayores ingresos y vulnerabilidad social.',
-            'dimensiones': 'dim_trabajador · dim_plataforma · dim_tiempo',
-            'operaciones': 'Drill-down / Roll-up / Slice / Dice / Pivot',
-            'estado': 'disponible',
-            'url': 'etapa5_vista4',
-        },
-    ]
+    vistas = data_service.get_etapa5_vistas()
     return render_template('etapa5_vistas.html', vistas=vistas)
 
 
@@ -365,12 +332,9 @@ def descargar_powerbi():
 def favicon():
     return app.send_static_file('favicon.ico')
 
-init_db(app)
+
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-        print("¡Tablas creadas y conectadas exitosamente con PostgreSQL!")
     app.run(debug=True)
 
 

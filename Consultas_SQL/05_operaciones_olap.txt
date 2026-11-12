@@ -1,6 +1,4 @@
-================================================================================
 OPERACIONES MULTIDIMENSIONALES (OLAP) — EJEMPLOS DE CONSULTA
-================================================================================
 Cada operación se ilustra con la consulta que la implementa en el modelo
 estrella. Las medidas se recalculan al cambiar el nivel de agrupación o el
 subconjunto seleccionado.
