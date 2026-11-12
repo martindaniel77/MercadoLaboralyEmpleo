@@ -1,9 +1,20 @@
 ﻿import os
 from flask import Flask, render_template, request, jsonify, send_file
 import data_service
-from database import db, URI_DB
+import analytics_service
+from database import db, URI_DB, init_db
+from models import DimTiempo, DimGeografia, DimPlataforma, DimTrabajador, FactGigEconomy
 
 app = Flask(__name__)
+
+
+@app.template_filter('miles')
+def miles_filter(value):
+    """Formatea un número con separador de miles en español (punto)."""
+    try:
+        return f'{int(value):,}'.replace(',', '.')
+    except (TypeError, ValueError):
+        return value
 
 ETAPA3_VIDEO_URL = os.environ.get('ETAPA3_VIDEO_URL', 'https://youtu.be/KBkUWh_jC9U')
 
@@ -235,7 +246,93 @@ def etapa5_dimensiones():
 
 @app.route('/etapa-5/vistas-interactivas')
 def etapa5_vistas():
-    return render_template('etapa5_vistas.html')
+    vistas = [
+        {
+            'numero': 1,
+            'titulo': 'Composición y Distribución',
+            'pregunta': '¿Cómo está compuesta la población de trabajadores según tipo, categoría, género y educación?',
+            'dimensiones': 'dim_plataforma · dim_trabajador · dim_geografia',
+            'operaciones': 'Drill-down / Roll-up / Slice / Dice / Pivot',
+            'estado': 'disponible',
+            'url': 'etapa5_vista1',
+        },
+        {
+            'numero': 2,
+            'titulo': 'Comparación de Grupos y Territorios',
+            'pregunta': 'Diferencias de ingreso, tarifa horaria y protección social entre grupos.',
+            'dimensiones': 'dim_geografia · dim_trabajador · dim_plataforma',
+            'operaciones': 'Drill-down / Roll-up / Slice / Dice / Pivot',
+            'estado': 'disponible',
+            'url': 'etapa5_vista2',
+        },
+        {
+            'numero': 3,
+            'titulo': 'Comportamiento Temporal',
+            'pregunta': 'Evolución del volumen, ingreso e intensidad horaria a lo largo del periodo.',
+            'dimensiones': 'dim_tiempo · dim_plataforma · dim_geografia',
+            'operaciones': 'Drill-down / Roll-up / Slice / Dice / Pivot',
+            'estado': 'disponible',
+            'url': 'etapa5_vista3',
+        },
+        {
+            'numero': 4,
+            'titulo': 'Perfiles, Retorno y Vulnerabilidad',
+            'pregunta': 'Combinaciones que explican mayores ingresos y vulnerabilidad social.',
+            'dimensiones': 'dim_trabajador · dim_plataforma · dim_tiempo',
+            'operaciones': 'Drill-down / Roll-up / Slice / Dice / Pivot',
+            'estado': 'disponible',
+            'url': 'etapa5_vista4',
+        },
+    ]
+    return render_template('etapa5_vistas.html', vistas=vistas)
+
+
+@app.route('/etapa-5/vista-1')
+def etapa5_vista1():
+    filtros = {
+        'pais': request.args.get('pais', 'Todos'),
+        'genero': request.args.get('genero', 'Todos'),
+        'nivel': request.args.get('nivel', 'tipo'),
+        'pivot': request.args.get('pivot', 'educacion_tipo'),
+    }
+    data = analytics_service.get_vista1(filtros)
+    return render_template('etapa5_vista1.html', data=data)
+
+
+@app.route('/etapa-5/vista-2')
+def etapa5_vista2():
+    filtros = {
+        'tipo': request.args.get('tipo', 'Todos'),
+        'genero': request.args.get('genero', 'Todos'),
+        'nivel': request.args.get('nivel', 'pais'),
+        'pivot': request.args.get('pivot', 'pais_tipo'),
+    }
+    data = analytics_service.get_vista2(filtros)
+    return render_template('etapa5_vista2.html', data=data)
+
+
+@app.route('/etapa-5/vista-3')
+def etapa5_vista3():
+    filtros = {
+        'tipo': request.args.get('tipo', 'Todos'),
+        'pais': request.args.get('pais', 'Todos'),
+        'nivel': request.args.get('nivel', 'anio'),
+        'pivot': request.args.get('pivot', 'anio_tipo'),
+    }
+    data = analytics_service.get_vista3(filtros)
+    return render_template('etapa5_vista3.html', data=data)
+
+
+@app.route('/etapa-5/vista-4')
+def etapa5_vista4():
+    filtros = {
+        'tipo': request.args.get('tipo', 'Todos'),
+        'dependencia': request.args.get('dependencia', 'Todos'),
+        'nivel': request.args.get('nivel', 'detalle'),
+        'pivot': request.args.get('pivot', 'educacion_tipo'),
+    }
+    data = analytics_service.get_vista4(filtros)
+    return render_template('etapa5_vista4.html', data=data)
 
 
 @app.route('/etapa-5/operaciones-multidimensionales')
@@ -268,10 +365,12 @@ def descargar_powerbi():
 def favicon():
     return app.send_static_file('favicon.ico')
 
+init_db(app)
 
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
+        print("¡Tablas creadas y conectadas exitosamente con PostgreSQL!")
     app.run(debug=True)
 
 

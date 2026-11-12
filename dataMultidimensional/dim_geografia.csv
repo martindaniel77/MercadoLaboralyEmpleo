@@ -1,0 +1,24 @@
+id_geografia,nivel_territorial,pais,codigo_iso_pais,departamento_region,ciudad_municipio
+1,Global,Argentina,ARG,Buenos Aires,Buenos Aires
+2,Global,Brasil,BRA,Sao Paulo,Sao Paulo
+3,Global,Chile,CHL,Santiago,Santiago
+4,Global,Espana,ESP,Madrid,Madrid
+5,Global,Estados Unidos,USA,California,San Francisco
+6,Global,India,IND,Karnataka,Bengaluru
+7,Global,Mexico,MEX,Ciudad de Mexico,Ciudad de Mexico
+8,Nacional,Colombia,COL,Antioquia,Medellin
+9,Nacional,Colombia,COL,Atlantico,Barranquilla
+10,Nacional,Colombia,COL,Bogota D.C.,Bogota
+11,Nacional,Colombia,COL,Bolivar,Cartagena
+12,Nacional,Colombia,COL,Caldas,Manizales
+13,Nacional,Colombia,COL,Risaralda,Pereira
+14,Nacional,Colombia,COL,Santander,Bucaramanga
+15,Nacional,Colombia,COL,Valle del Cauca,Cali
+16,Regional,Colombia,COL,Antioquia,Medellin
+17,Regional,Colombia,COL,Atlantico,Barranquilla
+18,Regional,Colombia,COL,Bogota D.C.,Bogota
+19,Regional,Colombia,COL,Bolivar,Cartagena
+20,Regional,Colombia,COL,Caldas,Manizales
+21,Regional,Colombia,COL,Risaralda,Pereira
+22,Regional,Colombia,COL,Santander,Bucaramanga
+23,Regional,Colombia,COL,Valle del Cauca,Cali

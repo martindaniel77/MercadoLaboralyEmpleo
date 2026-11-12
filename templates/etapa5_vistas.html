@@ -3,12 +3,13 @@
 {% block title %}Vistas Interactivas | Etapa 5{% endblock %}
 
 {% block content %}
-<section class="page-header">
+<section class="page-header page-header--left">
     <div class="container">
         <span class="section-eyebrow page-header__eyebrow">Etapa 5 &middot; Análisis Multidimensional</span>
         <h1>Acceso a las Cuatro Vistas Interactivas</h1>
         <p>
-            Enlaces y acceso a las cuatro vistas interactivas del análisis multidimensional.
+            Cuatro preguntas de análisis, cada una con sus indicadores, visualizaciones, matriz de resultados,
+            filtros y controles de operaciones multidimensionales, generados a partir de consultas al modelo estrella.
         </p>
         <div class="page-header__rule"></div>
     </div>
@@ -16,13 +17,42 @@
 
 <section class="section">
     <div class="container">
+
         <div class="content-box">
             <span class="section-eyebrow">05 / Vistas Interactivas</span>
-            <h2 class="section-title">Acceso a las Cuatro Vistas Interactivas</h2>
-            <div class="panel" style="text-align: center; padding: 3rem 2rem; border: 2px dashed var(--color-border);">
-                <p style="margin: 0; color: var(--color-text-muted);">Contenido pendiente de diligenciar.</p>
+            <h2 class="section-title">Selecciona una vista de análisis</h2>
+            <p style="font-size: 0.9rem; color: var(--color-text-muted);">
+                Cada vista combina al menos dos dimensiones y una medida. En el conjunto de las cuatro vistas se
+                emplean todas las dimensiones del modelo (tiempo, geografía, plataforma y trabajador).
+            </p>
+
+            <div class="grid grid--2" style="gap: 1.3rem;">
+                {% for v in vistas %}
+                <div class="card" style="display: flex; flex-direction: column;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem; flex-wrap: wrap;">
+                        <span class="badge {{ 'badge--success' if v.estado == 'disponible' else 'badge--warning' }}">VISTA {{ v.numero }}</span>
+                        {% if v.estado == 'disponible' %}
+                        <span class="badge badge--accent">Disponible</span>
+                        {% else %}
+                        <span class="badge" style="background: #e2e8f0; color: #64748b;">Próximamente</span>
+                        {% endif %}
+                    </div>
+                    <h3 class="card__title" style="font-size: 1.05rem;">{{ v.titulo }}</h3>
+                    <p class="card__text" style="flex: 1;">{{ v.pregunta }}</p>
+                    <div style="margin: 0.8rem 0; font-size: 0.78rem; color: var(--color-text-muted);">
+                        <div><strong>Dimensiones:</strong> {{ v.dimensiones }}</div>
+                        <div><strong>Operaciones:</strong> {{ v.operaciones }}</div>
+                    </div>
+                    {% if v.url %}
+                    <a class="btn btn--primary" href="{{ url_for(v.url) }}" style="align-self: flex-start;">Abrir vista</a>
+                    {% else %}
+                    <span class="btn btn--outline" style="align-self: flex-start; cursor: default; opacity: 0.6;">En desarrollo</span>
+                    {% endif %}
+                </div>
+                {% endfor %}
             </div>
         </div>
+
     </div>
 </section>
 {% endblock %}

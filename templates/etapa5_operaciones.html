@@ -2,13 +2,18 @@
 
 {% block title %}Operaciones Multidimensionales | Etapa 5{% endblock %}
 
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/analytics.css') }}">
+{% endblock %}
+
 {% block content %}
-<section class="page-header">
+<section class="page-header page-header--left">
     <div class="container">
         <span class="section-eyebrow page-header__eyebrow">Etapa 5 &middot; Análisis Multidimensional</span>
-        <h1>Explicación de las Operaciones Multidimensionales Implementadas</h1>
+        <h1>Operaciones Multidimensionales Implementadas</h1>
         <p>
-            Descripción de las operaciones multidimensionales (roll-up, drill-down, slice, dice y pivot) implementadas.
+            Explicación de las cinco operaciones OLAP (drill-down, roll-up, slice, dice y pivot), cada una
+            con un ejemplo aplicado al proyecto y su enlace a la vista interactiva correspondiente.
         </p>
         <div class="page-header__rule"></div>
     </div>
@@ -16,13 +21,172 @@
 
 <section class="section">
     <div class="container">
+
+        <!-- Intro -->
         <div class="content-box">
             <span class="section-eyebrow">06 / Operaciones Multidimensionales</span>
-            <h2 class="section-title">Explicación de las Operaciones Multidimensionales Implementadas</h2>
-            <div class="panel" style="text-align: center; padding: 3rem 2rem; border: 2px dashed var(--color-border);">
-                <p style="margin: 0; color: var(--color-text-muted);">Contenido pendiente de diligenciar.</p>
+            <h2 class="section-title">Las cinco operaciones implementadas</h2>
+            <p style="font-size: 0.9rem; color: var(--color-text-muted); margin-bottom: 1.2rem;">
+                Las cinco operaciones clásicas del análisis multidimensional (OLAP) se implementaron en la
+                aplicación Flask mediante consultas al modelo estrella. Cada operación recalcula las medidas al
+                cambiar el nivel de agrupación o el subconjunto seleccionado; cambiar únicamente el tipo de
+                gráfica no constituye una operación multidimensional.
+            </p>
+
+            <div class="table-container" style="margin-bottom: 0;">
+                <table class="data-table" style="font-size: 0.82rem;">
+                    <thead>
+                        <tr>
+                            <th style="width: 16%;">Operación</th>
+                            <th>Ejemplos aplicados en las cuatro vistas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Drill-down</strong></td>
+                            <td>Vista 1 (tipo → categoría) · Vista 2 (país → departamento) · Vista 3 (año → trimestre) · Vista 4 (grupos → niveles)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Roll-up</strong></td>
+                            <td>Vista 1 (categoría → tipo) · Vista 2 (departamento → país) · Vista 3 (trimestre → año) · Vista 4 (niveles → grupos)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Slice</strong></td>
+                            <td>Vista 1 (país / género) · Vista 2 (modelo / género) · Vista 3 (modelo / país) · Vista 4 (modelo / dependencia)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Dice</strong></td>
+                            <td>Cualquier combinación de los dos filtros de cada vista (p. ej. género × categoría, modelo × país)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Pivot</strong></td>
+                            <td>Las cuatro vistas permiten pivotar su matriz de resultados (educación × tipo, país × tipo, año × tipo)</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
+
+        <!-- Drill-down -->
+        <div class="content-box" style="border-left: 5px solid var(--color-accent);">
+            <div style="display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.7rem; flex-wrap: wrap;">
+                <span class="badge" style="background: var(--color-accent-dark); color: white;">OP-01</span>
+                <h2 class="section-title" style="font-size: 1.35rem; margin-bottom: 0;">Drill-down</h2>
+            </div>
+            <p style="font-size: 0.9rem; line-height: 1.7; margin-bottom: 1rem;">Descender en una jerarquía desde un nivel general hacia uno más detallado, recalculando las medidas en el nuevo nivel de granularidad.</p>
+            <div class="panel" style="background: var(--color-bg); border: 1px solid var(--color-border); padding: 1.2rem 1.4rem;">
+                <p style="font-size: 0.82rem; line-height: 1.9; margin: 0;">
+                    <strong>Vista:</strong> Vista 2 · Comparación de Grupos y Territorios<br>
+                    <strong>Dimensiones y medidas:</strong> dim_geografia (pais → departamento_region) · medida = AVG(ingreso_neto_hora_usd).<br>
+                    <strong>Nivel de detalle / filtros:</strong> Roll-up: 8 países → Drill-down: 15 departamentos/regiones.<br>
+                    <strong>Procedimiento de consulta:</strong> Cambio de GROUP BY g.pais a GROUP BY g.departamento_region, g.pais; el promedio de tarifa USD/h se recalcula en cada nivel.<br>
+                    <strong>Resultado:</strong> Colombia (2,73 USD/h) se desglosa en 8 departamentos que van de 2,65 (Atlántico) a 2,89 USD/h (Risaralda): ningún territorio escapa a la tarifa baja.<br>
+                    <strong>Interpretación:</strong> La brecha geográfica es internacional y no subnacional; la desventaja de Colombia es estructural a escala nacional.
+                </p>
+            </div>
+            <div style="margin-top: 1rem;">
+                <a class="btn btn--primary" href="/etapa-5/vista-2?nivel=departamento">Ejecutar en la vista</a>
+            </div>
+        </div>
+
+        <!-- Roll-up -->
+        <div class="content-box" style="border-left: 5px solid var(--color-accent);">
+            <div style="display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.7rem; flex-wrap: wrap;">
+                <span class="badge" style="background: var(--color-accent-dark); color: white;">OP-02</span>
+                <h2 class="section-title" style="font-size: 1.35rem; margin-bottom: 0;">Roll-up</h2>
+            </div>
+            <p style="font-size: 0.9rem; line-height: 1.7; margin-bottom: 1rem;">Agrupar los resultados en un nivel superior de la jerarquía, resumiendo detalle en categorías más generales.</p>
+            <div class="panel" style="background: var(--color-bg); border: 1px solid var(--color-border); padding: 1.2rem 1.4rem;">
+                <p style="font-size: 0.82rem; line-height: 1.9; margin: 0;">
+                    <strong>Vista:</strong> Vista 4 · Perfiles, Retorno y Vulnerabilidad<br>
+                    <strong>Dimensiones y medidas:</strong> dim_trabajador.nivel_educativo · medida = AVG(ingreso_neto_mensual_cop).<br>
+                    <strong>Nivel de detalle / filtros:</strong> Drill-down: 5 niveles educativos → Roll-up: 3 grupos (Básica / Técnica / Superior).<br>
+                    <strong>Procedimiento de consulta:</strong> Agrupación CASE: Básica = Primaria + Secundaria; Técnica = Técnico/Tecnólogo; Superior = Universitario + Posgrado. El promedio se pondera por el número de trabajadores de cada celda.<br>
+                    <strong>Resultado:</strong> Básica 3.353.852, Técnica 4.385.256 y Superior 5.813.368 COP: el gradiente educativo se concentra en el salto hacia el grupo Superior.<br>
+                    <strong>Interpretación:</strong> Al subir de nivel, el detalle se resume sin sumar promedios: se recalcula la media ponderada para evitar distorsiones.
+                </p>
+            </div>
+            <div style="margin-top: 1rem;">
+                <a class="btn btn--primary" href="/etapa-5/vista-4?nivel=agregado">Ejecutar en la vista</a>
+            </div>
+        </div>
+
+        <!-- Slice -->
+        <div class="content-box" style="border-left: 5px solid var(--color-accent);">
+            <div style="display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.7rem; flex-wrap: wrap;">
+                <span class="badge" style="background: var(--color-accent-dark); color: white;">OP-03</span>
+                <h2 class="section-title" style="font-size: 1.35rem; margin-bottom: 0;">Slice</h2>
+            </div>
+            <p style="font-size: 0.9rem; line-height: 1.7; margin-bottom: 1rem;">Seleccionar un valor de una dimensión para estudiar un subconjunto del cubo.</p>
+            <div class="panel" style="background: var(--color-bg); border: 1px solid var(--color-border); padding: 1.2rem 1.4rem;">
+                <p style="font-size: 0.82rem; line-height: 1.9; margin: 0;">
+                    <strong>Vista:</strong> Vista 1 · Composición y Distribución<br>
+                    <strong>Dimensiones y medidas:</strong> dim_geografia.pais · medida = COUNT(DISTINCT id_trabajador).<br>
+                    <strong>Nivel de detalle / filtros:</strong> Slice sobre la dimensión geográfica: pais = "Colombia".<br>
+                    <strong>Procedimiento de consulta:</strong> WHERE g.pais = 'Colombia' en el JOIN fact → dim_geografia.<br>
+                    <strong>Resultado:</strong> El universo pasa de 12.350 a 7.951 trabajadores (64,4% de la muestra), concentrados en Colombia.<br>
+                    <strong>Interpretación:</strong> El slice permite aislar el mercado nacional y recalcular todos los indicadores únicamente sobre ese subconjunto.
+                </p>
+            </div>
+            <div style="margin-top: 1rem;">
+                <a class="btn btn--primary" href="/etapa-5/vista-1?pais=Colombia">Ejecutar en la vista</a>
+            </div>
+        </div>
+
+        <!-- Dice -->
+        <div class="content-box" style="border-left: 5px solid var(--color-accent);">
+            <div style="display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.7rem; flex-wrap: wrap;">
+                <span class="badge" style="background: var(--color-accent-dark); color: white;">OP-04</span>
+                <h2 class="section-title" style="font-size: 1.35rem; margin-bottom: 0;">Dice</h2>
+            </div>
+            <p style="font-size: 0.9rem; line-height: 1.7; margin-bottom: 1rem;">Seleccionar un subconjunto combinando filtros sobre dos o más dimensiones.</p>
+            <div class="panel" style="background: var(--color-bg); border: 1px solid var(--color-border); padding: 1.2rem 1.4rem;">
+                <p style="font-size: 0.82rem; line-height: 1.9; margin: 0;">
+                    <strong>Vista:</strong> Vista 2 · Comparación de Grupos y Territorios<br>
+                    <strong>Dimensiones y medidas:</strong> dim_plataforma.tipo_plataforma + dim_trabajador.genero · medida = COUNT(DISTINCT id_trabajador).<br>
+                    <strong>Nivel de detalle / filtros:</strong> Dice: tipo_plataforma = "En línea" AND genero = "Femenino".<br>
+                    <strong>Procedimiento de consulta:</strong> WHERE p.tipo_plataforma = 'En linea / Basada en la Nube' AND t.genero = 'Femenino'.<br>
+                    <strong>Resultado:</strong> 1.606 trabajadoras en plataformas en línea (38,0% de la fuerza en línea).<br>
+                    <strong>Interpretación:</strong> El cruce de dos filtros revela la sobrerrepresentación proporcional femenina en la modalidad en línea.
+                </p>
+            </div>
+            <div style="margin-top: 1rem;">
+                <a class="btn btn--primary" href="/etapa-5/vista-2?tipo=En%20linea%20/%20Basada%20en%20la%20Nube&genero=Femenino">Ejecutar en la vista</a>
+            </div>
+        </div>
+
+        <!-- Pivot -->
+        <div class="content-box" style="border-left: 5px solid var(--color-accent);">
+            <div style="display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.7rem; flex-wrap: wrap;">
+                <span class="badge" style="background: var(--color-accent-dark); color: white;">OP-05</span>
+                <h2 class="section-title" style="font-size: 1.35rem; margin-bottom: 0;">Pivot</h2>
+            </div>
+            <p style="font-size: 0.9rem; line-height: 1.7; margin-bottom: 1rem;">Cambiar la disposición de las dimensiones en una matriz para observar los resultados desde otra perspectiva.</p>
+            <div class="panel" style="background: var(--color-bg); border: 1px solid var(--color-border); padding: 1.2rem 1.4rem;">
+                <p style="font-size: 0.82rem; line-height: 1.9; margin: 0;">
+                    <strong>Vista:</strong> Vista 2 · Comparación de Grupos y Territorios<br>
+                    <strong>Dimensiones y medidas:</strong> dim_geografia.pais × dim_plataforma.tipo_plataforma · medida = AVG(ingreso_neto_hora_usd).<br>
+                    <strong>Nivel de detalle / filtros:</strong> Matriz país × modelo de plataforma ↔ modelo × país.<br>
+                    <strong>Procedimiento de consulta:</strong> Se intercambian las filas y las columnas de la consulta (pivot país ↔ tipo). El valor de cada celda se mantiene.<br>
+                    <strong>Resultado:</strong> La celda (Colombia, En línea) = 6,49 USD/h se observa igual desde "filas = país" o desde "filas = modelo"; solo cambia la orientación de lectura.<br>
+                    <strong>Interpretación:</strong> El pivot facilita comparar entre países (una fila por país) o entre modelos (una fila por modelo) sin alterar las medidas.
+                </p>
+            </div>
+            <div style="margin-top: 1rem;">
+                <a class="btn btn--primary" href="/etapa-5/vista-2?pivot=tipo_pais">Ejecutar en la vista</a>
+            </div>
+        </div>
+
+        <!-- Nota -->
+        <div class="notice">
+            <span class="notice__badge">Condición</span>
+            <p style="font-size: 0.86rem;">
+                En todas las operaciones las medidas se <strong>recalculan</strong> al cambiar el nivel de agrupación
+                o el subconjunto seleccionado (promedios y porcentajes con su propio denominador). Cambiar únicamente
+                el tipo de gráfica no se considera una operación de análisis multidimensional.
+            </p>
+        </div>
+
     </div>
 </section>
 {% endblock %}
