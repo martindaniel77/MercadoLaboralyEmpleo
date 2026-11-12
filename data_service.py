@@ -2115,3 +2115,49 @@ def get_etapa4_data():
             '5. Para obtener el enlace de inserción: Abrir el informe en app.powerbi.com > Archivo > Insertar informe > Publicar en la web (público) > Copiar el enlace "https://app.powerbi.com/view?r=..." y pegarlo en app.py en la variable ETAPA4_POWERBI_URL.'
         ]
     }
+
+
+# ============================================================
+# ETAPA 5: ANÁLISIS MULTIDIMENSIONAL - VISTAS INTERACTIVAS
+# ============================================================
+
+def get_etapa5_vistas():
+    """Retorna el catálogo de las cuatro vistas interactivas de la Etapa 5."""
+    return [
+        {
+            'numero': 1,
+            'titulo': 'Composición y Distribución',
+            'pregunta': '¿Cómo está compuesta la población de trabajadores según tipo, categoría, género y educación?',
+            'dimensiones': 'dim_plataforma · dim_trabajador · dim_geografia',
+            'operaciones': 'Drill-down / Roll-up / Slice / Dice / Pivot',
+            'estado': 'disponible',
+            'url': 'etapa5_vista1',
+        },
+        {
+            'numero': 2,
+            'titulo': 'Comparación de Grupos y Territorios',
+            'pregunta': 'Diferencias de ingreso, tarifa horaria y protección social entre grupos.',
+            'dimensiones': 'dim_geografia · dim_trabajador · dim_plataforma',
+            'operaciones': 'Drill-down / Roll-up / Slice / Dice / Pivot',
+            'estado': 'disponible',
+            'url': 'etapa5_vista2',
+        },
+        {
+            'numero': 3,
+            'titulo': 'Comportamiento Temporal',
+            'pregunta': 'Evolución del volumen, ingreso e intensidad horaria a lo largo del periodo.',
+            'dimensiones': 'dim_tiempo · dim_plataforma · dim_geografia',
+            'operaciones': 'Drill-down / Roll-up / Slice / Dice / Pivot',
+            'estado': 'disponible',
+            'url': 'etapa5_vista3',
+        },
+        {
+            'numero': 4,
+            'titulo': 'Perfiles, Retorno y Vulnerabilidad',
+            'pregunta': 'Combinaciones que explican mayores ingresos y vulnerabilidad social.',
+            'dimensiones': 'dim_trabajador · dim_plataforma · dim_tiempo',
+            'operaciones': 'Drill-down / Roll-up / Slice / Dice / Pivot',
+            'estado': 'disponible',
+            'url': 'etapa5_vista4',
+        },
+    ]
