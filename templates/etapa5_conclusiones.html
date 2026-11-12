@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+
+{% block title %}Conocimientos Descubiertos, Limitaciones y Conclusiones | Etapa 5{% endblock %}
+
+{% block content %}
+<section class="page-header page-header--left">
+    <div class="container">
+        <span class="section-eyebrow page-header__eyebrow">Etapa 5 &middot; Análisis Multidimensional</span>
+        <h1>Conocimientos Descubiertos, Limitaciones y Conclusiones</h1>
+        <p>
+            Síntesis de los ocho conocimientos multidimensionales, las limitaciones transversales del
+            análisis, las conclusiones finales y las decisiones sustentadas en datos.
+        </p>
+        <div class="page-header__rule"></div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <!-- ===== Conocimientos descubiertos ===== -->
+        <div class="content-box">
+            <span class="section-eyebrow">01 / Conocimientos descubiertos</span>
+            <h2 class="section-title">Ocho conocimientos multidimensionales</h2>
+            <p style="font-size: 0.9rem; color: var(--color-text-muted);">
+                Dos por cada una de las cuatro vistas interactivas. Cada uno profundiza o corrige un
+                conocimiento evidente de la Etapa 4 mediante el cruce de dimensiones y el cambio de nivel
+                de detalle.
+            </p>
+
+            <div class="grid grid--2" style="gap: 1.2rem;">
+                <div class="card" style="display: flex; flex-direction: column;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem; flex-wrap: wrap;">
+                        <span class="badge badge--accent">KM-1.1</span>
+                        <span class="badge" style="background: #e2e8f0; color: #64748b;">Vista 1 · Composición y Distribución</span>
+                    </div>
+                    <h3 class="card__title" style="font-size: 0.98rem;">Polarización educativa estructural entre el trabajo físico y el digital</h3>
+                    <p class="card__text" style="flex: 1;">El 95,1% de quienes solo tienen primaria y el 86,8% de secundaria operan en plataformas físicas, mientras que el 83,3% de posgrados y el 67,6% de universitarios lo hacen en línea.</p>
+                    <a class="btn btn--outline" href="/etapa-5/vista-1" style="align-self: flex-start; margin-top: 0.9rem; padding: 0.5rem 1.1rem;">Ver en la vista</a>
+                </div>
+
+                <div class="card" style="display: flex; flex-direction: column;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem; flex-wrap: wrap;">
+                        <span class="badge badge--accent">KM-1.2</span>
+                        <span class="badge" style="background: #e2e8f0; color: #64748b;">Vista 1 · Composición y Distribución</span>
+                    </div>
+                    <h3 class="card__title" style="font-size: 0.98rem;">Feminización diferencial: las mujeres se concentran proporcionalmente en línea</h3>
+                    <p class="card__text" style="flex: 1;">Las mujeres son el 20,0% de la fuerza física (1.629 de 8.127) pero el 38,0% de la fuerza en línea (1.606 de 4.223); el 49,6% de las mujeres trabaja en línea.</p>
+                    <a class="btn btn--outline" href="/etapa-5/vista-1" style="align-self: flex-start; margin-top: 0.9rem; padding: 0.5rem 1.1rem;">Ver en la vista</a>
+                </div>
+
+                <div class="card" style="display: flex; flex-direction: column;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem; flex-wrap: wrap;">
+                        <span class="badge badge--accent">KM-2.1</span>
+                        <span class="badge" style="background: #e2e8f0; color: #64748b;">Vista 2 · Comparación de Grupos y Territorios</span>
+                    </div>
+                    <h3 class="card__title" style="font-size: 0.98rem;">Brecha geográfica de 9,6x con dispersión subnacional nula en Colombia</h3>
+                    <p class="card__text" style="flex: 1;">Un trabajador de Estados Unidos gana 26,21 USD/h frente a 2,73 USD/h en Colombia; sus 8 departamentos se agrupan en un rango estrecho de 2,65 a 2,89 USD/h.</p>
+                    <a class="btn btn--outline" href="/etapa-5/vista-2" style="align-self: flex-start; margin-top: 0.9rem; padding: 0.5rem 1.1rem;">Ver en la vista</a>
+                </div>
+
+                <div class="card" style="display: flex; flex-direction: column;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem; flex-wrap: wrap;">
+                        <span class="badge badge--accent">KM-2.2</span>
+                        <span class="badge" style="background: #e2e8f0; color: #64748b;">Vista 2 · Comparación de Grupos y Territorios</span>
+                    </div>
+                    <h3 class="card__title" style="font-size: 0.98rem;">La brecha salarial de género se disuelve al controlar por modalidad</h3>
+                    <p class="card__text" style="flex: 1;">Las mujeres ganan +35,5% por hora en el agregado, pero dentro de cada modalidad la brecha es menor al 4% (−3,6% en física, +1,0% en línea): un efecto de composición.</p>
+                    <a class="btn btn--outline" href="/etapa-5/vista-2" style="align-self: flex-start; margin-top: 0.9rem; padding: 0.5rem 1.1rem;">Ver en la vista</a>
+                </div>
+
+                <div class="card" style="display: flex; flex-direction: column;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem; flex-wrap: wrap;">
+                        <span class="badge badge--accent">KM-3.1</span>
+                        <span class="badge" style="background: #e2e8f0; color: #64748b;">Vista 3 · Comportamiento Temporal</span>
+                    </div>
+                    <h3 class="card__title" style="font-size: 0.98rem;">Mercado saturado, no en auge: volumen estable y corte parcial de 2026</h3>
+                    <p class="card__text" style="flex: 1;">El volumen anual 2021–2025 se mantiene entre 2.198 y 2.292 trabajadores (promedio 2.248); 2026 (1.109) es un corte parcial de seis meses, no un colapso.</p>
+                    <a class="btn btn--outline" href="/etapa-5/vista-3" style="align-self: flex-start; margin-top: 0.9rem; padding: 0.5rem 1.1rem;">Ver en la vista</a>
+                </div>
+
+                <div class="card" style="display: flex; flex-direction: column;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem; flex-wrap: wrap;">
+                        <span class="badge badge--accent">KM-3.2</span>
+                        <span class="badge" style="background: #e2e8f0; color: #64748b;">Vista 3 · Comportamiento Temporal</span>
+                    </div>
+                    <h3 class="card__title" style="font-size: 0.98rem;">Jornada física crónicamente sobre el límite legal sin traducirse en crecimiento</h3>
+                    <p class="card__text" style="flex: 1;">La jornada física nunca baja de 52,1 h/semana (límite legal 47 h) durante los seis años, y el ingreso neto físico solo crece +6,4% (2021–2025).</p>
+                    <a class="btn btn--outline" href="/etapa-5/vista-3" style="align-self: flex-start; margin-top: 0.9rem; padding: 0.5rem 1.1rem;">Ver en la vista</a>
+                </div>
+
+                <div class="card" style="display: flex; flex-direction: column;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem; flex-wrap: wrap;">
+                        <span class="badge badge--accent">KM-4.1</span>
+                        <span class="badge" style="background: #e2e8f0; color: #64748b;">Vista 4 · Perfiles, Retorno y Vulnerabilidad</span>
+                    </div>
+                    <h3 class="card__title" style="font-size: 0.98rem;">El premio por educación es un efecto de composición, no un retorno directo</h3>
+                    <p class="card__text" style="flex: 1;">El gradiente educativo agregado es de 2,1x (Posgrado 6,5 M vs Primaria 3,1 M COP), pero dentro de cada modalidad el ingreso es plano (en línea ~7,1–7,5 M, física ~2,7–2,8 M).</p>
+                    <a class="btn btn--outline" href="/etapa-5/vista-4" style="align-self: flex-start; margin-top: 0.9rem; padding: 0.5rem 1.1rem;">Ver en la vista</a>
+                </div>
+
+                <div class="card" style="display: flex; flex-direction: column;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem; flex-wrap: wrap;">
+                        <span class="badge badge--accent">KM-4.2</span>
+                        <span class="badge" style="background: #e2e8f0; color: #64748b;">Vista 4 · Perfiles, Retorno y Vulnerabilidad</span>
+                    </div>
+                    <h3 class="card__title" style="font-size: 0.98rem;">Doble trampa: a más horas y más dependencia, menor tarifa y menor cotización</h3>
+                    <p class="card__text" style="flex: 1;">La tarifa física cae de 4,31 a 2,82 USD/h al superar las 56 h; solo el 32,6% de los dependientes exclusivos cotiza, y el 73,4% de los exclusivos en física no cotiza.</p>
+                    <a class="btn btn--outline" href="/etapa-5/vista-4" style="align-self: flex-start; margin-top: 0.9rem; padding: 0.5rem 1.1rem;">Ver en la vista</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== Limitaciones ===== -->
+        <div class="content-box">
+            <span class="section-eyebrow">02 / Limitaciones del análisis</span>
+            <h2 class="section-title">Limitaciones transversales</h2>
+            <div class="grid grid--2" style="gap: 1.1rem;">
+                <div class="panel" style="border-left: 4px solid var(--color-border); padding: 1.2rem 1.4rem;">
+                    <h4 style="margin: 0 0 0.4rem 0; font-size: 0.9rem; color: var(--color-accent-dark);">Diseño transversal (no panel)</h4>
+                    <p style="margin: 0; font-size: 0.85rem; line-height: 1.7;">Cada registro de la tabla de hechos es una fotografía del trabajador en un periodo; no puede observarse la trayectoria de una misma persona ni distinguir nuevas incorporaciones de trabajadores ya activos.</p>
+                </div>
+                <div class="panel" style="border-left: 4px solid var(--color-border); padding: 1.2rem 1.4rem;">
+                    <h4 style="margin: 0 0 0.4rem 0; font-size: 0.9rem; color: var(--color-accent-dark);">Comparabilidad internacional</h4>
+                    <p style="margin: 0; font-size: 0.85rem; line-height: 1.7;">La tarifa se expresa en USD sin ajustar por paridad de poder adquisitivo (PPA), y los países extranjeros solo cuentan con una ciudad/región representada, lo que impide contrastar su dispersión subnacional.</p>
+                </div>
+                <div class="panel" style="border-left: 4px solid var(--color-border); padding: 1.2rem 1.4rem;">
+                    <h4 style="margin: 0 0 0.4rem 0; font-size: 0.9rem; color: var(--color-accent-dark);">Cobertura temporal</h4>
+                    <p style="margin: 0; font-size: 0.85rem; line-height: 1.7;">El año 2026 es un corte parcial (enero–junio) y no debe compararse como periodo completo; los ingresos son nominales y no están deflactados por inflación.</p>
+                </div>
+                <div class="panel" style="border-left: 4px solid var(--color-border); padding: 1.2rem 1.4rem;">
+                    <h4 style="margin: 0 0 0.4rem 0; font-size: 0.9rem; color: var(--color-accent-dark);">Tamaño de subgrupos</h4>
+                    <p style="margin: 0; font-size: 0.85rem; line-height: 1.7;">Algunas celdas tienen muestras pequeñas (grupo "No binario / Otro" = 2,4%; "Primaria en línea" n=32), por lo que sus promedios no son robustos.</p>
+                </div>
+                <div class="panel" style="border-left: 4px solid var(--color-border); padding: 1.2rem 1.4rem; grid-column: 1 / -1;">
+                    <h4 style="margin: 0 0 0.4rem 0; font-size: 0.9rem; color: var(--color-accent-dark);">Inferencia causal</h4>
+                    <p style="margin: 0; font-size: 0.85rem; line-height: 1.7;">El análisis identifica asociaciones y efectos de composición, no causalidad: no se controla por experiencia previa, antigüedad, capital inicial ni horas de cuidado no remunerado.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== Conclusiones ===== -->
+        <div class="content-box">
+            <span class="section-eyebrow">03 / Conclusiones</span>
+            <h2 class="section-title">Conclusiones finales</h2>
+
+            <div class="panel" style="margin-bottom: 1rem;">
+                <div style="display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;">
+                    <span class="toc__n">1</span>
+                    <h4 style="margin: 0; font-size: 0.98rem; color: var(--color-primary);">La modalidad de plataforma es el eje que estructura todo el mercado</h4>
+                </div>
+                <p style="font-size: 0.88rem; line-height: 1.85;">
+                    El resultado más contundente del análisis es que <strong>ninguna otra variable explica tanto como la
+                    distinción entre trabajo físico (basado en ubicación) y trabajo en línea (basado en la nube)</strong>.
+                    Esa única dicotomía separa dos mercados laborales con dinámicas casi opuestas: el segmento físico
+                    concentra a 8.127 trabajadores con jornadas de 52–53 horas semanales, tarifas de apenas ~2,8 USD/h y
+                    una desprotección social del 69,1%; el segmento en línea reúne a 4.223 trabajadores con jornadas de
+                    ~34 horas, tarifas de ~12,6 USD/h y una desprotección del 37,4%. La modalidad condiciona el ingreso,
+                    la intensidad horaria, la protección social y hasta la composición demográfica, y lo hace con mucha
+                    mayor fuerza que la educación o el género, que en apariencia parecían ser los determinantes principales
+                    en la Etapa 4.
+                </p>
+            </div>
+
+            <div class="panel" style="margin-bottom: 1rem;">
+                <div style="display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;">
+                    <span class="toc__n">2</span>
+                    <h4 style="margin: 0; font-size: 0.98rem; color: var(--color-primary);">Los "premios" de la educación y del género son efectos de composición, no retornos reales</h4>
+                </div>
+                <p style="font-size: 0.88rem; line-height: 1.85;">
+                    El análisis descompuso dos hallazgos que, leídos en el agregado, resultaban engañosos. Por un lado,
+                    el gradiente educativo de 2,1x entre Posgrado y Primaria <strong>desaparece por completo al controlar por
+                    modalidad</strong>: dentro de cada modalidad el ingreso es prácticamente plano, por lo que la educación no
+                    premia en sí misma, sino que actúa como boleto de entrada al trabajo en línea, mejor remunerado. Por otro
+                    lado, la aparente ventaja salarial femenina (+35,5% por hora) es una <strong>paradoja de Simpson</strong>: se debe
+                    a que el 49,6% de las mujeres trabaja en línea frente al 28,2% de los hombres, y dentro de cada modalidad
+                    la brecha de género es inferior al 4%. Estos resultados confirman la importancia de <strong>recalcular las
+                    medidas al cambiar el nivel de agrupación</strong>, una de las condiciones centrales del análisis multidimensional.
+                </p>
+            </div>
+
+            <div class="panel" style="margin-bottom: 1rem;">
+                <div style="display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;">
+                    <span class="toc__n">3</span>
+                    <h4 style="margin: 0; font-size: 0.98rem; color: var(--color-primary);">La vulnerabilidad se concentra en el trabajador físico que depende exclusivamente de la app</h4>
+                </div>
+                <p style="font-size: 0.88rem; line-height: 1.85;">
+                    El cruce de jornada, dependencia económica y cotización revela un <strong>perfil de vulnerabilidad
+                    multidimensional</strong> claramente identificable: el trabajador físico que depende al 100% de la plataforma
+                    y supera las 56 horas semanales. En ese grupo la tarifa por hora se devalúa hasta 2,82 USD/h (frente a
+                    4,31 USD/h en jornadas de menos de 30 horas), evidenciando rendimientos decrecientes que no se traducen
+                    en mejor ingreso real. A la vez, solo el 32,6% de los dependientes exclusivos cotiza a pensión, y entre
+                    los exclusivos en física el 73,4% no cotiza. Quien más necesita protección es precisamente quien menos
+                    la acumula, lo que define un círculo de precariedad que demanda intervención prioritaria.
+                </p>
+            </div>
+
+            <div class="panel" style="margin-bottom: 1rem;">
+                <div style="display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;">
+                    <span class="toc__n">4</span>
+                    <h4 style="margin: 0; font-size: 0.98rem; color: var(--color-primary);">El mercado está saturado y estable, no en expansión</h4>
+                </div>
+                <p style="font-size: 0.88rem; line-height: 1.85;">
+                    A diferencia de lo que sugería la lectura descriptiva de la Etapa 4, la evolución temporal 2021–2026
+                    muestra una <strong>meseta de saturación</strong> y no un boom: el volumen anual se mantiene estable en torno a
+                    2.248 trabajadores, sin pico en 2024, y el ingreso neto nominal apenas varía (+3,0% entre 2021 y 2025,
+                    con el segmento en línea incluso levemente a la baja). La aparente caída de 2026 responde únicamente al
+                    corte parcial del año (enero–junio) y, una vez anualizada, equivale a un nivel similar al de los años
+                    completos. Esta conclusión refuerza que las políticas públicas deben orientarse a <strong>proteger a una
+                    población estable</strong> antes que a incentivar una mayor oferta laboral.
+                </p>
+            </div>
+
+            <div class="panel" style="margin-bottom: 1rem;">
+                <div style="display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem;">
+                    <span class="toc__n">5</span>
+                    <h4 style="margin: 0; font-size: 0.98rem; color: var(--color-primary);">La desprotección pensional es el riesgo estructural más urgente</h4>
+                </div>
+                <p style="font-size: 0.88rem; line-height: 1.85;">
+                    Colombia concentra la mayor desprotección del conjunto: <strong>72,7% de sus trabajadores de plataforma no
+                    cotiza a pensión ni cuenta con ARL</strong>, una cifra que duplica el rango de 29–35% observado en los demás
+                    países analizados. Este desfase, combinado con el hallazgo anterior de que la cotización es mínima entre
+                    los más dependientes, convierte la cobertura de vejez en la brecha más crítica. La comparación entre
+                    periodos equivalentes y la diferenciación entre asociación y causalidad fueron decisivas para aislar
+                    este problema y descartar explicaciones alternativas que no respaldan los datos.
+                </p>
+            </div>
+        </div>
+
+        <!-- ===== Decisiones ===== -->
+        <div class="content-box">
+            <span class="section-eyebrow">04 / Decisiones sustentadas en datos</span>
+            <h2 class="section-title">Decisiones propuestas</h2>
+            <div class="grid grid--2" style="gap: 1.2rem;">
+                <div class="panel" style="border-left: 4px solid var(--color-accent);">
+                    <span class="badge badge--accent" style="margin-bottom: 0.5rem;">Vista 1</span>
+                    <p style="margin: 0; font-size: 0.88rem; line-height: 1.7;">Rutas de certificación tecnológica para los 4.423 trabajadores con secundaria en trabajo físico, y protocolos de seguridad vial para elevar la participación femenina en transporte (20,0%).</p>
+                </div>
+                <div class="panel" style="border-left: 4px solid var(--color-accent);">
+                    <span class="badge badge--accent" style="margin-bottom: 0.5rem;">Vista 2</span>
+                    <p style="margin: 0; font-size: 0.88rem; line-height: 1.7;">Microaportes automáticos a seguridad social por carrera o entrega, focalizados en Colombia (5.777 trabajadores sin pensión ni ARL), y políticas de equidad de acceso al trabajo en línea.</p>
+                </div>
+                <div class="panel" style="border-left: 4px solid var(--color-accent);">
+                    <span class="badge badge--accent" style="margin-bottom: 0.5rem;">Vista 3</span>
+                    <p style="margin: 0; font-size: 0.88rem; line-height: 1.7;">Mecanismos algorítmicos de desconexión y alertas de fatiga, y estandarización del reporte anual anualizando el corte parcial de 2026.</p>
+                </div>
+                <div class="panel" style="border-left: 4px solid var(--color-accent);">
+                    <span class="badge badge--accent" style="margin-bottom: 0.5rem;">Vista 4</span>
+                    <p style="margin: 0; font-size: 0.88rem; line-height: 1.7;">Programas de reconversión centrados en el acceso a la modalidad en línea, y topes de jornada para proteger a los dependientes exclusivos (jornadas 52–53 h con cotización del 32,6%).</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

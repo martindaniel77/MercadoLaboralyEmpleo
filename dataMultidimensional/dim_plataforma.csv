@@ -1,0 +1,32 @@
+id_plataforma,tipo_plataforma,categoria_servicio,plataforma_principal
+1,En linea / Basada en la Nube,Desarrollo de Software y TI,Fiverr
+2,En linea / Basada en la Nube,Desarrollo de Software y TI,Freelancer
+3,En linea / Basada en la Nube,Desarrollo de Software y TI,Toptal
+4,En linea / Basada en la Nube,Desarrollo de Software y TI,Upwork
+5,En linea / Basada en la Nube,Desarrollo de Software y TI,Workana
+6,En linea / Basada en la Nube,Diseno Multimedia y Contenido,99designs
+7,En linea / Basada en la Nube,Diseno Multimedia y Contenido,Fiverr
+8,En linea / Basada en la Nube,Diseno Multimedia y Contenido,Freelancer
+9,En linea / Basada en la Nube,Diseno Multimedia y Contenido,Upwork
+10,En linea / Basada en la Nube,Diseno Multimedia y Contenido,Workana
+11,En linea / Basada en la Nube,Microtareas y Etiquetado de Datos,Amazon Mechanical Turk
+12,En linea / Basada en la Nube,Microtareas y Etiquetado de Datos,Appen
+13,En linea / Basada en la Nube,Microtareas y Etiquetado de Datos,Clickworker
+14,En linea / Basada en la Nube,Microtareas y Etiquetado de Datos,Remotasks
+15,En linea / Basada en la Nube,Servicios Profesionales y Asesoria,Fiverr
+16,En linea / Basada en la Nube,Servicios Profesionales y Asesoria,Guru
+17,En linea / Basada en la Nube,Servicios Profesionales y Asesoria,Upwork
+18,En linea / Basada en la Nube,Servicios Profesionales y Asesoria,Workana
+19,Fisica / Basada en Ubicacion,Reparto y Domicilios,DiDi Food
+20,Fisica / Basada en Ubicacion,Reparto y Domicilios,Mensajeros Urbanos
+21,Fisica / Basada en Ubicacion,Reparto y Domicilios,PedidosYa
+22,Fisica / Basada en Ubicacion,Reparto y Domicilios,Rappi
+23,Fisica / Basada en Ubicacion,Reparto y Domicilios,iFood
+24,Fisica / Basada en Ubicacion,Servicios del Hogar y Mantenimiento,Habitissimo
+25,Fisica / Basada en Ubicacion,Servicios del Hogar y Mantenimiento,Jelpit
+26,Fisica / Basada en Ubicacion,Servicios del Hogar y Mantenimiento,TaskRabbit
+27,Fisica / Basada en Ubicacion,Servicios del Hogar y Mantenimiento,Timser
+28,Fisica / Basada en Ubicacion,Transporte de Pasajeros,Cabify
+29,Fisica / Basada en Ubicacion,Transporte de Pasajeros,DiDi
+30,Fisica / Basada en Ubicacion,Transporte de Pasajeros,InDrive
+31,Fisica / Basada en Ubicacion,Transporte de Pasajeros,Uber

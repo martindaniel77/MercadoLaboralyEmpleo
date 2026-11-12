@@ -30,6 +30,7 @@
     {% set is_etapa2 = endpoint.startswith('etapa2_') or request.path.startswith('/etapa-2/') %}
     {% set is_etapa3 = endpoint.startswith('etapa3_') or request.path.startswith('/etapa-3/') %}
     {% set is_etapa4 = endpoint.startswith('etapa4_') or request.path.startswith('/etapa-4/') %}
+    {% set is_etapa5 = endpoint.startswith('etapa5_') or request.path.startswith('/etapa-5/') %}
 
     <div class="app">
         <!-- ===== Sidebar / Índice de la bitácora ===== -->
@@ -118,12 +119,27 @@
                     </ul>
                 </details>
 
-                <!-- ETAPA 5 (pendiente) -->
-                <div class="stage stage--locked">
-                    <span class="stage__num">ETAPA 05</span>
-                    <span class="stage__sep">&mdash;</span>
-                    <span class="stage__title">Por definir</span>
-                </div>
+                <!-- ETAPA 5 -->
+                <details class="stage {{ 'stage--active' if is_etapa5 }}" {{ 'open' if is_etapa5 }}>
+                    <summary>
+                        <span class="stage__num">ETAPA 05</span>
+                        <span class="stage__sep">&mdash;</span>
+                        <span class="stage__title">Análisis multidimensional</span>
+                    </summary>
+                    <ul class="stage__pages">
+                        <li><a href="{{ url_for('etapa5_proposito') }}" class="{{ 'active' if endpoint == 'etapa5_proposito' }}"><span class="stage__page-num">01</span> Propósito de la etapa</a></li>
+                        <li><a href="{{ url_for('etapa5_relacion') }}" class="{{ 'active' if endpoint == 'etapa5_relacion' }}"><span class="stage__page-num">02</span> Relación con el conocimiento evidente</a></li>
+                        <li><a href="{{ url_for('etapa5_modelo_estrella') }}" class="{{ 'active' if endpoint == 'etapa5_modelo_estrella' }}"><span class="stage__page-num">03</span> Diagrama y explicación del modelo estrella</a></li>
+                        <li><a href="{{ url_for('etapa5_dimensiones') }}" class="{{ 'active' if endpoint == 'etapa5_dimensiones' }}"><span class="stage__page-num">04</span> Dimensiones, medidas y jerarquías</a></li>
+                        <li><a href="{{ url_for('etapa5_vistas') }}" class="{{ 'active' if endpoint == 'etapa5_vistas' }}"><span class="stage__page-num">05</span> Acceso a las cuatro vistas interactivas</a></li>
+                        <li><a href="{{ url_for('etapa5_vista1') }}" class="{{ 'active' if endpoint == 'etapa5_vista1' }}"><span class="stage__page-num">05.1</span> Vista 1 · Composición y Distribución</a></li>
+                        <li><a href="{{ url_for('etapa5_vista2') }}" class="{{ 'active' if endpoint == 'etapa5_vista2' }}"><span class="stage__page-num">05.2</span> Vista 2 · Comparación de Grupos y Territorios</a></li>
+                        <li><a href="{{ url_for('etapa5_vista3') }}" class="{{ 'active' if endpoint == 'etapa5_vista3' }}"><span class="stage__page-num">05.3</span> Vista 3 · Comportamiento Temporal</a></li>
+                        <li><a href="{{ url_for('etapa5_vista4') }}" class="{{ 'active' if endpoint == 'etapa5_vista4' }}"><span class="stage__page-num">05.4</span> Vista 4 · Perfiles, Retorno y Vulnerabilidad</a></li>
+                        <li><a href="{{ url_for('etapa5_operaciones') }}" class="{{ 'active' if endpoint == 'etapa5_operaciones' }}"><span class="stage__page-num">06</span> Operaciones multidimensionales</a></li>
+                        <li><a href="{{ url_for('etapa5_conclusiones') }}" class="{{ 'active' if endpoint == 'etapa5_conclusiones' }}"><span class="stage__page-num">07</span> Conocimientos descubiertos, limitaciones y conclusiones</a></li>
+                    </ul>
+                </details>
             </nav>
 
             <div class="sidebar__progress">

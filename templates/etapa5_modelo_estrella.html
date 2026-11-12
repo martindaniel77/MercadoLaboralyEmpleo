@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+
+{% block title %}Modelo Estrella | Etapa 5{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <span class="section-eyebrow page-header__eyebrow">Etapa 5 &middot; Análisis Multidimensional</span>
+        <h1>Diagrama y Explicación del Modelo Estrella</h1>
+        <p>
+            Representación del esquema dimensional tipo estrella que soporta el análisis multidimensional.
+        </p>
+        <div class="page-header__rule"></div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <!-- 1. PROPÓSITO Y ARQUITECTURA GENERAL -->
+        <div class="content-box">
+            <span class="section-eyebrow">03 / Modelo Estrella</span>
+            <h2 class="section-title">Propósito y Arquitectura General</h2>
+            <div class="panel" style="background: var(--color-surface); border-left: 4px solid var(--color-accent);">
+                <p style="margin: 0 0 1rem 0; font-size: 0.92rem; line-height: 1.7;">
+                    El modelo estrella implementado para el almacenamiento en el Data Warehouse
+                    (<code>gig_economy_db</code>) adopta una arquitectura dimensional clásica (estilo Kimball), optimizada
+                    para la ejecución eficiente de consultas analíticas y operaciones OLAP (Drill-down, Roll-up, Slice,
+                    Dice y Pivot).
+                </p>
+                <p style="margin: 0; font-size: 0.92rem; line-height: 1.7;">
+                    La estructura desacopla las características descriptivas del mercado laboral (organizadas en cuatro
+                    dimensiones normalizadas) de las métricas cuantitativas de desempeño, costos e ingresos (almacenadas
+                    en una única tabla central de hechos).
+                </p>
+            </div>
+        </div>
+
+        <!-- 2. GRANULARIDAD DE LA TABLA DE HECHOS -->
+        <div class="content-box">
+            <span class="section-eyebrow">01 / Granularidad</span>
+            <h2 class="section-title">Granularidad de la Tabla de Hechos</h2>
+
+            <div class="grid grid--2" style="gap: 1.2rem;">
+                <div class="panel" style="border-left: 4px solid var(--color-accent); background: var(--color-surface);">
+                    <h3 style="margin: 0 0 0.5rem 0; font-size: 1rem; color: var(--color-accent-dark);">
+                        Definición de granularidad
+                    </h3>
+                    <p style="margin: 0; font-size: 0.88rem; line-height: 1.7; color: var(--color-text);">
+                        Cada registro (fila) de la tabla central <code>fact_gig_economy</code> representa el perfil
+                        consolidado y operativo de un trabajador independiente en un periodo, ubicación y plataforma
+                        específica, integrando sus métricas financieras, de dedicación horaria y reputación algorítmica.
+                    </p>
+                </div>
+                <div class="panel" style="border-left: 4px solid var(--color-border); background: var(--color-surface);">
+                    <h3 style="margin: 0 0 0.5rem 0; font-size: 1rem; color: var(--color-accent-dark);">
+                        Coherencia analítica
+                    </h3>
+                    <p style="margin: 0; font-size: 0.88rem; line-height: 1.7; color: var(--color-text);">
+                        Esta granularidad garantiza que no se produzcan duplicidades ni distorsiones matemáticas al
+                        realizar agregaciones complejas a través de las dimensiones.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. DESCRIPCIÓN DE LOS COMPONENTES DEL MODELO -->
+        <div class="content-box">
+            <span class="section-eyebrow">02 / Componentes del Modelo</span>
+            <h2 class="section-title">Descripción de los Componentes del Modelo</h2>
+
+            <!-- A. Tabla central de hechos -->
+            <h3 style="margin: 0 0 0.8rem 0; font-size: 1.05rem; color: var(--color-accent-dark);">
+                A. Tabla Central de Hechos: <code>fact_gig_economy</code>
+            </h3>
+            <p style="font-size: 0.88rem; color: var(--color-text-muted); margin-bottom: 1rem;">
+                Almacena las claves foráneas que vinculan las dimensiones y el conjunto completo de medidas cuantitativas
+                del proyecto:
+            </p>
+            <div class="panel" style="background: var(--color-surface); border: 1px solid var(--color-border);">
+                <p style="margin: 0 0 0.6rem 0; font-size: 0.88rem; line-height: 1.7;">
+                    <strong>Clave Primaria:</strong> <code>id_hecho</code> (entero autoincremental).
+                </p>
+                <p style="margin: 0 0 0.3rem 0; font-size: 0.88rem; line-height: 1.7;">
+                    <strong>Claves Foráneas (Foreign Keys):</strong>
+                </p>
+                <ul style="margin: 0 0 0.8rem 1.4rem; padding: 0; font-size: 0.86rem; line-height: 1.9;">
+                    <li><code>id_tiempo</code> &rarr; <code>dim_tiempo.id_tiempo</code></li>
+                    <li><code>id_geografia</code> &rarr; <code>dim_geografia.id_geografia</code></li>
+                    <li><code>id_plataforma</code> &rarr; <code>dim_plataforma.id_plataforma</code></li>
+                    <li><code>id_trabajador</code> &rarr; <code>dim_trabajador.id_trabajador</code></li>
+                </ul>
+                <p style="margin: 0 0 0.3rem 0; font-size: 0.88rem; line-height: 1.7;">
+                    <strong>Medidas Cuantitativas:</strong>
+                </p>
+                <ul style="margin: 0; padding: 0 0 0 1.4rem; font-size: 0.86rem; line-height: 1.9;">
+                    <li><code>ingreso_bruto_mensual_cop</code> — Ingreso monetario antes de deducciones.</li>
+                    <li><code>costos_operativos_mensuales_cop</code> — Gastos operativos asumidos (combustible, mantenimiento, internet).</li>
+                    <li><code>ingreso_neto_mensual_cop</code> — Ganancia neta real de bolsillo.</li>
+                    <li><code>ingreso_neto_hora_usd</code> — Tarifa neta por hora estandarizada en dólares.</li>
+                    <li><code>horas_semanales</code> — Intensidad horaria de dedicación semanal.</li>
+                    <li><code>calificacion_promedio_app</code> — Puntuación algorítmica de reputación.</li>
+                </ul>
+            </div>
+
+            <!-- B. Dimensiones del modelo -->
+            <h3 style="margin: 1.6rem 0 0.8rem 0; font-size: 1.05rem; color: var(--color-accent-dark);">
+                B. Dimensiones del Modelo
+            </h3>
+            <div class="grid grid--2" style="gap: 1.2rem;">
+                <div class="panel" style="border-left: 4px solid var(--color-accent); background: var(--color-surface);">
+                    <h4 style="margin: 0 0 0.4rem 0; font-size: 0.98rem; color: var(--color-accent-dark);">
+                        <code>dim_tiempo</code> &mdash; Dimensión Temporal
+                    </h4>
+                    <p style="margin: 0 0 0.5rem 0; font-size: 0.86rem; line-height: 1.7;">
+                        <strong>Clave Primaria:</strong> <code>id_tiempo</code><br>
+                        <strong>Atributos:</strong> <code>anio</code>, <code>mes</code>, <code>trimestre</code>,
+                        <code>fecha_registro</code>.
+                    </p>
+                    <p style="margin: 0; font-size: 0.86rem; line-height: 1.7;">
+                        <strong>Propósito:</strong> Soporta la jerarquía cronológica para el análisis de tendencias e
+                        impacto temporal.
+                    </p>
+                </div>
+
+                <div class="panel" style="border-left: 4px solid var(--color-accent); background: var(--color-surface);">
+                    <h4 style="margin: 0 0 0.4rem 0; font-size: 0.98rem; color: var(--color-accent-dark);">
+                        <code>dim_geografia</code> &mdash; Dimensión Territorial
+                    </h4>
+                    <p style="margin: 0 0 0.5rem 0; font-size: 0.86rem; line-height: 1.7;">
+                        <strong>Clave Primaria:</strong> <code>id_geografia</code><br>
+                        <strong>Atributos:</strong> <code>nivel_territorial</code>, <code>pais</code>,
+                        <code>codigo_iso_pais</code>, <code>departamento_region</code>, <code>ciudad_municipio</code>.
+                    </p>
+                    <p style="margin: 0; font-size: 0.86rem; line-height: 1.7;">
+                        <strong>Propósito:</strong> Permite evaluar las asimetrías geográficas desde la escala global hasta
+                        el ámbito local.
+                    </p>
+                </div>
+
+                <div class="panel" style="border-left: 4px solid var(--color-accent); background: var(--color-surface);">
+                    <h4 style="margin: 0 0 0.4rem 0; font-size: 0.98rem; color: var(--color-accent-dark);">
+                        <code>dim_plataforma</code> &mdash; Dimensión de Ocupación y Servicios
+                    </h4>
+                    <p style="margin: 0 0 0.5rem 0; font-size: 0.86rem; line-height: 1.7;">
+                        <strong>Clave Primaria:</strong> <code>id_plataforma</code><br>
+                        <strong>Atributos:</strong> <code>tipo_plataforma</code> (Física / Basada en ubicación vs. En línea
+                        / Cloud), <code>categoria_servicio</code>, <code>plataforma_principal</code>.
+                    </p>
+                    <p style="margin: 0; font-size: 0.86rem; line-height: 1.7;">
+                        <strong>Propósito:</strong> Clasifica los modelos operativos y sectores económicos del mercado
+                        laboral.
+                    </p>
+                </div>
+
+                <div class="panel" style="border-left: 4px solid var(--color-accent); background: var(--color-surface);">
+                    <h4 style="margin: 0 0 0.4rem 0; font-size: 0.98rem; color: var(--color-accent-dark);">
+                        <code>dim_trabajador</code> &mdash; Dimensión Perfil Sociodemográfico y Social
+                    </h4>
+                    <p style="margin: 0 0 0.5rem 0; font-size: 0.86rem; line-height: 1.7;">
+                        <strong>Clave Primaria:</strong> <code>id_trabajador</code><br>
+                        <strong>Atributos de Negocio y Perfil:</strong> <code>id_registro</code> (clave única de
+                        trazabilidad original), <code>edad</code>, <code>genero</code>, <code>nivel_educativo</code>,
+                        <code>antiguedad_meses</code>, <code>dependencia_ingresos</code>, <code>afiliacion_salud</code>,
+                        <code>afiliacion_pension</code>, <code>cuenta_con_arl</code>, <code>fuente_origen_id</code>.
+                    </p>
+                    <p style="margin: 0; font-size: 0.86rem; line-height: 1.7;">
+                        <strong>Propósito:</strong> Agrupa las características del capital humano y sus condiciones de
+                        protección social.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. REPRESENTACIÓN ESQUEMÁTICA DEL DIAGRAMA ESTRELLA -->
+        <div class="content-box">
+            <span class="section-eyebrow">03 / Diagrama Estrella</span>
+            <h2 class="section-title">Representación Esquemática del Diagrama Estrella</h2>
+            <p style="font-size: 0.90rem; color: var(--color-text-muted); margin-bottom: 1.2rem;">
+                A continuación se presenta el diagrama del esquema estrella, con la tabla de hechos
+                (<code>fact_gig_economy</code>) en el centro y las cuatro dimensiones vinculadas mediante claves foráneas:
+            </p>
+
+            <figure style="margin: 0;">
+                <div class="panel"
+                    style="text-align: center; padding: 4rem 2rem; border: 2px dashed var(--color-border); background: var(--color-surface);">
+                    <p style="margin: 0 0 0.5rem 0; color: var(--color-text-muted); font-size: 0.92rem; font-weight: 600;">
+                        Espacio reservado para la imagen del diagrama del modelo estrella
+                    </p>
+                    <p style="margin: 0; color: var(--color-text-muted); font-size: 0.82rem;">
+                        Colocar la imagen en: <code>static/img/modelo_estrella.png</code>
+                    </p>
+                </div>
+                <figcaption style="margin-top: 0.7rem; font-size: 0.82rem; color: var(--color-text-muted); text-align: center;">
+                    Figura 1. Representación esquemática del diagrama estrella del modelo multidimensional.
+                </figcaption>
+            </figure>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,116 @@
+================================================================================
+VISTA 2 — COMPARACIÓN DE GRUPOS Y TERRITORIOS
+================================================================================
+Pregunta: ¿Existen diferencias significativas en los ingresos, las tarifas por
+hora y las condiciones laborales entre países, géneros y modelos de plataforma?
+
+Dimensiones: dim_geografia (pais, departamento_region)
+             dim_trabajador (genero, afiliacion_pension, cuenta_con_arl)
+             dim_plataforma (tipo_plataforma)
+Medidas:     AVG(ingreso_neto_mensual_cop), AVG(ingreso_neto_hora_usd),
+             proporción de desprotección social.
+
+--------------------------------------------------------------------------------
+1. INDICADORES GLOBALES (KPIs)
+--------------------------------------------------------------------------------
+SELECT ROUND(AVG(ingreso_neto_mensual_cop)::numeric, 0) AS ingreso_neto_promedio_cop,
+       ROUND(AVG(ingreso_neto_hora_usd)::numeric, 2)    AS tarifa_promedio_usd_h
+FROM fact_gig_economy;
+-- Esperado: $4.287.438 COP · 6,32 USD/h.
+
+
+--------------------------------------------------------------------------------
+2. TARIFA NETA PROMEDIO POR HORA (USD) POR PAÍS
+--------------------------------------------------------------------------------
+SELECT g.pais,
+       ROUND(AVG(f.ingreso_neto_hora_usd)::numeric, 2) AS tarifa_usd_h,
+       COUNT(DISTINCT f.id_trabajador)                 AS trabajadores
+FROM fact_gig_economy f
+JOIN dim_geografia g ON g.id_geografia = f.id_geografia
+GROUP BY g.pais
+ORDER BY tarifa_usd_h DESC;
+-- Esperado: Estados Unidos 26,21 · España 25,60 · Chile 10,00 · México 9,76 ·
+--           Argentina 9,73 · Brasil 9,67 · India 7,39 · Colombia 2,73.
+
+
+--------------------------------------------------------------------------------
+3. DRILL-DOWN: TARIFA USD/H POR DEPARTAMENTO / REGIÓN
+--------------------------------------------------------------------------------
+SELECT g.departamento_region,
+       g.pais,
+       ROUND(AVG(f.ingreso_neto_hora_usd)::numeric, 2) AS tarifa_usd_h
+FROM fact_gig_economy f
+JOIN dim_geografia g ON g.id_geografia = f.id_geografia
+GROUP BY g.departamento_region, g.pais
+ORDER BY tarifa_usd_h DESC;
+-- Esperado: los 8 departamentos de Colombia quedan entre 2,65 y 2,89 USD/h.
+
+
+--------------------------------------------------------------------------------
+4. INGRESO NETO MENSUAL POR GÉNERO x MODELO DE PLATAFORMA
+--------------------------------------------------------------------------------
+SELECT t.genero,
+       p.tipo_plataforma,
+       ROUND(AVG(f.ingreso_neto_mensual_cop)::numeric, 0) AS ingreso_promedio_cop,
+       ROUND(AVG(f.ingreso_neto_hora_usd)::numeric, 2)    AS tarifa_promedio_usd_h
+FROM fact_gig_economy f
+JOIN dim_trabajador t ON t.id_trabajador = f.id_trabajador
+JOIN dim_plataforma p ON p.id_plataforma = f.id_plataforma
+GROUP BY t.genero, p.tipo_plataforma
+ORDER BY t.genero, p.tipo_plataforma;
+-- Esperado: la modalidad domina (en línea ~7,2 M COP) sobre el género
+--           (brecha <4% dentro de cada modalidad).
+
+
+--------------------------------------------------------------------------------
+5. DESPROTECCIÓN SOCIAL POR PAÍS (sin pensión y sin ARL)
+--------------------------------------------------------------------------------
+SELECT g.pais,
+       COUNT(DISTINCT f.id_trabajador) AS total,
+       COUNT(DISTINCT f.id_trabajador) FILTER (
+           WHERE t.afiliacion_pension = 'No cotiza'
+             AND t.cuenta_con_arl  = 'No (Sin cobertura ARL)') AS desprotegidos,
+       ROUND(100.0 * COUNT(DISTINCT f.id_trabajador) FILTER (
+             WHERE t.afiliacion_pension = 'No cotiza'
+               AND t.cuenta_con_arl  = 'No (Sin cobertura ARL)') /
+             COUNT(DISTINCT f.id_trabajador), 1) AS pct_desproteccion
+FROM fact_gig_economy f
+JOIN dim_trabajador t ON t.id_trabajador = f.id_trabajador
+JOIN dim_geografia g ON g.id_geografia = f.id_geografia
+GROUP BY g.pais
+ORDER BY pct_desproteccion DESC;
+-- Esperado: Colombia 72,7% · resto de países 29–35%.
+
+
+--------------------------------------------------------------------------------
+6. DESPROTECCIÓN SOCIAL POR MODELO DE PLATAFORMA
+--------------------------------------------------------------------------------
+SELECT p.tipo_plataforma,
+       COUNT(DISTINCT f.id_trabajador) AS total,
+       COUNT(DISTINCT f.id_trabajador) FILTER (
+           WHERE t.afiliacion_pension = 'No cotiza'
+             AND t.cuenta_con_arl  = 'No (Sin cobertura ARL)') AS desprotegidos,
+       ROUND(100.0 * COUNT(DISTINCT f.id_trabajador) FILTER (
+             WHERE t.afiliacion_pension = 'No cotiza'
+               AND t.cuenta_con_arl  = 'No (Sin cobertura ARL)') /
+             COUNT(DISTINCT f.id_trabajador), 1) AS pct_desproteccion
+FROM fact_gig_economy f
+JOIN dim_trabajador t ON t.id_trabajador = f.id_trabajador
+JOIN dim_plataforma p ON p.id_plataforma = f.id_plataforma
+GROUP BY p.tipo_plataforma;
+-- Esperado: Física 69,1% · En línea 37,4%.
+
+
+--------------------------------------------------------------------------------
+7. MATRIZ: PAÍS x MODELO DE PLATAFORMA (medida = tarifa USD/h)
+--------------------------------------------------------------------------------
+SELECT g.pais,
+       ROUND(AVG(f.ingreso_neto_hora_usd) FILTER (
+             WHERE p.tipo_plataforma = 'Fisica / Basada en Ubicacion')::numeric, 2) AS fisica_usd_h,
+       ROUND(AVG(f.ingreso_neto_hora_usd) FILTER (
+             WHERE p.tipo_plataforma = 'En linea / Basada en la Nube')::numeric, 2) AS en_linea_usd_h
+FROM fact_gig_economy f
+JOIN dim_geografia g ON g.id_geografia = f.id_geografia
+JOIN dim_plataforma p ON p.id_plataforma = f.id_plataforma
+GROUP BY g.pais
+ORDER BY en_linea_usd_h DESC NULLS LAST;

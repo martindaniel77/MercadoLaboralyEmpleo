@@ -1,0 +1,262 @@
+{% extends "base.html" %}
+
+{% block title %}Vista 4 · Análisis Multivariado | Etapa 5{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/analytics.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="page-header page-header--left">
+    <div class="container">
+        <span class="section-eyebrow page-header__eyebrow">Etapa 5 &middot; Análisis Multidimensional &middot; Vista 4 de 4</span>
+        <h1>{{ data.titulo }}</h1>
+        <p>
+            Cuarta vista interactiva del análisis multidimensional: combinaciones de nivel educativo, modelo
+            de plataforma y jornada que explican los ingresos, y su relación con la dependencia económica y
+            la cotización a pensión.
+        </p>
+        <div class="page-header__rule"></div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="analytics">
+
+            <!-- ===== Metodología ===== -->
+            <div class="method-panel">
+                <span class="section-eyebrow">01 / Pregunta de análisis</span>
+                <h2 class="section-title">{{ data.titulo }}</h2>
+                <div class="pregunta"><strong>Pregunta:</strong> {{ data.pregunta }}</div>
+
+                <div class="method-tags">
+                    {% for d in data.dimensiones %}
+                    <span class="badge badge--accent">{{ d.nombre }}: {{ d.atributos }}</span>
+                    {% endfor %}
+                    {% for m in data.medidas %}
+                    <span class="badge badge--primary">Medida: {{ m.nombre }}</span>
+                    {% endfor %}
+                </div>
+
+                <div style="margin-top: 1.1rem;">
+                    <strong style="font-size: 0.82rem;">Jerarquía utilizada:</strong>
+                    <ul style="margin: 0.4rem 0 0 1.2rem; font-size: 0.84rem; line-height: 1.9;">
+                        {% for j in data.jerarquias %}
+                        <li><code>{{ j.ruta }}</code> — <em>{{ j.operaciones }}</em></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="notice" style="margin-top: 1.2rem;">
+                    <span class="notice__badge">Profundización</span>
+                    <p style="font-size: 0.86rem;">
+                        Retoma el Tablero 4 de la Etapa 4 pero añade una <strong>perspectiva nueva</strong>: en vez
+                        de leer promedios globales, cruza <strong>nivel educativo × modalidad × jornada</strong> y
+                        permite <strong>descender</strong> en la jerarquía educativa (grupos → niveles) para
+                        separar el retorno real de los efectos de composición, y relaciona el resultado con la
+                        <strong>dependencia económica</strong> y la <strong>cotización a pensión</strong>.
+                    </p>
+                </div>
+            </div>
+
+            <!-- ===== Filtros interactivos (Slice / Dice) ===== -->
+            <div class="analytics-controls">
+                <div class="analytics-controls__title">Filtros interactivos (dimensiones distintas)</div>
+                <form method="get" action="{{ url_for('etapa5_vista4') }}">
+                    <input type="hidden" name="nivel" value="{{ data.nivel }}">
+                    <input type="hidden" name="pivot" value="{{ data.pivot }}">
+                    <div class="analytics-controls__row">
+                        <div class="filter-group">
+                            <label class="filter-label" for="tipo">Modelo de plataforma (dim_plataforma)</label>
+                            <select class="form-select" id="tipo" name="tipo">
+                                <option value="Todos" {{ 'selected' if data.filtros.tipo.seleccion == 'Todos' }}>Todos los modelos</option>
+                                {% for t in data.filtros.tipo.opciones %}
+                                <option value="{{ t }}" {{ 'selected' if data.filtros.tipo.seleccion == t }}>{{ t }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label" for="dependencia">Dependencia económica (dim_trabajador)</label>
+                            <select class="form-select" id="dependencia" name="dependencia">
+                                <option value="Todos" {{ 'selected' if data.filtros.dependencia.seleccion == 'Todos' }}>Todas</option>
+                                {% for d in data.filtros.dependencia.opciones %}
+                                <option value="{{ d }}" {{ 'selected' if data.filtros.dependencia.seleccion == d }}>{{ d }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="filter-group" style="flex: 0 0 auto;">
+                            <label class="filter-label">&nbsp;</label>
+                            <button type="submit" class="btn btn--primary" style="padding: 0.55rem 1.3rem;">Aplicar filtros</button>
+                        </div>
+                        <div class="filter-group" style="flex: 0 0 auto;">
+                            <label class="filter-label">&nbsp;</label>
+                            <a class="btn btn--outline" style="padding: 0.55rem 1.3rem;"
+                               href="{{ url_for('etapa5_vista4', tipo='Todos', dependencia='Todos', nivel=data.nivel, pivot=data.pivot) }}">Limpiar</a>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Controles OLAP -->
+                <div class="olap-controls">
+                    <span class="analytics-controls__title" style="margin: 0;">Operaciones OLAP:</span>
+                    {% if data.nivel == 'agregado' %}
+                    <span class="olap-btn active">Roll-up (grupos formativos)</span>
+                    <a class="olap-btn" href="{{ url_for('etapa5_vista4', tipo=data.filtros.tipo.seleccion, dependencia=data.filtros.dependencia.seleccion, nivel='detalle', pivot=data.pivot) }}">Drill-down (niveles educativos)</a>
+                    {% else %}
+                    <a class="olap-btn" href="{{ url_for('etapa5_vista4', tipo=data.filtros.tipo.seleccion, dependencia=data.filtros.dependencia.seleccion, nivel='agregado', pivot=data.pivot) }}">Roll-up (grupos formativos)</a>
+                    <span class="olap-btn active">Drill-down (niveles educativos)</span>
+                    {% endif %}
+                    {% set pivot_inv = 'tipo_educacion' if data.pivot == 'educacion_tipo' else 'educacion_tipo' %}
+                    <a class="olap-btn" href="{{ url_for('etapa5_vista4', tipo=data.filtros.tipo.seleccion, dependencia=data.filtros.dependencia.seleccion, nivel=data.nivel, pivot=pivot_inv) }}">Pivot matriz</a>
+                    <span class="olap-state">Slice/Dice vía filtros &middot; nivel: {{ data.nivel }} &middot; pivot: {{ data.pivot }}</span>
+                </div>
+
+                <!-- Selección activa -->
+                <div class="active-selection">
+                    <span class="active-selection__label">Selección activa:</span>
+                    <span class="chip">Modelo: {{ data.seleccion_activa.tipo }}</span>
+                    <span class="chip">Dependencia: {{ data.seleccion_activa.dependencia }}</span>
+                    <span class="chip">Nivel educativo: {{ 'grupos' if data.nivel == 'agregado' else 'niveles' }}</span>
+                    <span class="chip">Pivot: {{ 'educación × modelo' if data.pivot == 'educacion_tipo' else 'modelo × educación' }}</span>
+                </div>
+            </div>
+
+            <!-- ===== Indicadores (KPIs) ===== -->
+            <div class="kpi-grid">
+                {% for kpi in data.kpis %}
+                <div class="kpi-card">
+                    <span class="kpi-card__value">{{ kpi.valor }}</span>
+                    <span class="kpi-card__unit">{{ kpi.unidad }}</span>
+                    <span class="kpi-card__label">{{ kpi.label }}</span>
+                    <span class="kpi-card__sub">{{ kpi.sub }}</span>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- ===== Visualizaciones (2) ===== -->
+            <div class="viz-grid">
+                <div class="chart-box">
+                    <div class="chart-title">{{ data.viz1.titulo }}</div>
+                    <div class="chart-subtitle">{{ data.viz1.subtitulo }}</div>
+                    <div class="hbar">
+                        {% for b in data.viz1.barras %}
+                        <div class="hbar__row">
+                            <div class="hbar__label">{{ b.label }}</div>
+                            <div class="hbar__track">
+                                <div class="hbar__fill" style="width: {{ (b.value / data.viz1.max * 100)|round(1) }}%; background: {{ b.color }};"></div>
+                            </div>
+                            <div class="hbar__val">{{ b.display }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="legend">
+                        <span class="legend__item"><span class="legend__swatch" style="background: #edbd4c;"></span>Física / Basada en ubicación</span>
+                        <span class="legend__item"><span class="legend__swatch" style="background: #3e7cb1;"></span>En línea / Basada en la nube</span>
+                    </div>
+                </div>
+
+                <div class="chart-box">
+                    <div class="chart-title">{{ data.viz2.titulo }}</div>
+                    <div class="chart-subtitle">{{ data.viz2.subtitulo }}</div>
+                    <div class="hbar">
+                        {% for b in data.viz2.barras %}
+                        <div class="hbar__row">
+                            <div class="hbar__label">{{ b.label }}</div>
+                            <div class="hbar__track">
+                                <div class="hbar__fill" style="width: {{ (b.value / data.viz2.max * 100)|round(1) }}%; background: {{ b.color }};"></div>
+                            </div>
+                            <div class="hbar__val">{{ b.display }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="legend">
+                        <span class="legend__item"><span class="legend__swatch" style="background: #edbd4c;"></span>Física / Basada en ubicación</span>
+                        <span class="legend__item"><span class="legend__swatch" style="background: #3e7cb1;"></span>En línea / Basada en la nube</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== Matriz de resultados (cruce de dimensiones) ===== -->
+            <div class="matrix-box">
+                <div class="chart-title">Matriz de resultados (cruce de dos dimensiones)</div>
+                <div class="chart-subtitle">
+                    {{ 'Filas: nivel educativo · Columnas: modelo de plataforma' if data.pivot == 'educacion_tipo'
+                       else 'Filas: modelo de plataforma · Columnas: nivel educativo' }} ·
+                    Medida: {{ data.matriz.medida }}
+                </div>
+                <div class="matrix-table-wrap">
+                    <table class="matrix-table">
+                        <thead>
+                            <tr>
+                                <th class="row-head">{{ 'Nivel educativo' if data.pivot == 'educacion_tipo' else 'Modelo de plataforma' }}</th>
+                                {% for c in data.matriz.columnas %}
+                                <th>{{ c }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for fi in range(data.matriz.filas|length) %}
+                            <tr>
+                                <td class="row-label">{{ data.matriz.filas[fi] }}</td>
+                                {% for ci in range(data.matriz.columnas|length) %}
+                                <td class="cell">{{ data.matriz.cells[fi][ci] }}</td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <p class="matrix-note">
+                    Valores en COP (promedio mensual). La celda "—" indica ausencia de observaciones con los
+                    filtros activos. Los promedios se recalculan al cambiar filtros o nivel de agrupación.
+                </p>
+            </div>
+
+            <!-- ===== Interpretación ===== -->
+            <div class="content-box content-box--highlight">
+                <span class="section-eyebrow">02 / Interpretación de los resultados</span>
+                <h2 class="section-title">Interpretación</h2>
+                <p style="margin: 0; font-size: 0.9rem; line-height: 1.75;">{{ data.interpretacion }}</p>
+            </div>
+
+            <!-- ===== Conocimientos multidimensionales ===== -->
+            <div class="content-box">
+                <span class="section-eyebrow">03 / Conocimientos multidimensionales</span>
+                <h2 class="section-title">Conocimientos descubiertos</h2>
+                <div class="conocimiento-grid">
+                    {% for k in data.conocimientos %}
+                    <div class="conocimiento-card">
+                        <span class="badge badge--accent" style="margin-bottom: 0.6rem;">{{ k.id }}</span>
+                        <h4>{{ k.titulo }}</h4>
+                        <dl>
+                            <dt>Pregunta</dt><dd>{{ k.pregunta }}</dd>
+                            <dt>Dimensiones y medidas</dt><dd>{{ k.dimensiones_medidas }}</dd>
+                            <dt>Procedimiento</dt><dd>{{ k.procedimiento }}</dd>
+                            <dt>Evidencia</dt><dd>{{ k.evidencia }}</dd>
+                            <dt>Hallazgo</dt><dd>{{ k.hallazgo }}</dd>
+                            <dt>Interpretación</dt><dd>{{ k.interpretacion }}</dd>
+                            <dt>Utilidad</dt><dd>{{ k.utilidad }}</dd>
+                            <dt>Limitación</dt><dd>{{ k.limitacion }}</dd>
+                        </dl>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- ===== Limitación y decisión ===== -->
+            <div class="grid grid--2" style="gap: 1.4rem;">
+                <div class="panel" style="border-left: 4px solid var(--color-border);">
+                    <h3 style="font-size: 1rem; color: var(--color-text-muted);">Limitación del análisis</h3>
+                    <p style="margin: 0; font-size: 0.88rem; line-height: 1.7;">{{ data.limitacion }}</p>
+                </div>
+                <div class="panel" style="border-left: 4px solid var(--color-accent);">
+                    <h3 style="font-size: 1rem; color: var(--color-accent-dark);">Decisión sustentada en datos</h3>
+                    <p style="margin: 0; font-size: 0.88rem; line-height: 1.7;">{{ data.decision }}</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+{% endblock %}

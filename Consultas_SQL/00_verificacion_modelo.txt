@@ -1,0 +1,100 @@
+================================================================================
+VERIFICACIÓN DEL MODELO ESTRELLA (Etapa 5 · sección 4)
+================================================================================
+Base de datos: gig_economy_db (PostgreSQL)
+Modelo estrella: fact_gig_economy + dim_tiempo / dim_geografia /
+                  dim_plataforma / dim_trabajador
+
+Estas consultas permiten comprobar la consistencia del modelo antes de ejecutar
+el análisis multidimensional: unicidad de claves, correspondencia de claves
+foráneas, ausencia de duplicaciones y coherencia de los conteos agregados.
+
+--------------------------------------------------------------------------------
+1. UNICIDAD DE CLAVES PRIMARIAS DE LAS DIMENSIONES
+--------------------------------------------------------------------------------
+-- El resultado de cada fila debe ser idéntico en ambas columnas (filas = claves únicas).
+
+SELECT 'dim_tiempo'    AS tabla, COUNT(*) AS filas, COUNT(DISTINCT id_tiempo)    AS claves_unicas FROM dim_tiempo
+UNION ALL
+SELECT 'dim_geografia',           COUNT(*), COUNT(DISTINCT id_geografia)          FROM dim_geografia
+UNION ALL
+SELECT 'dim_plataforma',          COUNT(*), COUNT(DISTINCT id_plataforma)         FROM dim_plataforma
+UNION ALL
+SELECT 'dim_trabajador',          COUNT(*), COUNT(DISTINCT id_trabajador)         FROM dim_trabajador
+UNION ALL
+SELECT 'fact_gig_economy',        COUNT(*), COUNT(DISTINCT id_hecho)              FROM fact_gig_economy;
+-- Esperado: dim_tiempo 1991, dim_geografia 23, dim_plataforma 31,
+--           dim_trabajador 12350, fact_gig_economy 12350.
+
+
+--------------------------------------------------------------------------------
+2. UNICIDAD DE LA CLAVE NATURAL DEL TRABAJADOR
+--------------------------------------------------------------------------------
+-- id_registro debe ser único en dim_trabajador (1 trabajador = 1 registro).
+
+SELECT COUNT(*)                     AS filas,
+       COUNT(DISTINCT id_registro)  AS id_registro_unicos
+FROM dim_trabajador;
+-- Esperado: 12350 = 12350.
+
+
+--------------------------------------------------------------------------------
+3. CORRESPONDENCIA DE CLAVES FORÁNEAS (fact -> dimensiones)
+--------------------------------------------------------------------------------
+-- Cada consulta debe devolver 0 filas huérfanas. Si hay filas, existen hechos
+-- cuya clave foránea no apunta a ningún registro de la dimensión.
+
+SELECT COUNT(*) AS huerfanos_tiempo
+FROM fact_gig_economy f
+LEFT JOIN dim_tiempo ti ON ti.id_tiempo = f.id_tiempo
+WHERE ti.id_tiempo IS NULL;
+
+SELECT COUNT(*) AS huerfanos_geografia
+FROM fact_gig_economy f
+LEFT JOIN dim_geografia g ON g.id_geografia = f.id_geografia
+WHERE g.id_geografia IS NULL;
+
+SELECT COUNT(*) AS huerfanos_plataforma
+FROM fact_gig_economy f
+LEFT JOIN dim_plataforma p ON p.id_plataforma = f.id_plataforma
+WHERE p.id_plataforma IS NULL;
+
+SELECT COUNT(*) AS huerfanos_trabajador
+FROM fact_gig_economy f
+LEFT JOIN dim_trabajador t ON t.id_trabajador = f.id_trabajador
+WHERE t.id_trabajador IS NULL;
+-- Esperado: 0 en las cuatro consultas.
+
+
+--------------------------------------------------------------------------------
+4. AUSENCIA DE DUPLICACIONES INDEBIDAS EN LA TABLA DE HECHOS
+--------------------------------------------------------------------------------
+-- Granularidad: 1 fila de hechos = 1 trabajador (id_trabajador). Si el conteo
+-- distinto difiere del total, existen duplicados de trabajador.
+
+SELECT COUNT(*)                        AS filas_hechos,
+       COUNT(DISTINCT id_trabajador)   AS trabajadores_unicos
+FROM fact_gig_economy;
+-- Esperado: 12350 = 12350 (granularidad consistente, sin duplicados).
+
+
+--------------------------------------------------------------------------------
+5. COHERENCIA DE CONTEO ENTRE HECHOS Y DIMENSIÓN TRABAJADOR
+--------------------------------------------------------------------------------
+SELECT (SELECT COUNT(*) FROM fact_gig_economy)   AS filas_hechos,
+       (SELECT COUNT(*) FROM dim_trabajador)     AS filas_dim_trabajador;
+-- Esperado: 12350 = 12350.
+
+
+--------------------------------------------------------------------------------
+6. TRATAMIENTO DE VALORES FALTANTES EN LAS MEDIDAS
+--------------------------------------------------------------------------------
+-- El dataset tratado no debe presentar nulos en las medidas cuantitativas.
+
+SELECT
+    COUNT(*) FILTER (WHERE ingreso_neto_mensual_cop IS NULL)     AS nulos_ingreso_neto,
+    COUNT(*) FILTER (WHERE ingreso_neto_hora_usd  IS NULL)       AS nulos_tarifa_usd,
+    COUNT(*) FILTER (WHERE horas_semanales        IS NULL)       AS nulos_horas,
+    COUNT(*) FILTER (WHERE calificacion_promedio_app IS NULL)    AS nulos_calificacion
+FROM fact_gig_economy;
+-- Esperado: 0 en todas las columnas.

@@ -1,0 +1,111 @@
+================================================================================
+OPERACIONES MULTIDIMENSIONALES (OLAP) — EJEMPLOS DE CONSULTA
+================================================================================
+Cada operación se ilustra con la consulta que la implementa en el modelo
+estrella. Las medidas se recalculan al cambiar el nivel de agrupación o el
+subconjunto seleccionado.
+
+--------------------------------------------------------------------------------
+OP-01 · DRILL-DOWN
+Descender en una jerarquía (de país a departamento en dim_geografia).
+--------------------------------------------------------------------------------
+-- Nivel general (roll-up): 8 países
+SELECT g.pais,
+       ROUND(AVG(f.ingreso_neto_hora_usd)::numeric, 2) AS tarifa_usd_h
+FROM fact_gig_economy f
+JOIN dim_geografia g ON g.id_geografia = f.id_geografia
+GROUP BY g.pais
+ORDER BY tarifa_usd_h DESC;
+
+-- Nivel detallado (drill-down): 15 departamentos / regiones
+SELECT g.departamento_region, g.pais,
+       ROUND(AVG(f.ingreso_neto_hora_usd)::numeric, 2) AS tarifa_usd_h
+FROM fact_gig_economy f
+JOIN dim_geografia g ON g.id_geografia = f.id_geografia
+GROUP BY g.departamento_region, g.pais
+ORDER BY tarifa_usd_h DESC;
+
+
+--------------------------------------------------------------------------------
+OP-02 · ROLL-UP
+Agrupar en un nivel superior (de 5 niveles educativos a 3 grupos formativos).
+--------------------------------------------------------------------------------
+-- Nivel detallado (drill-down): 5 niveles educativos
+SELECT t.nivel_educativo,
+       ROUND(AVG(f.ingreso_neto_mensual_cop)::numeric, 0) AS ingreso_promedio_cop
+FROM fact_gig_economy f
+JOIN dim_trabajador t ON t.id_trabajador = f.id_trabajador
+GROUP BY t.nivel_educativo
+ORDER BY ingreso_promedio_cop DESC;
+
+-- Nivel superior (roll-up): 3 grupos formativos
+SELECT CASE
+           WHEN t.nivel_educativo IN ('Primaria', 'Secundaria / Bachillerato') THEN 'Basica'
+           WHEN t.nivel_educativo = 'Tecnico / Tecnologo'                     THEN 'Tecnica'
+           ELSE 'Superior'
+       END                                                AS grupo_formativo,
+       ROUND(AVG(f.ingreso_neto_mensual_cop)::numeric, 0) AS ingreso_promedio_cop
+FROM fact_gig_economy f
+JOIN dim_trabajador t ON t.id_trabajador = f.id_trabajador
+GROUP BY grupo_formativo
+ORDER BY ingreso_promedio_cop;
+
+
+--------------------------------------------------------------------------------
+OP-03 · SLICE
+Seleccionar un valor de una dimensión (pais = 'Colombia').
+--------------------------------------------------------------------------------
+SELECT g.pais,
+       COUNT(DISTINCT f.id_trabajador) AS trabajadores
+FROM fact_gig_economy f
+JOIN dim_geografia g ON g.id_geografia = f.id_geografia
+WHERE g.pais = 'Colombia'
+GROUP BY g.pais;
+-- Esperado: Colombia 7.951 trabajadores (64,4% del universo de 12.350).
+
+
+--------------------------------------------------------------------------------
+OP-04 · DICE
+Combinar filtros sobre dos dimensiones (tipo_plataforma + genero).
+--------------------------------------------------------------------------------
+SELECT p.tipo_plataforma,
+       t.genero,
+       COUNT(DISTINCT f.id_trabajador) AS trabajadores
+FROM fact_gig_economy f
+JOIN dim_plataforma p ON p.id_plataforma = f.id_plataforma
+JOIN dim_trabajador t ON t.id_trabajador = f.id_trabajador
+WHERE p.tipo_plataforma = 'En linea / Basada en la Nube'
+  AND t.genero         = 'Femenino'
+GROUP BY p.tipo_plataforma, t.genero;
+-- Esperado: 1.606 trabajadoras en línea (38,0% de la fuerza en línea).
+
+
+--------------------------------------------------------------------------------
+OP-05 · PIVOT
+Cambiar la disposición de las dimensiones en una matriz (país x modelo).
+--------------------------------------------------------------------------------
+-- Orientación A: filas = país, columnas = modelo
+SELECT g.pais,
+       ROUND(AVG(f.ingreso_neto_hora_usd) FILTER (
+             WHERE p.tipo_plataforma = 'Fisica / Basada en Ubicacion')::numeric, 2) AS fisica_usd_h,
+       ROUND(AVG(f.ingreso_neto_hora_usd) FILTER (
+             WHERE p.tipo_plataforma = 'En linea / Basada en la Nube')::numeric, 2) AS en_linea_usd_h
+FROM fact_gig_economy f
+JOIN dim_geografia g ON g.id_geografia = f.id_geografia
+JOIN dim_plataforma p ON p.id_plataforma = f.id_plataforma
+GROUP BY g.pais
+ORDER BY g.pais;
+
+-- Orientación B (pivot): filas = modelo, columnas = país
+-- (la celda (Colombia, En línea) = 6,49 USD/h se mantiene; solo cambia la lectura)
+SELECT p.tipo_plataforma,
+       ROUND(AVG(f.ingreso_neto_hora_usd) FILTER (
+             WHERE g.pais = 'Colombia')::numeric, 2) AS colombia_usd_h,
+       ROUND(AVG(f.ingreso_neto_hora_usd) FILTER (
+             WHERE g.pais = 'Estados Unidos')::numeric, 2) AS eeuu_usd_h,
+       ROUND(AVG(f.ingreso_neto_hora_usd) FILTER (
+             WHERE g.pais = 'Espana')::numeric, 2) AS espana_usd_h
+FROM fact_gig_economy f
+JOIN dim_geografia g ON g.id_geografia = f.id_geografia
+JOIN dim_plataforma p ON p.id_plataforma = f.id_plataforma
+GROUP BY p.tipo_plataforma;

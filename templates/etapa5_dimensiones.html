@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block title %}Dimensiones, Medidas y Jerarquías | Etapa 5{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <div class="container">
+        <span class="section-eyebrow page-header__eyebrow">Etapa 5 &middot; Análisis Multidimensional</span>
+        <h1>Descripción de las Dimensiones, Medidas y Jerarquías</h1>
+        <p>
+            Especificación de las dimensiones, medidas y jerarquías que componen el cubo de análisis.
+        </p>
+        <div class="page-header__rule"></div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+    
+
+        <!-- 2. DESCRIPCIÓN DE LAS DIMENSIONES Y ATRIBUTOS -->
+        <div class="content-box">
+            <span class="section-eyebrow">01 / Dimensiones y Atributos</span>
+            <h2 class="section-title">Descripción de las Dimensiones y Atributos</h2>
+            <p style="font-size: 0.90rem; color: var(--color-text-muted); margin-bottom: 1.2rem;">
+                El modelo multidimensional se compone de una tabla central de hechos (<code>fact_gig_economy</code>) y
+                cuatro dimensiones relacionales que describen las perspectivas reales del fenómeno de la Gig Economy.
+                Cada dimensión posee una clave primaria subrogada (<code>id_*</code>) y una clave natural que identifica
+                de forma única cada registro:
+            </p>
+
+            <div class="grid grid--2" style="gap: 1.2rem;">
+                <div class="panel" style="border-left: 4px solid var(--color-accent); background: var(--color-surface);">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
+                        <span class="badge" style="background: var(--color-accent-dark); color: white;">GEOGRÁFICA</span>
+                        <strong style="font-size: 0.92rem; color: var(--color-accent-dark);"><code>dim_geografia</code></strong>
+                    </div>
+                    <p style="margin: 0 0 0.5rem 0; font-size: 0.86rem; line-height: 1.7;">
+                        <strong>Propósito:</strong> Analizar la distribución territorial del mercado laboral desde una
+                        perspectiva global hasta el ámbito local.
+                    </p>
+                    <p style="margin: 0 0 0.5rem 0; font-size: 0.86rem; line-height: 1.7;">
+                        <strong>Clave natural:</strong> combinación de <code>nivel_territorial</code>, <code>pais</code>,
+                        <code>codigo_iso_pais</code>, <code>departamento_region</code> y <code>ciudad_municipio</code>
+                        (23 combinaciones únicas).
+                    </p>
+                    <p style="margin: 0; font-size: 0.86rem; line-height: 1.7;">
+                        <strong>Atributos:</strong> <code>nivel_territorial</code> (<code>Global</code>,
+                        <code>Nacional</code>, <code>Regional</code>), <code>pais</code>, <code>codigo_iso_pais</code>,
+                        <code>departamento_region</code>, <code>ciudad_municipio</code>.
+                    </p>
+                </div>
+
+                <div class="panel" style="border-left: 4px solid var(--color-accent); background: var(--color-surface);">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
+                        <span class="badge" style="background: var(--color-accent-dark); color: white;">TEMPORAL</span>
+                        <strong style="font-size: 0.92rem; color: var(--color-accent-dark);"><code>dim_tiempo</code></strong>
+                    </div>
+                    <p style="margin: 0 0 0.5rem 0; font-size: 0.86rem; line-height: 1.7;">
+                        <strong>Propósito:</strong> Registrar la evolución cronológica de las actividades de los
+                        trabajadores para el análisis de tendencias y estacionalidades.
+                    </p>
+                    <p style="margin: 0 0 0.5rem 0; font-size: 0.86rem; line-height: 1.7;">
+                        <strong>Clave natural:</strong> <code>fecha_registro</code> (1.991 fechas únicas).
+                    </p>
+                    <p style="margin: 0; font-size: 0.86rem; line-height: 1.7;">
+                        <strong>Atributos:</strong> <code>fecha_registro</code>, <code>anio</code>, <code>mes</code>,
+                        <code>trimestre</code>.
+                    </p>
+                </div>
+
+                <div class="panel" style="border-left: 4px solid var(--color-accent); background: var(--color-surface);">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
+                        <span class="badge" style="background: var(--color-accent-dark); color: white;">OCUPACIÓN Y PLATAFORMA</span>
+                        <strong style="font-size: 0.92rem; color: var(--color-accent-dark);"><code>dim_plataforma</code></strong>
+                    </div>
+                    <p style="margin: 0 0 0.5rem 0; font-size: 0.86rem; line-height: 1.7;">
+                        <strong>Propósito:</strong> Clasificar los modelos operativos y las categorías de servicio en los
+                        que laboran los independientes.
+                    </p>
+                    <p style="margin: 0 0 0.5rem 0; font-size: 0.86rem; line-height: 1.7;">
+                        <strong>Clave natural:</strong> combinación de <code>tipo_plataforma</code>,
+                        <code>categoria_servicio</code> y <code>plataforma_principal</code> (31 combinaciones únicas).
+                    </p>
+                    <p style="margin: 0; font-size: 0.86rem; line-height: 1.7;">
+                        <strong>Atributos:</strong> <code>tipo_plataforma</code> (<code>Fisica / Basada en Ubicacion</code>
+                        vs. <code>En linea / Basada en la Nube</code>), <code>categoria_servicio</code> (7 categorías),
+                        <code>plataforma_principal</code>.
+                    </p>
+                </div>
+
+                <div class="panel" style="border-left: 4px solid var(--color-accent); background: var(--color-surface);">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
+                        <span class="badge" style="background: var(--color-accent-dark); color: white;">SOCIODEMOGRÁFICA</span>
+                        <strong style="font-size: 0.92rem; color: var(--color-accent-dark);"><code>dim_trabajador</code></strong>
+                    </div>
+                    <p style="margin: 0 0 0.5rem 0; font-size: 0.86rem; line-height: 1.7;">
+                        <strong>Propósito:</strong> Agrupar las características individuales del capital humano, su
+                        economía familiar y sus coberturas de seguridad social.
+                    </p>
+                    <p style="margin: 0 0 0.5rem 0; font-size: 0.86rem; line-height: 1.7;">
+                        <strong>Clave de negocio:</strong> <code>id_registro</code> (12.350 registros únicos).
+                    </p>
+                    <p style="margin: 0; font-size: 0.86rem; line-height: 1.7;">
+                        <strong>Atributos:</strong> <code>edad</code>, <code>genero</code>, <code>nivel_educativo</code>,
+                        <code>antiguedad_meses</code>, <code>dependencia_ingresos</code>, <code>afiliacion_salud</code>,
+                        <code>afiliacion_pension</code>, <code>cuenta_con_arl</code>, <code>fuente_origen_id</code>.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. ESPECIFICACIÓN DE LAS MEDIDAS -->
+        <div class="content-box">
+            <span class="section-eyebrow">02 / Medidas</span>
+            <h2 class="section-title">Especificación de las Medidas</h2>
+            <p style="font-size: 0.90rem; color: var(--color-text-muted); margin-bottom: 1.2rem;">
+                Las medidas son las variables cuantitativas que permiten evaluar el rendimiento económico y operativo del
+                mercado laboral. Se calculan y agregan de la siguiente manera:
+            </p>
+
+            <div class="table-container">
+                <table class="data-table" style="font-size: 0.84rem;">
+                    <thead>
+                        <tr>
+                            <th style="width: 20%;">Medida</th>
+                            <th style="width: 34%;">Significado</th>
+                            <th style="width: 20%;">Fórmula / Cálculo</th>
+                            <th>Función de agregación</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Ingreso Bruto Mensual</strong><br><code>ingreso_bruto_mensual_cop</code></td>
+                            <td>Ingreso total percibido en pesos colombianos antes de descontar costos.</td>
+                            <td>Medida base</td>
+                            <td>Suma para volúmenes globales y promedio aritmético para comparar subgrupos.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Costos Operativos Mensuales</strong><br><code>costos_operativos_mensuales_cop</code></td>
+                            <td>Gastos mensuales asumidos por el trabajador (combustible, mantenimiento, internet, etc.).</td>
+                            <td>Medida base</td>
+                            <td>Promedio para evaluar la presión financiera según el modelo de plataforma.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ingreso Neto Mensual</strong><br><code>ingreso_neto_mensual_cop</code></td>
+                            <td>Ganancia real de bolsillo del trabajador en COP tras deducir costos operativos.</td>
+                            <td><code>Bruto − Costos Operativos</code></td>
+                            <td>Suma para volúmenes globales y promedio aritmético ponderado para comparar subgrupos.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ingreso Neto por Hora en USD</strong><br><code>ingreso_neto_hora_usd</code></td>
+                            <td>Retorno efectivo del trabajador por hora, en dólares, para comparación internacional.</td>
+                            <td>Medida base</td>
+                            <td>Promedio aritmético ponderado por las horas semanales trabajadas.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Intensidad Horaria Semanal</strong><br><code>horas_semanales</code></td>
+                            <td>Dedicación promedio de horas semanales a las aplicaciones.</td>
+                            <td>Medida base</td>
+                            <td>Promedio ponderado para analizar sobrecarga frente a los límites legales.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Reputación Algorítmica</strong><br><code>calificacion_promedio_app</code></td>
+                            <td>Puntuación continua otorgada por usuarios o sistemas de valoración de la plataforma.</td>
+                            <td>Medida base</td>
+                            <td>Promedio aritmético.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 4. DEFINICIÓN DE LAS JERARQUÍAS -->
+        <div class="content-box">
+            <span class="section-eyebrow">03 / Jerarquías</span>
+            <h2 class="section-title">Definición de las Jerarquías</h2>
+            <p style="font-size: 0.90rem; color: var(--color-text-muted); margin-bottom: 1.2rem;">
+                Para permitir la navegación analítica mediante operaciones OLAP sin violar la coherencia matemática de los
+                datos, se han establecido dos jerarquías con relaciones de agrupación válidas de uno a muchos
+                (<code>1:N</code>):
+            </p>
+
+            <div class="grid grid--2" style="gap: 1.2rem;">
+                <div class="panel" style="border-left: 4px solid var(--color-accent); background: var(--color-surface);">
+                    <h3 style="margin: 0 0 0.5rem 0; font-size: 1rem; color: var(--color-accent-dark);">Jerarquía Temporal</h3>
+                    <p style="margin: 0 0 0.6rem 0; font-size: 0.86rem; line-height: 1.7; color: var(--color-text);">
+                        Permite descender o agrupar cronológicamente los resultados.
+                    </p>
+                    <p style="margin: 0; font-size: 0.88rem; font-family: var(--font-mono, monospace);">
+                        <code>anio</code> &rarr; <code>trimestre</code> &rarr; <code>mes</code> &rarr; <code>fecha_registro</code>
+                    </p>
+                </div>
+
+                <div class="panel" style="border-left: 4px solid var(--color-accent); background: var(--color-surface);">
+                    <h3 style="margin: 0 0 0.5rem 0; font-size: 1rem; color: var(--color-accent-dark);">Jerarquía Geográfica</h3>
+                    <p style="margin: 0 0 0.6rem 0; font-size: 0.86rem; line-height: 1.7; color: var(--color-text);">
+                        Permite analizar las asimetrías territoriales desde la macroescala hasta el municipio.
+                    </p>
+                    <p style="margin: 0; font-size: 0.88rem; font-family: var(--font-mono, monospace);">
+                        <code>pais</code> &rarr; <code>departamento_region</code> &rarr; <code>ciudad_municipio</code>
+                    </p>
+                </div>
+            </div>
+
+            <div class="panel" style="margin-top: 1.2rem; border-left: 4px solid var(--color-border); background: var(--color-surface);">
+                <p style="margin: 0; font-size: 0.86rem; line-height: 1.7; color: var(--color-text-muted);">
+                    <strong>Nota:</strong> <code>nivel_territorial</code> no participa en la jerarquía geográfica porque es
+                    un clasificador de granularidad del registro (<code>Global</code>, <code>Nacional</code>,
+                    <code>Regional</code>), no un contenedor geográfico. No mantiene una relación <code>1:N</code> estricta
+                    con <code>pais</code> (p. ej. Colombia aparece bajo <code>Nacional</code> y <code>Regional</code>), por
+                    lo que se mantiene como atributo descriptivo de la dimensión, fuera de la ruta de agregación.
+                </p>
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endblock %}
