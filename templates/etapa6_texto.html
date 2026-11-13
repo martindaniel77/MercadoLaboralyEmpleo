@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+
+{% block title %}Minería de Texto · Percepción Social en YouTube | Etapa 6{% endblock %}
+
+{% block content %}
+<section class="page-header page-header--left">
+    <div class="container">
+        <span class="section-eyebrow page-header__eyebrow">Etapa 6 &middot; Minería de Texto y Procesamiento de Lenguaje Natural</span>
+        <h1>Sección 3 · Minería de Texto y Percepción Social en YouTube</h1>
+        <p>
+            Análisis de 242 comentarios extraídos mediante la <strong>YouTube Data API v3</strong> a partir de debates sobre la 
+            Gig Economy (Video ID: <code>OXT8xdqcAoU</code>). Modelado probabilístico con <strong>Latent Dirichlet Allocation (LDA - 7 Tópicos)</strong>, 
+            ponderación léxica <strong>TF-IDF en Word Cloud</strong> y análisis cualitativo con <strong>Corpus Viewer</strong>.
+        </p>
+        <div class="page-header__rule"></div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <!-- ===== Subflujo de la Sección ===== -->
+        <div class="content-box">
+            <span class="section-eyebrow">01 / Flujo de Procesamiento Textual</span>
+            <h2 class="section-title">Pipeline de Minería de Texto en Orange3</h2>
+            <p style="font-size: 0.92rem; color: var(--color-text-muted); line-height: 1.6; margin-bottom: 1rem;">
+                El archivo <code>comentarios_youtube_orange.csv</code> ingresa a <code>Corpus</code>, se normaliza en <code>Preprocess Text</code> (tokenización regex, eliminación de stopwords bilingües y minúsculas), bifurcándose hacia <code>Topic Modelling</code> (LDA), <code>Word Cloud</code> y vectorización <code>Bag of Words</code> para clustering textual:
+            </p>
+
+            <div style="background: #111827; border-radius: var(--radius-lg); padding: 1rem; border: 1px solid var(--color-border); margin-bottom: 1.5rem; text-align: center;">
+                <img src="{{ url_for('static', filename='img/etapa6/Tercera seccion.png') }}" 
+                     alt="Subflujo de Text Mining en Orange3" 
+                     style="max-width: 100%; height: auto; border-radius: var(--radius-md);" />
+                <div style="margin-top: 0.6rem; font-size: 0.82rem; color: #94a3b8; text-align: left;">
+                    <strong>Figura 6.8:</strong> Pipeline de Minería de Texto: <em>CSV Comentarios &rarr; Corpus &rarr; Preprocess Text &rarr; Topic Modelling (LDA), Word Cloud y Bag of Words &rarr; k-Means (1) &rarr; Corpus Viewer</em>.
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== Topic Modelling (LDA) ===== -->
+        <div class="content-box">
+            <span class="section-eyebrow">02 / Modelado de Tópicos Latentes (LDA)</span>
+            <h2 class="section-title">Estructura Temática Latente en 7 Tópicos</h2>
+            <p style="font-size: 0.92rem; color: var(--color-text-muted); line-height: 1.6;">
+                El algoritmo <strong>Latent Dirichlet Allocation (LDA)</strong> convergió en 7 tópicos cohesivos con una 
+                <strong>coherencia temática de 0.40812</strong> y una <strong>log-perplejidad de 31.53162</strong>, capturando los ejes neurálgicos de la conversación laboral:
+            </p>
+
+            <div class="grid grid--2" style="gap: 1.2rem; align-items: start; margin-top: 1rem;">
+                <!-- Captura de Topic Modelling -->
+                <div style="background: #ffffff; border-radius: var(--radius-md); padding: 0.8rem; border: 1px solid var(--color-border); text-align: center;">
+                    <img src="{{ url_for('static', filename='img/etapa6/Tercera seccion 1.png') }}" 
+                         alt="Topic Modelling en Orange3" 
+                         style="max-width: 100%; height: auto; border-radius: var(--radius-sm); border: 1px solid #e2e8f0;" />
+                    <div style="margin-top: 0.5rem; font-size: 0.78rem; color: var(--color-text-muted); text-align: left;">
+                        <strong>Figura 6.9:</strong> Salida del widget <em>Topic Modelling</em>: 7 tópicos LDA con palabras clave asociadas sobre 242 documentos depurados.
+                    </div>
+                </div>
+
+                <!-- Tabla de Tópicos Interpretados -->
+                <div>
+                    <div class="table-responsive">
+                        <table class="table" style="font-size: 0.82rem;">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Palabras Clave (Top Keywords)</th>
+                                    <th>Eje Temático / Interpretación</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="background: rgba(245, 158, 11, 0.08);">
+                                    <td><strong>T1</strong></td>
+                                    <td><code>gig, video, economy, freelance, work, working, people, freelancing, way, health</code></td>
+                                    <td><strong>Salud y precariedad macroeconómica:</strong> la vulnerabilidad física del trabajador frente a la ausencia de cobertura médica.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>T2</strong></td>
+                                    <td><code>ted, music, wef, freelancing, videos, background, head, thank, sure, app</code></td>
+                                    <td><strong>Debate institucional y apps:</strong> reacciones a foros internacionales (WEF / TED) sobre intermediación algorítmica.</td>
+                                </tr>
+                                <tr style="background: rgba(16, 185, 129, 0.08);">
+                                    <td><strong>T3</strong></td>
+                                    <td><code>good, freelancing, job, work, business, get, like, clients, money, much</code></td>
+                                    <td><strong>Monetización y gestión comercial:</strong> esfuerzo para conseguir clientes y transformar tareas en dinero efectivo.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>T4</strong></td>
+                                    <td><code>get, freelance, animation, one, job, freelancer, years, freelancing, make, thanks</code></td>
+                                    <td><strong>Experiencia y trayectoria acumulada:</strong> vivencias a lo largo de los años en ocupaciones digitales y creativas.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>T5</strong></td>
+                                    <td><code>people, real, want, see, day, guess, life, still, offers, got</code></td>
+                                    <td><strong>Realidad cotidiana vs flexibilidad:</strong> confrontación entre las promesas de libertad y la vida real día a día.</td>
+                                </tr>
+                                <tr style="background: rgba(59, 130, 246, 0.08);">
+                                    <td><strong>T6</strong></td>
+                                    <td><code>like, work, get, pay, better, think, people, good, day, market</code></td>
+                                    <td><strong>Tarifas y justicia de pago:</strong> reclamo de retribuciones salariales justas ante la degradación de tarifas.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>T7</strong></td>
+                                    <td><code>forum, economic, world, soundtrack, videos, happy, give, amazing, think, made</code></td>
+                                    <td><strong>Dimensión sociopolítica global:</strong> impacto global del trabajo digital y discusión de la comunidad.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== Nube de Palabras y Testimonios en Corpus Viewer ===== -->
+        <div class="content-box">
+            <span class="section-eyebrow">03 / Léxico y Análisis de Casos</span>
+            <h2 class="section-title">Densidad Léxica (Word Cloud) y Testimonio Emblemático</h2>
+
+            <div class="grid grid--2" style="gap: 1.2rem; align-items: start;">
+                <!-- Word Cloud -->
+                <div style="background: #ffffff; border-radius: var(--radius-md); padding: 0.8rem; border: 1px solid var(--color-border); text-align: center;">
+                    <h3 style="font-size: 0.95rem; color: var(--color-accent-dark); margin-bottom: 0.5rem; text-align: left;">Nube de Palabras (Word Cloud)</h3>
+                    <img src="{{ url_for('static', filename='img/etapa6/Tercera seccion 3.png') }}" 
+                         alt="Word Cloud en Orange3" 
+                         style="max-width: 100%; height: auto; border-radius: var(--radius-sm); border: 1px solid #e2e8f0;" />
+                    <p style="font-size: 0.78rem; color: var(--color-text-muted); margin-top: 0.5rem; text-align: left;">
+                        <strong>Figura 6.10:</strong> Términos con mayor peso: <em>freelancing (47), work (33), job (29), gig (27), money (17), health (14), insurance (12), pay (12), hours (11)</em>.
+                    </p>
+                </div>
+
+                <!-- Corpus Viewer -->
+                <div style="background: #ffffff; border-radius: var(--radius-md); padding: 0.8rem; border: 1px solid var(--color-border); text-align: center;">
+                    <h3 style="font-size: 0.95rem; color: var(--color-accent-dark); margin-bottom: 0.5rem; text-align: left;">Testimonio Clave en Corpus Viewer</h3>
+                    <img src="{{ url_for('static', filename='img/etapa6/Tercera seccion 2.png') }}" 
+                         alt="Corpus Viewer en Orange3" 
+                         style="max-width: 100%; height: auto; border-radius: var(--radius-sm); border: 1px solid #e2e8f0;" />
+                    <div class="panel" style="background: #fffbeb; border-left: 4px solid #f59e0b; margin-top: 0.5rem; font-size: 0.82rem; text-align: left;">
+                        <strong style="color: #92400e;">Comentario más votado (539 likes &middot; Cluster C3 &middot; Silhouette 0.5):</strong><br>
+                        <em>"It's as you said Ted Ed, freelancing is definitely a good support net for quick money. It's safe for part timers, but maybe not in the long run."</em><br>
+                        <span style="font-size: 0.76rem; color: var(--color-text-muted); margin-top: 0.3rem; display: block;">
+                            (Traducción: "Como dijiste Ted Ed, el trabajo freelance es definitivamente una buena red de apoyo para dinero rápido. Es seguro para trabajadores de tiempo parcial, pero quizás no en el largo plazo").
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== FICHAS DE CONOCIMIENTO OCULTO ===== -->
+        <div class="content-box content-box--highlight">
+            <span class="section-eyebrow">04 / Fichas Estructuradas de Conocimiento</span>
+            <h2 class="section-title">Conocimiento Oculto Descubierto (Minería de Texto)</h2>
+
+            <div class="grid grid--2" style="gap: 1.5rem; margin-top: 1rem;">
+                
+                <!-- FICHA KO-3.1 -->
+                <div class="card" style="border-left: 4px solid #10b981; background: var(--color-surface);">
+                    <div style="display: flex; gap: 0.5rem; margin-bottom: 0.6rem; align-items: center; flex-wrap: wrap;">
+                        <span class="badge" style="background: #10b981; color: white; font-weight: 700;">KO-3.1</span>
+                        <span class="badge" style="background: #d1fae5; color: #065f46;">Modelado LDA / Cualitativo</span>
+                    </div>
+                    <h3 style="font-size: 1.05rem; margin-bottom: 0.5rem; color: var(--color-accent-dark);">
+                        Disonancia Temporal: Red de Liquidez Inmediata vs Ruina Pensional Futura
+                    </h3>
+                    <div style="font-size: 0.85rem; line-height: 1.6; color: var(--color-text);">
+                        <p><strong>Pregunta:</strong> ¿Qué percepciones no estructuradas manifiestan los trabajadores sobre la sostenibilidad del trabajo gig a lo largo del tiempo?</p>
+                        <p><strong>Variables:</strong> 242 comentarios depurados del video <code>OXT8xdqcAoU</code>, procesados con LDA y Corpus Viewer.</p>
+                        <p><strong>Evidencia:</strong> El comentario más representativo (539 likes, Silhouette 0.5) sintetiza la paradoja: <em>"a good support net for quick money... but maybe not in the long run"</em>. El Tópico LDA 1 asocia directamente <code>gig + economy + health</code> con coherencia de <strong>0.40812</strong>.</p>
+                        <p><strong>Hallazgo Oculto:</strong> Los propios trabajadores son conscientes de la insostenibilidad temporal del modelo: reconocen la plataforma como una red de choque y liquidez diaria para estudiantes o desocupados transitorios, pero denuncian que su prolongación sin aportes pensionales conduce a la desprotección total en la vejez.</p>
+                        <p><strong>Utilidad:</strong> Aporta sustento empírico-social para diseñar esquemas de aportes automáticos proporcionales (micro-pensiones por carrera/tarea), impidiendo que la temporalidad se convierta en informalidad permanente.</p>
+                        <p style="margin-bottom: 0; color: var(--color-text-muted);"><strong>Limitación:</strong> Muestra digital autoseleccionada de usuarios de YouTube; puede sobreponderar opiniones críticas o de usuarios angloparlantes de la economía global.</p>
+                    </div>
+                </div>
+
+                <!-- FICHA KO-3.2 -->
+                <div class="card" style="border-left: 4px solid #f59e0b; background: var(--color-surface);">
+                    <div style="display: flex; gap: 0.5rem; margin-bottom: 0.6rem; align-items: center; flex-wrap: wrap;">
+                        <span class="badge" style="background: #f59e0b; color: white; font-weight: 700;">KO-3.2</span>
+                        <span class="badge" style="background: #fef3c7; color: #92400e;">Triangulación Léxica</span>
+                    </div>
+                    <h3 style="font-size: 1.05rem; margin-bottom: 0.5rem; color: var(--color-accent-dark);">
+                        Convergencia Léxica: Salud y Seguros como Núcleo de la Preocupación Empírica
+                    </h3>
+                    <div style="font-size: 0.85rem; line-height: 1.6; color: var(--color-text);">
+                        <p><strong>Pregunta:</strong> ¿Coinciden las inquietudes discursivas de los trabajadores con las variables predictivas más potentes del modelo supervisado?</p>
+                        <p><strong>Variables:</strong> Frecuencias de términos en <em>Word Cloud</em> frente al ranking de importancia de <em>Rank</em>.</p>
+                        <p><strong>Evidencia:</strong> En la nube de palabras emergen de forma prominente <code>health (14)</code>, <code>insurance (12)</code>, <code>benefits</code>, <code>pay (12)</code> y <code>hours (11)</code>. Esto triangula perfectamente con el widget <em>Rank</em>, donde <code>cuenta_con_arl</code> (0.160) y <code>afiliacion_salud</code> dominan la predicción formal.</p>
+                        <p><strong>Hallazgo Oculto:</strong> La variable que matemáticamente mejor separa a un cotizante en los modelos cuantitativos (salud y ARL) es exactamente la carencia que los trabajadores exteriorizan de manera orgánica en el análisis textual.</p>
+                        <p><strong>Utilidad:</strong> Otorga una validez convergente inusualmente sólida a la investigación: el descubrimiento algorítmico no es un artificio estadístico, sino el reflejo fiel de la principal demanda de los trabajadores de la economía de plataformas.</p>
+                        <p style="margin-bottom: 0; color: var(--color-text-muted);"><strong>Limitación:</strong> Análisis léxico sin detección de sarcasmo o ironía en expresiones compuestas.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ===== Navegación ===== -->
+        <div class="panel" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; background: var(--color-surface); margin-top: 1.5rem;">
+            <a href="{{ url_for('etapa6_clustering') }}" class="btn btn--outline">&larr; Volver a Sección 2 · Clustering</a>
+            <a href="{{ url_for('etapa6_conclusiones') }}" class="btn btn--primary">Continuar a Conclusiones Integradas &rarr;</a>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

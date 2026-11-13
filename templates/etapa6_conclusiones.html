@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %}Conclusiones Integradas y Triangulación Metodológica | Etapa 6{% endblock %}
+
+{% block content %}
+<section class="page-header page-header--left">
+    <div class="container">
+        <span class="section-eyebrow page-header__eyebrow">Etapa 6 &middot; Síntesis Final</span>
+        <h1>Conclusiones Integradas y Triangulación Metodológica</h1>
+        <p>
+            Integración de los hallazgos del <strong>aprendizaje supervisado</strong>, el <strong>clustering no supervisado</strong> 
+            y la <strong>minería de texto en YouTube</strong>. Contraste frente a los conocimientos evidentes (Etapa 4) y multidimensionales (Etapa 5), 
+            distinguiendo evidencias empíricas sólidas de hipótesis que demandan validación futura.
+        </p>
+        <div class="page-header__rule"></div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <!-- ===== Triangulación Metodológica ===== -->
+        <div class="content-box">
+            <span class="section-eyebrow">01 / Triangulación de Resultados</span>
+            <h2 class="section-title">Convergencia entre Supervisado, Clustering y Discurso Social</h2>
+            <p style="font-size: 0.92rem; color: var(--color-text-muted); line-height: 1.6; margin-bottom: 1.2rem;">
+                La fortaleza epistemológica de la Etapa 6 radica en que los tres enfoques analíticos de Orange convergen exactamente hacia el mismo diagnóstico sociolaboral desde ángulos independientes:
+            </p>
+
+            <div class="table-responsive">
+                <table class="table" style="font-size: 0.88rem;">
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">Dimensión Analítica</th>
+                            <th style="width: 25%;">Aprendizaje Supervisado (RF / Tree)</th>
+                            <th style="width: 25%;">Clustering (k-Means k=3)</th>
+                            <th style="width: 25%;">Text Mining (YouTube LDA)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Protección Social</strong></td>
+                            <td>La cobertura ARL es el nodo raíz (Gain Ratio 0.160). Sin ARL, el 92,8% no cotiza.</td>
+                            <td>El Cluster C1 concentra al 72,0% de no cotizantes ($\chi^2 = 553,07, p = 0,000$).</td>
+                            <td>Los términos <code>health</code>, <code>insurance</code> y <code>benefits</code> dominan la discusión en Word Cloud y Tema 1.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Intensidad Horaria</strong></td>
+                            <td>La jornada semanal por sí sola tiene bajo poder predictivo lineal sobre la cotización (GR 0.008).</td>
+                            <td>En el Scatter Plot, los no cotizantes forman una franja vertical en baja tarifa que abarca desde 10 hasta 70 h/sem.</td>
+                            <td>Los comentarios expresan que "echar más horas" no compensa las deducciones algorítmicas de las plataformas.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Temporalidad del Modelo</strong></td>
+                            <td>La antigüedad en meses no predice formalidad (GR 0.000); permanecer en la app no formaliza.</td>
+                            <td>Los clusters no separan por antigüedad, sino por tarifa horaria y tipo de servicio.</td>
+                            <td>Comentario más votado (539 likes): <em>"a good support net for quick money, but maybe not in the long run"</em>.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Estructura del Mercado</strong></td>
+                            <td>Random Forest supera a la regresión lineal ($p=0.956$); existen umbrales de fractura cualitativa.</td>
+                            <td>Aislamiento natural de 3 arquetipos: Subsistencia física, Nube calificada y Transición.</td>
+                            <td>Polarización léxica entre tareas creativas (Topic 4) y repartidores urbanos en precariedad (Topic 6).</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ===== Evolución del Conocimiento a lo Largo del Proyecto ===== -->
+        <div class="content-box">
+            <span class="section-eyebrow">02 / Trayectoria Cognitiva</span>
+            <h2 class="section-title">Evolución: Del Conocimiento Evidente al Conocimiento Oculto</h2>
+            <p style="font-size: 0.92rem; color: var(--color-text-muted); line-height: 1.6;">
+                Cómo el proyecto progresó desde la descripción bivariada hasta la modelación predictiva no lineal y el análisis del discurso:
+            </p>
+
+            <div class="grid grid--3" style="gap: 1.2rem; margin-top: 1rem;">
+                <div class="card" style="border-top: 4px solid #64748b;">
+                    <span class="badge" style="background: #e2e8f0; color: #334155;">Etapa 4 · Descriptiva</span>
+                    <h3 class="card__title" style="font-size: 0.98rem; margin: 0.5rem 0;">Conocimiento Evidente</h3>
+                    <p class="card__text" style="font-size: 0.85rem;">
+                        Identificó que 2 de cada 3 trabajadores están en plataformas físicas y que existe una brecha salarial aparente favorable a las mujeres en el promedio agregado.
+                    </p>
+                </div>
+
+                <div class="card" style="border-top: 4px solid #f59e0b;">
+                    <span class="badge" style="background: #fef3c7; color: #92400e;">Etapa 5 · OLAP Estrella</span>
+                    <h3 class="card__title" style="font-size: 0.98rem; margin: 0.5rem 0;">Conocimiento Multidimensional</h3>
+                    <p class="card__text" style="font-size: 0.85rem;">
+                        Corrigió la lectura agregada mediante la Paradoja de Simpson: la ventaja femenina se disuelve al controlar por modalidad. La brecha geográfica de Colombia es estructural nacionalmente.
+                    </p>
+                </div>
+
+                <div class="card" style="border-top: 4px solid #10b981;">
+                    <span class="badge" style="background: #d1fae5; color: #065f46;">Etapa 6 · Minería / ML</span>
+                    <h3 class="card__title" style="font-size: 0.98rem; margin: 0.5rem 0;">Conocimiento Oculto</h3>
+                    <p class="card__text" style="font-size: 0.85rem;">
+                        Demuestra que la desprotección obedece a un cluster estructural (C1) insensibilizado a la jornada, condicionado por la falta de ARL (nodo raíz) y validado por la conciencia del trabajador sobre su inviabilidad futura.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== Decisiones Sustentadas en Datos ===== -->
+        <div class="content-box">
+            <span class="section-eyebrow">03 / Impacto Decisional y Política Pública</span>
+            <h2 class="section-title">Recomendaciones Reguladoras Sustentadas en la Etapa 6</h2>
+
+            <div class="grid grid--2" style="gap: 1.2rem;">
+                <div class="panel" style="background: var(--color-surface); border-left: 4px solid #10b981;">
+                    <strong style="color: var(--color-accent-dark); font-size: 0.95rem;">1. Creación del Piso de Cobertura ARL Obligatoria a cargo de las Apps</strong>
+                    <p style="font-size: 0.85rem; line-height: 1.6; margin: 0.4rem 0 0 0;">
+                        Dado que <code>cuenta_con_arl</code> es el disparador crítico hacia la pensión (Gain Ratio 0.160), la ley debe obligar a las plataformas de reparto y transporte a afiliar y aportar automáticamente a ARL por cada hora de conexión activa.
+                    </p>
+                </div>
+
+                <div class="panel" style="background: var(--color-surface); border-left: 4px solid #3b82f6;">
+                    <strong style="color: var(--color-accent-dark); font-size: 0.95rem;">2. Mecanismo de Micro-Cotización Pensional por Entrega o Carrera</strong>
+                    <p style="font-size: 0.85rem; line-height: 1.6; margin: 0.4rem 0 0 0;">
+                        Para resolver la "trampa de autoexplotación" del Cluster C1 (donde trabajar 70 horas no genera cotización), debe descontarse una fracción porcentual obligatoria por servicio completado con destino a una cuenta individual de vejez (BEPS o pensión formal).
+                    </p>
+                </div>
+
+                <div class="panel" style="background: var(--color-surface); border-left: 4px solid #f59e0b;">
+                    <strong style="color: var(--color-accent-dark); font-size: 0.95rem;">3. Desconexión Algorítmica y Control de Fatiga Laboral</strong>
+                    <p style="font-size: 0.85rem; line-height: 1.6; margin: 0.4rem 0 0 0;">
+                        El Scatter Plot bivariado demuestra que los trabajadores no cotizantes extienden jornadas por encima de las 60 horas sin mejorar su tarifa horaria. Se requiere fijar un tope estricto de conexión continua de máximo 8 horas diarias en plataformas de movilidad física.
+                    </p>
+                </div>
+
+                <div class="panel" style="background: var(--color-surface); border-left: 4px solid #ef4444;">
+                    <strong style="color: var(--color-accent-dark); font-size: 0.95rem;">4. Canales de Reconversión Laboral para el Cluster C1</strong>
+                    <p style="font-size: 0.85rem; line-height: 1.6; margin: 0.4rem 0 0 0;">
+                        Focalizar programas del SENA y MinTIC en formación de habilidades digitales para repartidores y conductores con secundaria completa, facilitando su transición desde el trabajo físico de subsistencia hacia el trabajo calificado en la nube (Cluster C2).
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== Navegación ===== -->
+        <div class="panel" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; background: var(--color-surface); margin-top: 1.5rem;">
+            <a href="{{ url_for('etapa6_texto') }}" class="btn btn--outline">&larr; Volver a Sección 3 · Text Mining</a>
+            <a href="{{ url_for('etapa6_video') }}" class="btn btn--primary">Ver Video Demostrativo de Orange &rarr;</a>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block title %}Video Demostrativo de Orange Data Mining | Etapa 6{% endblock %}
+
+{% block content %}
+<section class="page-header page-header--left">
+    <div class="container">
+        <span class="section-eyebrow page-header__eyebrow">Etapa 6 &middot; Demostración Práctica</span>
+        <h1>Video Explicativo de Orange Data Mining</h1>
+        <p>
+            Demostración en video del flujo completo en <strong>Orange Data Mining (v3.40.0)</strong>: ejecución del pipeline, 
+            evaluación de los tres modelos supervisados, análisis de matrices de confusión, clustering k-Means, modelado de 
+            tópicos LDA sobre comentarios de YouTube y extracción del conocimiento oculto.
+        </p>
+        <div class="page-header__rule"></div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        {% set vid = video_url %}
+        {% set embed = '' %}
+        {% if vid %}
+            {% if 'youtu.be/' in vid %}
+                {% set embed = 'https://www.youtube.com/embed/' ~ vid.split('youtu.be/')[1].split('?')[0] %}
+            {% elif 'youtube.com/watch' in vid and 'v=' in vid %}
+                {% set embed = 'https://www.youtube.com/embed/' ~ vid.split('v=')[1].split('&')[0] %}
+            {% elif 'youtube.com/embed/' in vid %}
+                {% set embed = vid %}
+            {% elif 'drive.google.com/file/d/' in vid %}
+                {% set embed = 'https://drive.google.com/file/d/' ~ vid.split('/file/d/')[1].split('/')[0] ~ '/preview' %}
+            {% endif %}
+        {% endif %}
+
+        <!-- ===== Reproductor o Placeholder de Video ===== -->
+        <div class="content-box content-box--highlight">
+            <span class="section-eyebrow">01 / Reproducción Audiovisual</span>
+            <h2 class="section-title">Video Demostrativo del Flujo Orange</h2>
+
+            {% if vid and ('youtube.com' in embed or 'drive.google.com' in embed) %}
+            <div style="position: relative; padding-top: 56.25%; border-radius: var(--radius-lg); overflow: hidden; background: #000; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+                <iframe src="{{ embed }}" title="Video explicativo Etapa 6 - Orange Data Mining"
+                    style="position: absolute; inset: 0; width: 100%; height: 100%; border: 0;"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen></iframe>
+            </div>
+            {% elif vid %}
+            <video controls preload="metadata" style="width: 100%; border-radius: var(--radius-lg); background: #000; box-shadow: 0 10px 30px rgba(0,0,0,0.3);"
+                src="{{ vid }}"></video>
+            {% else %}
+            <div class="panel" style="text-align: center; padding: 3.5rem 2rem; background: var(--color-surface); border: 2px dashed var(--color-border); border-radius: var(--radius-lg);">
+                <div style="font-size: 3.5rem; margin-bottom: 0.8rem; opacity: 0.7;">&#9654;&#65039;</div>
+                <h3 style="margin: 0 0 0.5rem; font-size: 1.3rem; color: var(--color-accent-dark);">Video Explicativo de Orange en Preparación</h3>
+                <p style="font-size: 0.92rem; max-width: 600px; margin: 0 auto 1.2rem; color: var(--color-text-muted); line-height: 1.6;">
+                    Este espacio está reservado para la sustentación en video del flujo de Orange3 (modelos supervisados, clustering y minería de texto). 
+                    Para vincular tu video cuando lo tengas listo (YouTube, Google Drive o MP4), puedes definir la variable de entorno 
+                    <code>ETAPA6_VIDEO_URL</code> o actualizar la constante en <code>app.py</code>.
+                </p>
+                <div style="display: inline-flex; gap: 0.8rem; flex-wrap: wrap; justify-content: center;">
+                    <a href="{{ url_for('descargar_flujo_orange') }}" class="btn btn--primary">
+                        Descargar archivo de flujo GIG ECONOMY.ows
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- ===== Guía de Contenido del Video ===== -->
+        <div class="content-box">
+            <span class="section-eyebrow">02 / Estructura Temática</span>
+            <h2 class="section-title">Puntos Cubiertos en la Demostración de Orange</h2>
+
+            <div class="grid grid--2" style="gap: 1.2rem;">
+                <div class="card" style="border-left: 4px solid #f59e0b;">
+                    <strong style="display: block; font-size: 0.95rem; margin-bottom: 0.4rem; color: var(--color-accent-dark);">
+                        1. Configuración y Aprendizaje Supervisado
+                    </strong>
+                    <ul style="font-size: 0.85rem; line-height: 1.6; padding-left: 1.2rem; margin: 0; color: var(--color-text);">
+                        <li>Carga del dataset tratado de 12.350 registros y asignación de <code>afiliacion_pension</code> como target.</li>
+                        <li>Evaluación con 10-Fold Stratified Cross Validation en <em>Test and Score</em>.</li>
+                        <li>Comparación de métricas (AUC, CA, F1) entre Tree, Random Forest y Regresión Logística.</li>
+                        <li>Análisis de la matriz de confusión y curvas ROC.</li>
+                        <li>Inspección del árbol binario en <em>Tree Viewer</em> e importancia de variables con <em>Rank</em>.</li>
+                    </ul>
+                </div>
+
+                <div class="card" style="border-left: 4px solid #3b82f6;">
+                    <strong style="display: block; font-size: 0.95rem; margin-bottom: 0.4rem; color: var(--color-accent-dark);">
+                        2. Clustering No Supervisado (k-Means)
+                    </strong>
+                    <ul style="font-size: 0.85rem; line-height: 1.6; padding-left: 1.2rem; margin: 0; color: var(--color-text);">
+                        <li>Selección de variables métricas y estandarización Z-score con <em>Preprocess</em>.</li>
+                        <li>Ejecución de k-Means con $k=3$ clusters y diagnóstico con <em>Silhouette Plot</em>.</li>
+                        <li>Exploración de la distribución pensional por cluster en <em>Box Plot</em> con contraste Chi-cuadrado ($\chi^2 = 553,07$).</li>
+                        <li>Visualización en <em>Scatter Plot</em> de la relación horas semanales vs tarifa horaria.</li>
+                    </ul>
+                </div>
+
+                <div class="card" style="border-left: 4px solid #10b981;">
+                    <strong style="display: block; font-size: 0.95rem; margin-bottom: 0.4rem; color: var(--color-accent-dark);">
+                        3. Minería de Texto en Comentarios de YouTube
+                    </strong>
+                    <ul style="font-size: 0.85rem; line-height: 1.6; padding-left: 1.2rem; margin: 0; color: var(--color-text);">
+                        <li>Pipeline de extracción con YouTube Data API v3 y depuración de 242 comentarios.</li>
+                        <li>Preprocesamiento textual (tokenización, stopwords bilingües y minúsculas).</li>
+                        <li>Modelado de tópicos probabilístico LDA con 7 tópicos (coherencia 0.408).</li>
+                        <li>Inspección léxica en <em>Word Cloud</em> y testimonio emblemático en <em>Corpus Viewer</em>.</li>
+                    </ul>
+                </div>
+
+                <div class="card" style="border-left: 4px solid #8b5cf6;">
+                    <strong style="display: block; font-size: 0.95rem; margin-bottom: 0.4rem; color: var(--color-accent-dark);">
+                        4. Síntesis y Conocimiento Oculto
+                    </strong>
+                    <ul style="font-size: 0.85rem; line-height: 1.6; padding-left: 1.2rem; margin: 0; color: var(--color-text);">
+                        <li>Triangulación de los 6 conocimientos ocultos descubiertos (KO-1.1 a KO-3.2).</li>
+                        <li>Contraste con los hallazgos de las etapas 4 (evidente) y 5 (multidimensional).</li>
+                        <li>Decisiones de política pública y regulación sustentadas en los modelos.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== Navegación ===== -->
+        <div class="panel" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; background: var(--color-surface); margin-top: 1.5rem;">
+            <a href="{{ url_for('etapa6_conclusiones') }}" class="btn btn--outline">&larr; Volver a Conclusiones Integradas</a>
+            <a href="{{ url_for('home') }}" class="btn btn--primary">Volver al Inicio del Proyecto &rarr;</a>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

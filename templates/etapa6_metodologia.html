@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block title %}Metodología y Flujo en Orange Data Mining | Etapa 6{% endblock %}
+
+{% block content %}
+<section class="page-header page-header--left">
+    <div class="container">
+        <span class="section-eyebrow page-header__eyebrow">Etapa 6 &middot; Aprendizaje Automático y Minería de Datos</span>
+        <h1>Metodología y Flujo Analítico en Orange Data Mining</h1>
+        <p>
+            Implementación integral de modelos de <strong>aprendizaje supervisado</strong>, <strong>no supervisado (clustering)</strong> 
+            y <strong>minería de texto</strong> sobre el dataset consolidado y comentarios de YouTube, orientados a descubrir 
+            patrones no lineales y relaciones de vulnerabilidad invisibles en el análisis descriptivo previo.
+        </p>
+        <div class="page-header__rule"></div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <!-- ===== Pipeline General ===== -->
+        <div class="content-box">
+            <span class="section-eyebrow">01 / Arquitectura del Flujo</span>
+            <h2 class="section-title">Lienzo Global del Pipeline en Orange3</h2>
+            <p style="font-size: 0.92rem; color: var(--color-text-muted); line-height: 1.6; margin-bottom: 1.2rem;">
+                El esquema analítico se construyó de forma modular en <strong>Orange Data Mining v3.40.0</strong>, dividido en tres bloques funcionales interconectados a partir de los datos tratados en las etapas anteriores y el corpus de comentarios de YouTube:
+            </p>
+
+            <div style="background: #111827; border-radius: var(--radius-lg); padding: 1rem; border: 1px solid var(--color-border); margin-bottom: 1.5rem; text-align: center;">
+                <img src="{{ url_for('static', filename='img/etapa6/GENERAL.png') }}" 
+                     alt="Lienzo General del Flujo en Orange3" 
+                     style="max-width: 100%; height: auto; border-radius: var(--radius-md); box-shadow: 0 4px 20px rgba(0,0,0,0.4);" />
+                <div style="margin-top: 0.8rem; font-size: 0.82rem; color: #94a3b8; text-align: left; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                    <span><strong>Figura 6.0:</strong> Arquitectura completa del flujo analítico en Orange3 (GIG ECONOMY.ows).</span>
+                    <a href="{{ url_for('descargar_flujo_orange') }}" class="btn btn--outline" style="font-size: 0.78rem; padding: 0.35rem 0.8rem; border-color: #475569; color: #e2e8f0;">
+                        Descargar archivo de flujo (.ows)
+                    </a>
+                </div>
+            </div>
+
+            <!-- Tres Bloques Funcionales -->
+            <div class="grid grid--3" style="gap: 1.2rem; margin-top: 1rem;">
+                <div class="card" style="border-top: 4px solid #f59e0b; display: flex; flex-direction: column;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                        <span class="badge" style="background: #fef3c7; color: #92400e; font-weight: 700;">SECCIÓN 1</span>
+                        <span style="font-size: 0.78rem; color: var(--color-text-muted);">Supervisado</span>
+                    </div>
+                    <h3 class="card__title" style="font-size: 1rem; margin-bottom: 0.4rem;">Clasificación Pensional</h3>
+                    <p class="card__text" style="font-size: 0.85rem; flex: 1;">
+                        Evaluación de 3 modelos (Tree, Random Forest y Logistic Regression) con <strong>10-Fold Cross-Validation</strong> para predecir la afiliación a pensión e identificar factores determinantes mediante <em>Rank</em> y <em>Tree Viewer</em>.
+                    </p>
+                    <a href="{{ url_for('etapa6_supervisado') }}" class="btn btn--outline" style="align-self: flex-start; margin-top: 0.8rem; font-size: 0.82rem; padding: 0.4rem 0.9rem;">Explorar Sección 1</a>
+                </div>
+
+                <div class="card" style="border-top: 4px solid #3b82f6; display: flex; flex-direction: column;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                        <span class="badge" style="background: #dbeafe; color: #1e40af; font-weight: 700;">SECCIÓN 2</span>
+                        <span style="font-size: 0.78rem; color: var(--color-text-muted);">No Supervisado</span>
+                    </div>
+                    <h3 class="card__title" style="font-size: 1rem; margin-bottom: 0.4rem;">Clustering de Vulnerabilidad</h3>
+                    <p class="card__text" style="font-size: 0.85rem; flex: 1;">
+                        Estandarización Z-score de variables laborales y agrupamiento con <strong>k-Means (k=3)</strong> para descubrir arquetipos reales de precariedad, contrastados mediante <em>Silhouette Plot</em>, <em>Box Plot</em> con Chi-cuadrado y <em>Scatter Plot</em>.
+                    </p>
+                    <a href="{{ url_for('etapa6_clustering') }}" class="btn btn--outline" style="align-self: flex-start; margin-top: 0.8rem; font-size: 0.82rem; padding: 0.4rem 0.9rem;">Explorar Sección 2</a>
+                </div>
+
+                <div class="card" style="border-top: 4px solid #10b981; display: flex; flex-direction: column;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                        <span class="badge" style="background: #d1fae5; color: #065f46; font-weight: 700;">SECCIÓN 3</span>
+                        <span style="font-size: 0.78rem; color: var(--color-text-muted);">Text Mining</span>
+                    </div>
+                    <h3 class="card__title" style="font-size: 1rem; margin-bottom: 0.4rem;">Minería de Texto YouTube</h3>
+                    <p class="card__text" style="font-size: 0.85rem; flex: 1;">
+                        Extracción de 242 comentarios de YouTube vía API oficial sobre la Gig Economy, analizados con <strong>Topic Modelling LDA (7 tópicos)</strong>, <em>Word Cloud</em> y <em>Corpus Viewer</em> para validar el discurso vivo de los trabajadores.
+                    </p>
+                    <a href="{{ url_for('etapa6_texto') }}" class="btn btn--outline" style="align-self: flex-start; margin-top: 0.8rem; font-size: 0.82rem; padding: 0.4rem 0.9rem;">Explorar Sección 3</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== Ficha Técnica Metodológica ===== -->
+        <div class="content-box">
+            <span class="section-eyebrow">02 / Ficha Técnica</span>
+            <h2 class="section-title">Parámetros del Entorno Experimental</h2>
+
+            <div class="table-responsive">
+                <table class="table" style="font-size: 0.88rem;">
+                    <thead>
+                        <tr>
+                            <th style="width: 25%;">Componente</th>
+                            <th style="width: 35%;">Configuración en Orange</th>
+                            <th>Justificación Metodológica</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Software y Versión</strong></td>
+                            <td><code>Orange3 v3.40.0-x86_64</code> + Add-on <code>Orange3-Text</code></td>
+                            <td>Plataforma de minería de datos visual con soporte de algoritmos nativos scikit-learn y text analytics.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Dataset de Entrada</strong></td>
+                            <td><code>dataset_gig_economy_tratado.csv</code> (12.350 registros, 27 columnas)</td>
+                            <td>Mismo dataset depurado y deduplicado en las etapas previas para garantizar comparabilidad total.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Variable Objetivo (Target)</strong></td>
+                            <td><code>afiliacion_pension</code> (Binaria: Cotiza activamente / No cotiza)</td>
+                            <td>Indicador fundamental de protección social en la economía gig. Desbalance moderado: 35,2% cotiza vs 64,8% no cotiza.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Estrategia de Muestreo</strong></td>
+                            <td>10-Fold Cross-Validation Estratificado con Replicabilidad Activa</td>
+                            <td>Evita sesgos de partición simple, garantiza que cada pliegue mantenga la proporción de clases y asegura reproducibilidad.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Tratamiento para Clustering</strong></td>
+                            <td>Normalización Z-score ($\mu=0, \sigma=1$) sobre 8 variables métricas</td>
+                            <td>Evita que variables con gran escala monetaria (ingresos en millones COP) distorsionen la distancia Euclídea frente a horas o edad.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Corpus de Texto</strong></td>
+                            <td>242 comentarios extraídos de YouTube (Video ID: <code>OXT8xdqcAoU</code>)</td>
+                            <td>Testimonios directos de comunidades sobre precarización, comisiones de apps, flexibilidad y jubilación en el trabajo gig.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ===== Navegación a las Secciones ===== -->
+        <div class="panel" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; background: var(--color-surface);">
+            <div>
+                <strong style="display: block; font-size: 1rem; color: var(--color-accent-dark);">Siguiente sección:</strong>
+                <span style="font-size: 0.88rem; color: var(--color-text-muted);">Comenzar con la evaluación de los tres modelos supervisados y el análisis de importancia.</span>
+            </div>
+            <a href="{{ url_for('etapa6_supervisado') }}" class="btn btn--primary">
+                Ir a Sección 1 · Modelos Supervisados &rarr;
+            </a>
+        </div>
+
+    </div>
+</section>
+{% endblock %}
