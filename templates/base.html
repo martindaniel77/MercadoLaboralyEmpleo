@@ -31,6 +31,7 @@
     {% set is_etapa3 = endpoint.startswith('etapa3_') or request.path.startswith('/etapa-3/') %}
     {% set is_etapa4 = endpoint.startswith('etapa4_') or request.path.startswith('/etapa-4/') %}
     {% set is_etapa5 = endpoint.startswith('etapa5_') or request.path.startswith('/etapa-5/') %}
+    {% set is_etapa6 = endpoint.startswith('etapa6_') or request.path.startswith('/etapa-6/') %}
 
     <div class="app">
         <!-- ===== Sidebar / Índice de la bitácora ===== -->
@@ -140,17 +141,34 @@
                         <li><a href="{{ url_for('etapa5_conclusiones') }}" class="{{ 'active' if endpoint == 'etapa5_conclusiones' }}"><span class="stage__page-num">07</span> Conocimientos descubiertos, limitaciones y conclusiones</a></li>
                     </ul>
                 </details>
+
+                <!-- ETAPA 6 -->
+                <details class="stage {{ 'stage--active' if is_etapa6 }}" {{ 'open' if is_etapa6 }}>
+                    <summary>
+                        <span class="stage__num">ETAPA 06</span>
+                        <span class="stage__sep">&mdash;</span>
+                        <span class="stage__title">Conocimiento oculto (Orange3)</span>
+                    </summary>
+                    <ul class="stage__pages">
+                        <li><a href="{{ url_for('etapa6_metodologia') }}" class="{{ 'active' if endpoint == 'etapa6_metodologia' }}"><span class="stage__page-num">01</span> Metodología y flujo Orange</a></li>
+                        <li><a href="{{ url_for('etapa6_supervisado') }}" class="{{ 'active' if endpoint == 'etapa6_supervisado' }}"><span class="stage__page-num">02</span> Sección 1 · Modelos supervisados</a></li>
+                        <li><a href="{{ url_for('etapa6_clustering') }}" class="{{ 'active' if endpoint == 'etapa6_clustering' }}"><span class="stage__page-num">03</span> Sección 2 · Clustering no supervisado</a></li>
+                        <li><a href="{{ url_for('etapa6_texto') }}" class="{{ 'active' if endpoint == 'etapa6_texto' }}"><span class="stage__page-num">04</span> Sección 3 · Minería de texto YouTube</a></li>
+                        <li><a href="{{ url_for('etapa6_conclusiones') }}" class="{{ 'active' if endpoint == 'etapa6_conclusiones' }}"><span class="stage__page-num">05</span> Conclusiones integradas</a></li>
+                        <li><a href="{{ url_for('etapa6_video') }}" class="{{ 'active' if endpoint == 'etapa6_video' }}"><span class="stage__page-num">06</span> Video demostrativo Orange</a></li>
+                    </ul>
+                </details>
             </nav>
 
             <div class="sidebar__progress">
                 <div class="sidebar__progress-top">
                     <span class="sidebar__progress-label">Progreso</span>
-                    <strong class="sidebar__progress-count">3 / 5 etapas</strong>
+                    <strong class="sidebar__progress-count">6 / 6 etapas</strong>
                 </div>
                 <div class="progress-track" aria-hidden="true">
-                    <div class="progress-fill" style="width: 70%;"></div>
+                    <div class="progress-fill" style="width: 100%;"></div>
                 </div>
-                <span class="sidebar__progress-status">Etapas 1, 2 y 3 terminadas &middot; Etapa 4 en curso</span>
+                <span class="sidebar__progress-status">Todas las etapas completadas &middot; Etapas 1 a 6</span>
             </div>
         </aside>
 

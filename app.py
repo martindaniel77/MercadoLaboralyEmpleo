@@ -2,6 +2,7 @@
 from flask import Flask, render_template, request, jsonify, send_file
 import data_service
 import analytics_service
+import etapa6_service
 from database import db, init_db
 from models import DimTiempo, DimGeografia, DimPlataforma, DimTrabajador, FactGigEconomy
 
@@ -24,6 +25,9 @@ ETAPA3_VIDEO_URL = os.environ.get('ETAPA3_VIDEO_URL', 'https://youtu.be/KBkUWh_j
 
 # Configuración del informe de Power BI de la Etapa 4.
 ETAPA4_POWERBI_URL = os.environ.get('ETAPA4_POWERBI_URL', 'https://app.powerbi.com/view?r=eyJrIjoiNzllZDZiNWItOGVkMC00MTE5LTk5MDEtNzlkYzcxZTFjMzdlIiwidCI6IjA3ZGE2N2EwLTFmNDMtNGU4Yy05NzdmLTVmODhiNjQ3MGVlNiIsImMiOjR9')
+
+# Configuración del video demostrativo de Orange de la Etapa 6.
+ETAPA6_VIDEO_URL = os.environ.get('ETAPA6_VIDEO_URL', '')
 
 # Asegurar que el dataset inicial exista al arrancar
 data_service.ensure_dataset_exists()
@@ -306,6 +310,61 @@ def etapa5_operaciones():
 @app.route('/etapa-5/conclusiones')
 def etapa5_conclusiones():
     return render_template('etapa5_conclusiones.html')
+
+
+# ============================================================
+# RUTAS DE LA ETAPA 6: CONOCIMIENTO OCULTO (ORANGE DATA MINING)
+# ============================================================
+
+@app.route('/etapa-6/metodologia-flujo')
+def etapa6_metodologia():
+    data = etapa6_service.get_etapa6_summary()
+    return render_template('etapa6_metodologia.html', data=data)
+
+
+@app.route('/etapa-6/aprendizaje-supervisado')
+def etapa6_supervisado():
+    data = etapa6_service.get_etapa6_summary()
+    return render_template('etapa6_supervisado.html', data=data)
+
+
+@app.route('/etapa-6/clustering-no-supervisado')
+def etapa6_clustering():
+    data = etapa6_service.get_etapa6_summary()
+    return render_template('etapa6_clustering.html', data=data)
+
+
+@app.route('/etapa-6/mineria-texto-youtube')
+def etapa6_texto():
+    data = etapa6_service.get_etapa6_summary()
+    return render_template('etapa6_texto.html', data=data)
+
+
+@app.route('/etapa-6/conclusiones-integradas')
+def etapa6_conclusiones():
+    data = etapa6_service.get_etapa6_summary()
+    return render_template('etapa6_conclusiones.html', data=data)
+
+
+@app.route('/etapa-6/video-demostrativo')
+def etapa6_video():
+    return render_template('etapa6_video.html', video_url=ETAPA6_VIDEO_URL)
+
+
+@app.route('/descargar-flujo-orange')
+def descargar_flujo_orange():
+    ows_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'Orange3_GIG', 'GIG ECONOMY.ows')
+    if os.path.exists(ows_path):
+        return send_file(
+            ows_path,
+            as_attachment=True,
+            download_name='GIG_ECONOMY_Orange3.ows',
+            mimetype='application/octet-stream'
+        )
+    return jsonify({
+        'error': 'El archivo de flujo de Orange no se encuentra en el directorio Orange3_GIG.',
+        'instruccion': 'Guarda tu archivo GIG ECONOMY.ows en la carpeta Orange3_GIG/'
+    }), 404
 
 
 @app.route('/descargar-powerbi')
