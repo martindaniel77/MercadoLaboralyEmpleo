@@ -19,7 +19,7 @@
 <section class="section">
     <div class="container">
 
-        {% set vid = video_url %}
+        {% set vid = "https://youtu.be/r9XvvA45rZE" %}
         {% set embed = '' %}
         {% if vid %}
             {% if 'youtu.be/' in vid %}
@@ -31,6 +31,9 @@
             {% elif 'drive.google.com/file/d/' in vid %}
                 {% set embed = 'https://drive.google.com/file/d/' ~ vid.split('/file/d/')[1].split('/')[0] ~ '/preview' %}
             {% endif %}
+            <div style="display: inline-flex; gap:0.8rem; justify-content:center; margin-top:1rem;">
+                <a href="{{ url_for('descargar_flujo_orange') }}" class="btn btn--primary">Descargar archivo Orange</a>
+            </div>
         {% endif %}
 
         <!-- ===== Reproductor o Placeholder de Video ===== -->
@@ -64,10 +67,14 @@
                 </div>
             </div>
             {% endif %}
+            <div style="display: inline-flex; gap:0.8rem; justify-content:center; margin-top:1rem;">
+                <a href="{{ url_for('descargar_flujo_orange') }}" class="btn btn--primary">Descargar archivo Orange</a>
+            </div>
         </div>
 
         <!-- ===== Guía de Contenido del Video ===== -->
-        <div class="content-box">
+        <!--
+<div class="content-box">
             <span class="section-eyebrow">02 / Estructura Temática</span>
             <h2 class="section-title">Puntos Cubiertos en la Demostración de Orange</h2>
 
@@ -121,6 +128,7 @@
                 </div>
             </div>
         </div>
+-->
 
         <!-- ===== Navegación ===== -->
         <div class="panel" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; background: var(--color-surface); margin-top: 1.5rem;">
